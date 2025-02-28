@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">APP</string>
+    <string name="default_user">user@udl.cat</string>
+    <string name="default_pass">123456</string>
 </resources>
