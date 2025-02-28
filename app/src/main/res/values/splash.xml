@@ -2,6 +2,7 @@
 <resources>
     <style name="Theme.App.Starting" parent="android:Theme.Material.Light.NoActionBar">
         <item name="windowSplashScreenBackground">#46141D</item>
+        <item name="android:colorBackground">@color/red</item>
         <item name="android:windowSplashScreenAnimatedIcon">@drawable/gemini_generated_image_9rdb4o9rdb4o9rdb</item>
         <!-- Set splash screen background color, drawable, etc. -->
         <item name="android:windowFullscreen">false</item>
