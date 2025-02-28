@@ -1,0 +1,34 @@
+name: Versioning on Tag Push
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'  # Trigger on tags like v0.0.1, v1.2.3, etc.
+
+jobs:
+  save_version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Extract version from tag
+        id: extract_version
+        run: |
+          # Get the tag name from the GitHub ref
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "Detected tag: $TAG_NAME"
+          echo "::set-output name=version::$TAG_NAME"
+
+      - name: Save version to file
+        run: |
+          echo "${{ steps.extract_version.outputs.version }}" > VERSION
+
+      - name: Commit version file (optional)
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add VERSION
+          git commit -m "Save version ${{ steps.extract_version.outputs.version }}"
+          git push
