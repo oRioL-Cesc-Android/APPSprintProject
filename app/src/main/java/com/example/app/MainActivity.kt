@@ -11,12 +11,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.app.ui.theme.APPTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        installSplashScreen()
         setContent {
             APPTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -45,3 +47,4 @@ fun GreetingPreview() {
         Greeting("Android")
     }
 }
+

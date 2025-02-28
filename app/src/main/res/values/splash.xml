@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.App.Starting" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="windowSplashScreenBackground">#46141D</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/gemini_generated_image_9rdb4o9rdb4o9rdb</item>
+        <!-- Set splash screen background color, drawable, etc. -->
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:background">@color/red</item>
+
+        <!-- Optionally make status bar transparent or a custom color -->
+        <item name="android:statusBarColor">@color/red</item>
+        <item name="postSplashScreenTheme">@style/Theme.APP</item>
+    </style>
+</resources>
