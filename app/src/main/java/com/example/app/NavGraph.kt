@@ -19,6 +19,7 @@ import com.example.app.ui.screens.ExploreScreen
 import com.example.app.ui.screens.HomeScreen
 import com.example.app.ui.screens.LoginScreen
 import com.example.app.ui.screens.MapScreen
+import com.example.app.ui.screens.TermsCondScreen
 import com.example.app.ui.screens.TravelListScreen
 import com.example.app.ui.screens.VersionScreen
 
@@ -33,6 +34,7 @@ fun NavGraph(navController: NavHostController) {
         composable("Trip Details Screen") {  TripDetailsScreen(navController) }
         composable("Map Screen") {  MapScreen(navController) }
         composable("ExploreScreen") {  ExploreScreen(navController) }
+        composable("TermsCondScreen") {  TermsCondScreen(navController) }
 
 
 

@@ -7,6 +7,8 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
@@ -38,8 +40,14 @@ fun AboutScreen(navController: NavController) {
             Text(text = "About Screen", style = MaterialTheme.typography.headlineMedium)
             Text(text = "Esta aplicación está diseñada para ayudarte a planificar y gestionar tus viajes de manera eficiente. " +
                     "Puedes agregar destinos, ver detalles de tus viajes y explorar nuevas experiencias")
-            Text(text = "Desarrollado por: SpartanHack", style = MaterialTheme.typography.bodyMedium)
-            // Agrega más elementos básicos
+            Text(
+                text = "Desarrollado por: SpartanHack",
+                style = TextStyle(
+
+                    fontWeight = FontWeight.Bold // Opcional: añade negrita
+                )
+            )
+
             Divider(thickness = 1.dp)
             Text(text = "Versión: 1.0.0")
             Text(text = "Contacto: udl@udl.cat")

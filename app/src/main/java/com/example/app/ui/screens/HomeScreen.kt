@@ -71,6 +71,13 @@ fun HomeScreen(navController: NavHostController) {
                                 showMenu.value = false // Cierra el menú después de la navegación
                             }
                         )
+                        DropdownMenuItem(
+                            text = { Text("Terminos y condiciones") },
+                            onClick = {
+                                navController.navigate("TermsCondScreen")
+                                showMenu.value = false // Cierra el menú después de la navegación
+                            }
+                        )
                     }
                 }
             )
