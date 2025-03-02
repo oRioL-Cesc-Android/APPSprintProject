@@ -5,14 +5,14 @@ class Login(
     var contrasena: String
 ) {
     fun login(nombreUsuario: String, contrasena: String) {
-        @TODO
+        //@TODO
     }
 
     fun logout() {
-        @TODO
+        //@TODO
     }
 
     fun resetContrasena(nombreUsuario: String) {
-        @TODO
+       // @TODO
     }
 }

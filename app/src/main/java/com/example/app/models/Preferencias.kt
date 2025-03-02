@@ -7,18 +7,19 @@ class Preferencias(
     var notificaciones: Boolean
 ) {
     fun cambiarTema() {
-       @TODO
+       //@TODO
     }
 
     fun habilitarNotificaciones() {
-        @TODO
+       // @TODO
     }
 
     fun deshabilitarNotificaciones() {
-        @TODO
+
+       // @TODO
     }
 
     fun cambiarLenguaje() {
-        @TODO
+        //@TODO
     }
 }

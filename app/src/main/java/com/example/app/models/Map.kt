@@ -3,14 +3,14 @@ package com.example.app.models
 
 class Mapa {
     fun mostrarLocalizacion() {
-        @TODO
+        //@TODO
     }
 
     fun sitiosCercanos() {
-        @TODO
+        //@TODO
     }
 
     fun mostrarPunto() {
-        @TODO
+        //@TODO
     }
 }

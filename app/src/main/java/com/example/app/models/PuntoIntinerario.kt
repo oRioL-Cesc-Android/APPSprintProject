@@ -5,9 +5,9 @@ class PuntoIntinerario(
     var puntoIntinerario: Mapa
 ) {
     fun mostrarPunto() {
-        @TODO
+        //@TODO
     }
 
     fun establecerPunto() {
-        @TODO
-    }
+       // @TODO
+    }}

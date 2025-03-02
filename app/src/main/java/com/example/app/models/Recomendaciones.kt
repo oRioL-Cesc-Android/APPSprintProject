@@ -4,6 +4,6 @@ class Recomendaciones(
     var recomendacion: Mapa
 ) {
     fun tenerRecomendacion() {
-        @TODO
+        //@TODO
     }
 }
