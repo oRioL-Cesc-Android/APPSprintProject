@@ -2,4 +2,40 @@
     <string name="app_name">Travel Planner</string>
     <string name="default_user">user@udl.cat</string>
     <string name="default_pass">123456</string>
+    <string name="version">Versió</string>
+    <string name="VersionScreen">Pantalla de Versió</string>
+    <string name="AplicaciónTravelPlanner">Aplicació: TravelPlanner</string>
+    <string name="Versión_actual">Versió actual: 0.0.4</string>
+    <string name="Changelog">-S\'ha afegit l\'esquelet de l\'aplicació</string>
+    <string name="DetallesViaje">Detalls del viatge</string>
+    <string name="ListaViajes">Llista de Viatges</string>
+    <string name="AgregarViaje">Agregar Viatge</string>
+    <string name="Titulo">Títol</string>
+    <string name="Localización">Localització</string>
+    <string name="Descripción">Descripció</string>
+    <string name="Valoración">Valoració (0–10)</string>
+    <string name="Duración">Duració</string>
+    <string name="Agregar">Afegir</string>
+    <string name="Cancelar">Cancelar</string>
+    <string name="Guardar">Guardar</string>
+    <string name="Eliminar">Eliminar</string>
+    <string name="Editar">Editar</string>
+    <string name="TerminosCond">Termes i Condicions</string>
+    <string name="DescrTerCond">En utilitzar TravelPlanner, acceptes aquests termes i condicions, així com la nostra Política de Privadesa. Si no esteu d\'acord amb algun d\'aquests termes, us recomanem no utilitzar l\'aplicació.
+
+    Has de ser més gran o comptar amb el contentment d\'un tutor legal per utilitzar l\'aplicació. És responsabilitat de lusuari proporcionar informació veraç i mantenir la confidencialitat de les seves credencials daccés. L\'aplicació s\'ha d\'utilitzar únicament per a fins legals i segons aquests termes. Queda prohibit qualsevol ús fraudulent, abusiu o que violi drets de tercers.
+
+    Les reserves realitzades a través de l\'aplicació estan subjectes a disponibilitat i confirmació dels proveïdors de serveis (hotels, aerolínies, etc.). Els preus mostrats són responsabilitat dels proveïdors. TravelPlanner no es fa responsable per errors en els preus o les tarifes. Les polítiques de cancel·lació i reemborsament depenen de cada proveïdor. Et recomanem revisar aquestes condicions abans de fer una reserva.
+
+    És responsabilitat de l'usuari verificar l'exactitud de la informació proporcionada (dates, destins, dades personals, etc.). L'usuari és responsable de complir els requisits de viatge, com ara visats, passaports i vacunes.</string>
+
+    <string name="Mapa">Mapa</string>
+    <string name="LoginFailed">Error d\' inici de sessió</string>
+    <string name="InvalidLogin">Usuari o contrasenya incorrecta</string>
+    <string name="ExploreScreen">Explorar</string>
+    <string name="Volver">Tornar</string>
+    <string name="AboutScreen">About</string>
+    <string name="AboutDescription">Aquesta aplicació està dissenyada per ajudar-te a planificar i gestionar els teus viatges de manera eficient. Pots afegir destinacions, veure detalls dels viatges i explorar noves experiències</string>
+    <string name="Desarrolladores">Desenvolupat per: SpartanHack</string>
+    <string name="Ajustes">Configuració</string>
 </resources>

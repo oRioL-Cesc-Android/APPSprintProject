@@ -37,10 +37,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.app.R
 
 data class TravelItem(
     val id: Int,
@@ -57,7 +59,7 @@ fun TravelListScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Lista de Viajes") }, // Título de la barra superior
+                title = { Text(stringResource(R.string.ListaViajes)) }, // Título de la barra superior
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -103,7 +105,7 @@ fun ListApp(navController: NavHostController) {
             Button(
                 onClick = { showDialog = true } // Abre el diálogo al hacer clic
             ) {
-                Text("Agregar Viaje")
+                Text(stringResource(R.string.AgregarViaje))
             }
 
             LazyColumn(
@@ -145,13 +147,13 @@ fun ListApp(navController: NavHostController) {
         if (showDialog) {
             AlertDialog(
                 onDismissRequest = { showDialog = false }, // Cierra el diálogo al tocar fuera
-                title = { Text("Agregar Viaje") },
+                title = { Text(stringResource(R.string.AgregarViaje)) },
                 text = {
                     Column {
                         OutlinedTextField(
                             value = itemTitle,
                             onValueChange = { itemTitle = it },
-                            label = { Text("Título") },
+                            label = { Text(stringResource(R.string.Titulo)) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp)
@@ -160,7 +162,7 @@ fun ListApp(navController: NavHostController) {
                         OutlinedTextField(
                             value = itemLocation,
                             onValueChange = { itemLocation = it },
-                            label = { Text("Localización") },
+                            label = { Text(stringResource(R.string.Localización)) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp)
@@ -169,7 +171,7 @@ fun ListApp(navController: NavHostController) {
                         OutlinedTextField(
                             value = itemDescription,
                             onValueChange = { itemDescription = it },
-                            label = { Text("Descripción") },
+                            label = { Text(stringResource(R.string.Descripción)) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp)
@@ -178,7 +180,7 @@ fun ListApp(navController: NavHostController) {
                         OutlinedTextField(
                             value = itemRating,
                             onValueChange = { itemRating = it },
-                            label = { Text("Valoración (0-10)") },
+                            label = { Text(stringResource(R.string.Valoración)) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp)
@@ -187,7 +189,7 @@ fun ListApp(navController: NavHostController) {
                         OutlinedTextField(
                             value = itemDuration,
                             onValueChange = { itemDuration = it },
-                            label = { Text("Duración") },
+                            label = { Text(stringResource(R.string.Duración)) },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp)
@@ -222,12 +224,12 @@ fun ListApp(navController: NavHostController) {
                                 }
                             }
                         ) {
-                            Text("Agregar")
+                            Text(stringResource(R.string.Agregar))
                         }
                         Button(
                             onClick = { showDialog = false } // Cierra el diálogo sin agregar
                         ) {
-                            Text("Cancelar")
+                            Text(stringResource(R.string.Cancelar))
                         }
                     }
                 }
@@ -264,10 +266,10 @@ fun TravelListItem(
         }
         Row(modifier = Modifier.padding(8.dp)) {
             IconButton(onClick = onEditClick) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = "Editar")
+                Icon(imageVector = Icons.Default.Edit, contentDescription = stringResource(R.string.Editar))
             }
             IconButton(onClick = onDeleteClick) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = "Eliminar")
+                Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(R.string.Eliminar))
             }
         }
     }
@@ -292,7 +294,7 @@ fun TravelItemEditor(
         OutlinedTextField(
             value = editedTitle,
             onValueChange = { editedTitle = it },
-            label = { Text("Título") },
+            label = { Text(stringResource(R.string.Titulo)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -301,7 +303,7 @@ fun TravelItemEditor(
         OutlinedTextField(
             value = editedLocation,
             onValueChange = { editedLocation = it },
-            label = { Text("Localización") },
+            label = { Text(stringResource(R.string.Localización)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -310,7 +312,7 @@ fun TravelItemEditor(
         OutlinedTextField(
             value = editedDescription,
             onValueChange = { editedDescription = it },
-            label = { Text("Descripción") },
+            label = { Text(stringResource(R.string.Descripción)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -319,7 +321,7 @@ fun TravelItemEditor(
         OutlinedTextField(
             value = editedRating,
             onValueChange = { editedRating = it },
-            label = { Text("Valoración (0-5)") },
+            label = { Text(stringResource(R.string.Valoración)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -328,7 +330,7 @@ fun TravelItemEditor(
         OutlinedTextField(
             value = editedDuration,
             onValueChange = { editedDuration = it },
-            label = { Text("Duración") },
+            label = { Text(stringResource(R.string.Duración)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
@@ -343,7 +345,7 @@ fun TravelItemEditor(
                 .align(Alignment.End)
                 .padding(8.dp)
         ) {
-            Text("Guardar")
+            Text(stringResource(R.string.Guardar))
         }
     }
 }

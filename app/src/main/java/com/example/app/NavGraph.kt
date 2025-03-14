@@ -35,6 +35,7 @@ fun NavGraph(navController: NavHostController) {
         composable("Map Screen") {  MapScreen(navController) }
         composable("ExploreScreen") {  ExploreScreen(navController) }
         composable("TermsCondScreen") {  TermsCondScreen(navController) }
+        composable(SettingsScreen) { SettingsScreen(navController) }
 
 
 

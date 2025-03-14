@@ -16,8 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.app.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,7 +27,7 @@ fun VersionScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Version") },
+                title = { Text(stringResource(R.string.version)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -44,13 +46,12 @@ fun VersionScreen(navController: NavController) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(text = "Version Screen", style = MaterialTheme.typography.headlineMedium)
-            Text(text = "Aplicación: MyApp")
-            Text(text = "Versión actual: 0.0.4")
-            Text(text = "Fecha de lanzamiento: Marzo 2025")
+            Text(stringResource(R.string.VersionScreen), style = MaterialTheme.typography.headlineMedium)
+            Text(stringResource(R.string.AplicaciónTravelPlanner))
+            Text(stringResource(R.string.Versión_actual))
             Divider(thickness = 1.dp)
             Text(text = "Changelog:")
-            Text(text = "- Se agregó El esqueleto de la aplicación")
+            Text(stringResource(R.string.Changelog))
         }
     }
 }
