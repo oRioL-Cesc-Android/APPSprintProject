@@ -21,8 +21,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.app.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,6 +65,14 @@ fun HomeScreen(navController: NavHostController) {
                             }
                         )
 
+                        DropdownMenuItem(
+                            text = { Text(stringResource(R.string.Ajustes)) },
+                            onClick = {
+                                navController.navigate("ajustes")
+                                showMenu.value = false // Cierra el menú después de la navegación
+                            }
+                        )
+
                         // Opción "Login"
                         DropdownMenuItem(
                             text = { Text("Login") },
@@ -72,7 +82,7 @@ fun HomeScreen(navController: NavHostController) {
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Terminos y condiciones") },
+                            text = { Text(stringResource(R.string.TerminosCond)) },
                             onClick = {
                                 navController.navigate("TermsCondScreen")
                                 showMenu.value = false // Cierra el menú después de la navegación
@@ -95,22 +105,22 @@ fun HomeScreen(navController: NavHostController) {
             ) {
                 // Botón para ir a la pantalla "Travel List"
                 Button(onClick = { navController.navigate("Travel List") }) {
-                    Text("Travel List")
+                    Text(stringResource(R.string.ListaViajes))
                 }
 
                 // Botón para ir a la pantalla "Trip Details Screen"
                 Button(onClick = { navController.navigate("Trip Details Screen") }) {
-                    Text("Trip Details")
+                    Text(stringResource(R.string.DetallesViaje))
                 }
 
                 // Botón para ir a la pantalla "Map Screen"
                 Button(onClick = { navController.navigate("Map Screen") }) {
-                    Text("Map")
+                    Text(stringResource(R.string.Mapa))
                 }
 
                 // Botón para ir a la pantalla "ExploreScreen"
                 Button(onClick = { navController.navigate("ExploreScreen") }) {
-                    Text("Explore")
+                    Text(stringResource(R.string.ExploreScreen))
                 }
             }
         }

@@ -95,8 +95,8 @@ fun LoginScreen(navController: NavController) {
         if (showAlert) {
             AlertDialog(
                 onDismissRequest = { showAlert = false },
-                title = { Text("Login Failed") },
-                text = { Text("Invalid username or password.") },
+                title = { Text(stringResource(R.string.LoginFailed)) },
+                text = { Text(stringResource(R.string.InvalidLogin)) },
                 confirmButton = {
                     Button(onClick = { showAlert = false }) {
                         Text("OK")

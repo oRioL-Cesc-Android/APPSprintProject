@@ -18,8 +18,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.app.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,7 +32,7 @@ fun MapScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Mapa") }, // Título de la barra superior
+                title = { Text(stringResource(R.string.Mapa)) }, // Título de la barra superior
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -61,7 +63,7 @@ fun MapScreen(navController: NavHostController) {
 
                 // Botón para regresar a la pantalla anterior
                 Button(onClick = { navController.popBackStack() }) {
-                    Text("Regresar")
+                    Text(stringResource(R.string.Cancelar))
                 }
             }
         }

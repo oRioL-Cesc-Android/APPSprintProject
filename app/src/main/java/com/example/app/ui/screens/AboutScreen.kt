@@ -7,10 +7,12 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.app.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,11 +39,10 @@ fun AboutScreen(navController: NavController) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(text = "About Screen", style = MaterialTheme.typography.headlineMedium)
-            Text(text = "Esta aplicación está diseñada para ayudarte a planificar y gestionar tus viajes de manera eficiente. " +
-                    "Puedes agregar destinos, ver detalles de tus viajes y explorar nuevas experiencias")
+            Text(stringResource(R.string.AboutScreen), style = MaterialTheme.typography.headlineMedium)
+            Text(stringResource(R.string.AboutDescription))
             Text(
-                text = "Desarrollado por: SpartanHack",
+                text = stringResource(R.string.Desarrolladores),
                 style = TextStyle(
 
                     fontWeight = FontWeight.Bold // Opcional: añade negrita
@@ -49,7 +50,7 @@ fun AboutScreen(navController: NavController) {
             )
 
             Divider(thickness = 1.dp)
-            Text(text = "Versión: 1.0.0")
+            Text(stringResource(R.string.Versión_actual))
             Text(text = "Contacto: udl@udl.cat")
         }
     }
