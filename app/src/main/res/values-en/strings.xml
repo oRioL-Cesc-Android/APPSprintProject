@@ -21,14 +21,7 @@
     <string name="Eliminar">Delete</string>
     <string name="Editar">Edit</string>
     <string name="TerminosCond">Terms &amp; conditions</string>
-    <string name="DescrTerCond">By using TravelPlanner, you agree to these terms and conditions, as well as our Privacy Policy. If you do not agree with any of these terms, we recommend that you do not use the application.
-
-    You must be of legal age or have the consent of a legal guardian to use the application. It is the user\'s responsibility to provide accurate information and maintain the confidentiality of their access credentials. The application must be used only for lawful purposes and in accordance with these terms. Any fraudulent, abusive, or third-party use is prohibited.
-
-    Bookings made through the application are subject to availability and confirmation by service providers (hotels, airlines, etc.). The prices displayed are the responsibility of the providers. TravelPlanner is not responsible for errors in prices or rates. Cancellation and refund policies vary by provider. We recommend that you review these conditions before making a reservation.
-
-    It is the user's responsibility to verify the accuracy of the information provided (dates, destinations, personal information, etc.). The user is responsible for complying with travel requirements, such as visas, passports, and vaccinations.</string>
-
+    <string name="DescrTerCond">Descripcion</string>
     <string name="Mapa">Map</string>
     <string name="LoginFailed">Login Failed</string>
     <string name="InvalidLogin">Invalid username or password.</string>

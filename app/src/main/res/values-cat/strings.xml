@@ -21,14 +21,7 @@
     <string name="Eliminar">Eliminar</string>
     <string name="Editar">Editar</string>
     <string name="TerminosCond">Termes i Condicions</string>
-    <string name="DescrTerCond">En utilitzar TravelPlanner, acceptes aquests termes i condicions, així com la nostra Política de Privadesa. Si no esteu d\'acord amb algun d\'aquests termes, us recomanem no utilitzar l\'aplicació.
-
-    Has de ser més gran o comptar amb el contentment d\'un tutor legal per utilitzar l\'aplicació. És responsabilitat de lusuari proporcionar informació veraç i mantenir la confidencialitat de les seves credencials daccés. L\'aplicació s\'ha d\'utilitzar únicament per a fins legals i segons aquests termes. Queda prohibit qualsevol ús fraudulent, abusiu o que violi drets de tercers.
-
-    Les reserves realitzades a través de l\'aplicació estan subjectes a disponibilitat i confirmació dels proveïdors de serveis (hotels, aerolínies, etc.). Els preus mostrats són responsabilitat dels proveïdors. TravelPlanner no es fa responsable per errors en els preus o les tarifes. Les polítiques de cancel·lació i reemborsament depenen de cada proveïdor. Et recomanem revisar aquestes condicions abans de fer una reserva.
-
-    És responsabilitat de l'usuari verificar l'exactitud de la informació proporcionada (dates, destins, dades personals, etc.). L'usuari és responsable de complir els requisits de viatge, com ara visats, passaports i vacunes.</string>
-
+    <string name="DescrTerCond">DESCRIPCION</string>
     <string name="Mapa">Mapa</string>
     <string name="LoginFailed">Error d\' inici de sessió</string>
     <string name="InvalidLogin">Usuari o contrasenya incorrecta</string>
