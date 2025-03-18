@@ -10,11 +10,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
@@ -43,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.app.R
+import com.example.app.ui.viewmodel.TravellistViewModel
 
 data class TravelItem(
     val id: Int,
@@ -55,7 +54,7 @@ data class TravelItem(
 )
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TravelListScreen(navController: NavHostController) {
+fun TravelListScreen(navController: NavHostController, hiltViewModel: TravellistViewModel) {
     Scaffold(
         topBar = {
             TopAppBar(
