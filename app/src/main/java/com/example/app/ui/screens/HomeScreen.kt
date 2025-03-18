@@ -35,7 +35,7 @@ fun HomeScreen(navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Home") },
+                title = { Text(stringResource(R.string.MenúPrincipal)) },
                 actions = {
                     // Icono de menú desplegable
                     IconButton(onClick = { showMenu.value = true }) {
@@ -68,7 +68,7 @@ fun HomeScreen(navController: NavHostController) {
                         DropdownMenuItem(
                             text = { Text(stringResource(R.string.Ajustes)) },
                             onClick = {
-                                navController.navigate("ajustes")
+                                navController.navigate("SettingsScreen")
                                 showMenu.value = false // Cierra el menú después de la navegación
                             }
                         )

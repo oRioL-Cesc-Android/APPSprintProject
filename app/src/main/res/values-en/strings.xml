@@ -31,5 +31,7 @@
     <string name="AboutDescription">This app is designed to help you plan and manage your trips efficiently. You can add destinations, view trip details, and explore new experiences.</string>
     <string name="Desarrolladores">Developed by: SpartanHack</string>
     <string name="Ajustes">Settings</string>
+    <string name="MenúPrincipal">Home</string>
+
 
 </resources>

@@ -17,24 +17,16 @@ import com.example.app.utils.LoginUtils
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController) {
-    // States for username, password, and the alert dialog
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var showAlert by remember { mutableStateOf(false) }
-    val loginUtils: LoginUtils = LoginUtils()
-
-    // Get default values from strings.xml
-    val defaultUser = stringResource(id = R.string.default_user)
-    val defaultPass = stringResource(id = R.string.default_pass)
-
-    // Providing values to jump without type
-    username = defaultUser
-    password = defaultPass
+    var alertMessage by remember { mutableStateOf("") }
+    val loginUtils = LoginUtils()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("LogIn") }, // Título de la barra superior
+                title = { Text("LogIn") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -50,7 +42,7 @@ fun LoginScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp), // Margen horizontal de 16.dp
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -73,16 +65,20 @@ fun LoginScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
             Button(
                 onClick = {
-                    if (loginUtils.isValidEmailAddress(defaultUser) &&
-                        //loginUtils.isValidPassword(defaultPass) &&
-                        username == defaultUser && password == defaultPass
-                    ) {
-                        // Navigate to Home and remove Login from the back stack
-                        navController.navigate("home") {
-                            popUpTo("login") { inclusive = true }
+                    when {
+                        username.isBlank() || password.isBlank() -> {
+                            alertMessage = "El usuario y la contraseña no pueden estar vacíos."
+                            showAlert = true
                         }
-                    } else {
-                        showAlert = true
+                        !loginUtils.isValidEmailAddress(username) -> {
+                            alertMessage = "El formato del correo es inválido."
+                            showAlert = true
+                        }
+                        else -> {
+                            navController.navigate("home") {
+                                popUpTo("login") { inclusive = true }
+                            }
+                        }
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -91,12 +87,11 @@ fun LoginScreen(navController: NavController) {
             }
         }
 
-        // Show an alert dialog if the login fails
         if (showAlert) {
             AlertDialog(
                 onDismissRequest = { showAlert = false },
-                title = { Text(stringResource(R.string.LoginFailed)) },
-                text = { Text(stringResource(R.string.InvalidLogin)) },
+                title = { Text("Error") },
+                text = { Text(alertMessage) },
                 confirmButton = {
                     Button(onClick = { showAlert = false }) {
                         Text("OK")

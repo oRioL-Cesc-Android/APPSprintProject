@@ -32,6 +32,7 @@
     <string name="AboutDescription">Esta aplicación está diseñada para ayudarte a planificar y gestionar tus viajes de manera eficiente. Puedes agregar destinos, ver detalles de tus viajes y explorar nuevas experiencias</string>
     <string name="Desarrolladores">Desarrollado por: SpartanHack</string>
     <string name="Ajustes">Ajustes</string>
+    <string name="MenúPrincipal">Menú Principal</string>
 
 
 </resources>

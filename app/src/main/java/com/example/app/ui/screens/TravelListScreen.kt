@@ -1,15 +1,8 @@
 package com.example.app.ui.screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,27 +10,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.app.R
@@ -45,20 +26,24 @@ import com.example.app.ui.viewmodel.TravellistViewModel
 
 data class TravelItem(
     val id: Int,
-    var title: String,          // Título del viaje
-    var location: String,       // Localización
-    var description: String,    // Descripción
-    var rating: Float,          // Valoración (puede ser un número decimal)
-    var duration: String,       // Duración (puede ser un String como "3 días")
+    var title: String,
+    var location: String,
+    var description: String,
+    var rating: Float,
+    var duration: String,
     var isEditing: Boolean = false
 )
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TravelListScreen(navController: NavHostController, hiltViewModel: TravellistViewModel) {
+fun TravelListScreen(
+    navController: NavHostController,
+    viewModel: TravellistViewModel = hiltViewModel() // Inyección de Hilt
+) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.ListaViajes)) }, // Título de la barra superior
+                title = { Text(stringResource(R.string.ListaViajes)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -73,19 +58,16 @@ fun TravelListScreen(navController: NavHostController, hiltViewModel: Travellist
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding) // Usa el padding proporcionado por Scaffold
-                .padding(16.dp) // Margen adicional para el contenido
+                .padding(innerPadding)
+                .padding(16.dp)
         ) {
-            ListApp(navController) // Llama al componente que definiste anteriormente.
+            ListApp(navController) // Se pasa el navController
         }
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListApp(navController: NavHostController) {
-    // Datos de ejemplo para la aplicación
     var sItems by remember { mutableStateOf(listOf<TravelItem>()) }
     var itemTitle by remember { mutableStateOf("") }
     var itemLocation by remember { mutableStateOf("") }
@@ -94,6 +76,13 @@ fun ListApp(navController: NavHostController) {
     var itemDuration by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
 
+    // Estados para errores en el diálogo de "Agregar viaje"
+    var titleError by remember { mutableStateOf(false) }
+    var locationError by remember { mutableStateOf(false) }
+    var descriptionError by remember { mutableStateOf(false) }
+    var ratingError by remember { mutableStateOf(false) }
+    var durationError by remember { mutableStateOf(false) }
+    var showGeneralError by remember { mutableStateOf(false) } // Para mostrar el diálogo de error general
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -101,9 +90,7 @@ fun ListApp(navController: NavHostController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                onClick = { showDialog = true } // Abre el diálogo al hacer clic
-            ) {
+            Button(onClick = { showDialog = true }) {
                 Text(stringResource(R.string.AgregarViaje))
             }
 
@@ -117,15 +104,14 @@ fun ListApp(navController: NavHostController) {
                         TravelItemEditor(
                             item = item,
                             onEditComplete = { title, location, description, rating, duration ->
-                                sItems = sItems.map { it.copy(isEditing = false) }
-                                val editedItem = sItems.find { it.id == item.id }
-                                editedItem?.let {
-                                    it.title = title
-                                    it.location = location
-                                    it.description = description
-                                    it.rating = rating
-                                    it.duration = duration
-                                }
+                                sItems = sItems.map { if (it.id == item.id) it.copy(
+                                    title = title,
+                                    location = location,
+                                    description = description,
+                                    rating = rating,
+                                    duration = duration,
+                                    isEditing = false
+                                ) else it }
                             }
                         )
                     } else {
@@ -139,83 +125,140 @@ fun ListApp(navController: NavHostController) {
             }
         }
 
-        // Botón para volver al menú de inicio
-
-
         // Diálogo para agregar un nuevo viaje
         if (showDialog) {
             AlertDialog(
-                onDismissRequest = { showDialog = false }, // Cierra el diálogo al tocar fuera
+                onDismissRequest = { showDialog = false },
                 title = { Text(stringResource(R.string.AgregarViaje)) },
                 text = {
                     Column {
                         OutlinedTextField(
                             value = itemTitle,
-                            onValueChange = { itemTitle = it },
+                            onValueChange = {
+                                itemTitle = it
+                                titleError = it.isBlank() // Validar si el título está vacío
+                            },
                             label = { Text(stringResource(R.string.Titulo)) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
+                            isError = titleError,
+                            modifier = Modifier.fillMaxWidth().padding(8.dp)
                         )
+                        if (titleError) {
+                            Text(
+                                text = "El título no puede estar vacío",
+                                color = Color.Red,
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+                            )
+                        }
 
                         OutlinedTextField(
                             value = itemLocation,
-                            onValueChange = { itemLocation = it },
+                            onValueChange = {
+                                itemLocation = it
+                                locationError = it.isBlank() // Validar si la localización está vacía
+                            },
                             label = { Text(stringResource(R.string.Localización)) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
+                            isError = locationError,
+                            modifier = Modifier.fillMaxWidth().padding(8.dp)
                         )
+                        if (locationError) {
+                            Text(
+                                text = "La localización no puede estar vacía",
+                                color = Color.Red,
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+                            )
+                        }
 
                         OutlinedTextField(
                             value = itemDescription,
-                            onValueChange = { itemDescription = it },
+                            onValueChange = {
+                                itemDescription = it
+                                descriptionError = it.isBlank() // Validar si la descripción está vacía
+                            },
                             label = { Text(stringResource(R.string.Descripción)) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
+                            isError = descriptionError,
+                            modifier = Modifier.fillMaxWidth().padding(8.dp)
                         )
+                        if (descriptionError) {
+                            Text(
+                                text = "La descripción no puede estar vacía",
+                                color = Color.Red,
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+                            )
+                        }
 
                         OutlinedTextField(
                             value = itemRating,
-                            onValueChange = { itemRating = it },
+                            onValueChange = {
+                                itemRating = it
+                                ratingError = it.toFloatOrNull() == null || it.toFloat() < 0 || it.toFloat() > 10 // Validar el rating
+                            },
                             label = { Text(stringResource(R.string.Valoración)) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
+                            isError = ratingError,
+                            modifier = Modifier.fillMaxWidth().padding(8.dp)
                         )
+                        if (ratingError) {
+                            Text(
+                                text = "La valoración debe estar entre 0 y 10",
+                                color = Color.Red,
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+                            )
+                        }
 
                         OutlinedTextField(
                             value = itemDuration,
-                            onValueChange = { itemDuration = it },
+                            onValueChange = {
+                                itemDuration = it
+                                durationError = it.isBlank() // Validar si la duración está vacía
+                            },
                             label = { Text(stringResource(R.string.Duración)) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(8.dp)
+                            isError = durationError,
+                            modifier = Modifier.fillMaxWidth().padding(8.dp)
                         )
+                        if (durationError) {
+                            Text(
+                                text = "La duración no puede estar vacía",
+                                color = Color.Red,
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+                            )
+                        }
                     }
                 },
                 confirmButton = {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp),
+                        modifier = Modifier.fillMaxWidth().padding(8.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Button(
                             onClick = {
-                                if (itemTitle.isNotBlank() && itemLocation.isNotBlank()) {
+                                // Validar los campos antes de agregar
+                                titleError = itemTitle.isBlank()
+                                locationError = itemLocation.isBlank()
+                                descriptionError = itemDescription.isBlank()
+                                ratingError = itemRating.toFloatOrNull() == null || itemRating.toFloat() < 0 || itemRating.toFloat() > 10
+                                durationError = itemDuration.isBlank()
+
+                                // Si hay errores, mostrar el diálogo de error general
+                                if (titleError || locationError || ratingError || durationError || descriptionError) {
+                                    showGeneralError = true
+                                } else {
+                                    // Si no hay errores, agregar la nota
+                                    val ratingValue = itemRating.toFloatOrNull() ?: 0f
                                     val newItem = TravelItem(
                                         id = sItems.size + 1,
                                         title = itemTitle,
                                         location = itemLocation,
                                         description = itemDescription,
-                                        rating = itemRating.toFloatOrNull() ?: 0f,
+                                        rating = ratingValue,
                                         duration = itemDuration
                                     )
                                     sItems = sItems + newItem
-                                    showDialog = false // Cierra el diálogo
-                                    itemTitle = "" // Limpia los campos
+                                    showDialog = false
+                                    itemTitle = ""
                                     itemLocation = ""
                                     itemDescription = ""
                                     itemRating = ""
@@ -225,17 +268,216 @@ fun ListApp(navController: NavHostController) {
                         ) {
                             Text(stringResource(R.string.Agregar))
                         }
-                        Button(
-                            onClick = { showDialog = false } // Cierra el diálogo sin agregar
-                        ) {
+                        Button(onClick = { showDialog = false }) {
                             Text(stringResource(R.string.Cancelar))
                         }
                     }
                 }
             )
         }
+
+        // Mostrar un mensaje de error general si hay errores
+        if (showGeneralError) {
+            AlertDialog(
+                onDismissRequest = { showGeneralError = false },
+                title = { Text("Error") },
+                text = { Text("Por favor, completa todos los campos correctamente antes de guardar.") },
+                confirmButton = {
+                    Button(onClick = { showGeneralError = false }) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
     }
 }
+
+@Composable
+fun TravelItemEditor(
+    item: TravelItem,
+    onEditComplete: (String, String, String, Float, String) -> Unit
+) {
+    // Estado para los valores de los campos
+    var title by remember { mutableStateOf(item.title) }
+    var location by remember { mutableStateOf(item.location) }
+    var description by remember { mutableStateOf(item.description) }
+    var rating by remember { mutableStateOf(item.rating.toString()) }
+    var duration by remember { mutableStateOf(item.duration) }
+
+    // Estados para errores
+    var titleError by remember { mutableStateOf(false) }
+    var locationError by remember { mutableStateOf(false) }
+    var descriptionError by remember { mutableStateOf(false) }
+    var ratingError by remember { mutableStateOf(false) }
+    var durationError by remember { mutableStateOf(false) }
+
+    // Estado para mostrar el diálogo de error general
+    var showGeneralError by remember { mutableStateOf(false) }
+
+    // Card for layout
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .border(BorderStroke(2.dp, Color(0XFF018786)), RoundedCornerShape(20)),
+        elevation = CardDefaults.cardElevation(8.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            // Título del viaje
+            OutlinedTextField(
+                value = title,
+                onValueChange = {
+                    title = it
+                    titleError = it.isBlank()
+                },
+                label = { Text(stringResource(R.string.Titulo)) },
+                isError = titleError,
+                modifier = Modifier.fillMaxWidth()
+            )
+            if (titleError) {
+                Text(
+                    text = "El título no puede estar vacío",
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+                )
+            }
+
+            // Localización
+            OutlinedTextField(
+                value = location,
+                onValueChange = {
+                    location = it
+                    locationError = it.isBlank()
+                },
+                label = { Text(stringResource(R.string.Localización)) },
+                isError = locationError,
+                modifier = Modifier.fillMaxWidth()
+            )
+            if (locationError) {
+                Text(
+                    text = "La localización no puede estar vacía",
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+                )
+            }
+
+            // Descripción
+            OutlinedTextField(
+                value = description,
+                onValueChange = {
+                    description = it
+                    descriptionError = it.isBlank()
+                },
+                label = { Text(stringResource(R.string.Descripción)) },
+                isError = descriptionError,
+                modifier = Modifier.fillMaxWidth()
+            )
+            if (descriptionError) {
+                Text(
+                    text = "La descripción no puede estar vacía",
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+                )
+            }
+
+            // Valoración (Rating)
+            OutlinedTextField(
+                value = rating,
+                onValueChange = {
+                    rating = it
+                    ratingError = it.toFloatOrNull() == null || it.toFloat() < 0 || it.toFloat() > 10
+                },
+                label = { Text(stringResource(R.string.Valoración)) },
+                isError = ratingError,
+                modifier = Modifier.fillMaxWidth()
+            )
+            if (ratingError) {
+                Text(
+                    text = "La valoración debe estar entre 0 y 10",
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+                )
+            }
+
+            // Duración
+            OutlinedTextField(
+                value = duration,
+                onValueChange = {
+                    duration = it
+                    durationError = it.isBlank()
+                },
+                label = { Text(stringResource(R.string.Duración)) },
+                isError = durationError,
+                modifier = Modifier.fillMaxWidth()
+            )
+            if (durationError) {
+                Text(
+                    text = "La duración no puede estar vacía",
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
+                )
+            }
+
+            // Botones para guardar o cancelar
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(onClick = {
+                    // Validaciones antes de guardar
+                    titleError = title.isBlank()
+                    locationError = location.isBlank()
+                    descriptionError = description.isBlank()
+                    ratingError = rating.toFloatOrNull() == null || rating.toFloat() < 0 || rating.toFloat() > 10
+                    durationError = duration.isBlank()
+
+                    // Si hay errores, mostrar el diálogo de error general
+                    if (titleError || locationError || ratingError || durationError || descriptionError) {
+                        showGeneralError = true
+                    } else {
+                        // Si no hay errores, llamar a onEditComplete
+                        val ratingValue = rating.toFloatOrNull() ?: 0f
+                        onEditComplete(title, location, description, ratingValue, duration)
+                    }
+                }) {
+                    Text(stringResource(R.string.Guardar))
+                }
+
+                Button(onClick = {
+                    onEditComplete(item.title, item.location, item.description, item.rating, item.duration)
+                }) {
+                    Text(stringResource(R.string.Cancelar))
+                }
+            }
+        }
+    }
+
+    // Mostrar un mensaje de error general si hay errores
+    if (showGeneralError) {
+        AlertDialog(
+            onDismissRequest = { showGeneralError = false },
+            title = { Text("Error") },
+            text = { Text("Por favor, completa todos los campos correctamente antes de guardar.") },
+            confirmButton = {
+                Button(onClick = { showGeneralError = false }) {
+                    Text("OK")
+                }
+            }
+        )
+    }
+}
+
 @Composable
 fun TravelListItem(
     item: TravelItem,
@@ -246,17 +488,10 @@ fun TravelListItem(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
-            .border(
-                border = BorderStroke(2.dp, Color(0XFF018786)),
-                shape = RoundedCornerShape(20)
-            ),
+            .border(BorderStroke(2.dp, Color(0XFF018786)), RoundedCornerShape(20)),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(
-            modifier = Modifier
-                .padding(8.dp)
-                .weight(1f)
-        ) {
+        Column(modifier = Modifier.padding(8.dp).weight(1f)) {
             Text(text = item.title, style = MaterialTheme.typography.titleMedium)
             Text(text = "Localización: ${item.location}", style = MaterialTheme.typography.bodySmall)
             Text(text = "Descripción: ${item.description}", style = MaterialTheme.typography.bodySmall)
@@ -273,85 +508,9 @@ fun TravelListItem(
         }
     }
 }
-@Composable
-fun TravelItemEditor(
-    item: TravelItem,
-    onEditComplete: (String, String, String, Float, String) -> Unit
-) {
-    var editedTitle by remember { mutableStateOf(item.title) }
-    var editedLocation by remember { mutableStateOf(item.location) }
-    var editedDescription by remember { mutableStateOf(item.description) }
-    var editedRating by remember { mutableStateOf(item.rating.toString()) }
-    var editedDuration by remember { mutableStateOf(item.duration) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White)
-            .padding(8.dp)
-    ) {
-        OutlinedTextField(
-            value = editedTitle,
-            onValueChange = { editedTitle = it },
-            label = { Text(stringResource(R.string.Titulo)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-
-        OutlinedTextField(
-            value = editedLocation,
-            onValueChange = { editedLocation = it },
-            label = { Text(stringResource(R.string.Localización)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-
-        OutlinedTextField(
-            value = editedDescription,
-            onValueChange = { editedDescription = it },
-            label = { Text(stringResource(R.string.Descripción)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-
-        OutlinedTextField(
-            value = editedRating,
-            onValueChange = { editedRating = it },
-            label = { Text(stringResource(R.string.Valoración)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-
-        OutlinedTextField(
-            value = editedDuration,
-            onValueChange = { editedDuration = it },
-            label = { Text(stringResource(R.string.Duración)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-
-        Button(
-            onClick = {
-                val rating = editedRating.toFloatOrNull() ?: 0f
-                onEditComplete(editedTitle, editedLocation, editedDescription, rating, editedDuration)
-            },
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(8.dp)
-        ) {
-            Text(stringResource(R.string.Guardar))
-        }
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
 fun ListPreview() {
-    val mockNavController = rememberNavController()
-    ListApp(navController = mockNavController)
+    TravelListScreen(navController = rememberNavController())
 }
