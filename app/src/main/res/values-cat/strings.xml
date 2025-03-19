@@ -20,8 +20,9 @@
     <string name="Guardar">Guardar</string>
     <string name="Eliminar">Eliminar</string>
     <string name="Editar">Editar</string>
-    <string name="TerminosCond">Termes i Condicions</string>
-    <string name="DescrTerCond">DESCRIPCION</string>
+    <string name="TerminosCond">TermesiCondicions</string>
+    <string name="DescrTerCond">vacunes.</string>
+
     <string name="Mapa">Mapa</string>
     <string name="LoginFailed">Error d\' inici de sessió</string>
     <string name="InvalidLogin">Usuari o contrasenya incorrecta</string>
@@ -31,10 +32,12 @@
     <string name="AboutDescription">Aquesta aplicació està dissenyada per ajudar-te a planificar i gestionar els teus viatges de manera eficient. Pots afegir destinacions, veure detalls dels viatges i explorar noves experiències</string>
     <string name="Desarrolladores">Desenvolupat per: SpartanHack</string>
     <string name="Ajustes">Configuració</string>
+
     <string name="MenúPrincipal">Menú Principal</string>
     <string name="ConfiguraciondelaAplicación">Configuració de la Aplicació</string>
     <string name="DarkTheme">Tema fosc</string>
     <string name="Idioma">Idioma</string>
     <string name="MostrarIdiomas">Mostrar idiomes</string>
+
 
 </resources>
