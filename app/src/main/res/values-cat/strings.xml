@@ -32,4 +32,12 @@
     <string name="AboutDescription">Aquesta aplicació està dissenyada per ajudar-te a planificar i gestionar els teus viatges de manera eficient. Pots afegir destinacions, veure detalls dels viatges i explorar noves experiències</string>
     <string name="Desarrolladores">Desenvolupat per: SpartanHack</string>
     <string name="Ajustes">Configuració</string>
+
+    <string name="MenúPrincipal">Menú Principal</string>
+    <string name="ConfiguraciondelaAplicación">Configuració de la Aplicació</string>
+    <string name="DarkTheme">Tema fosc</string>
+    <string name="Idioma">Idioma</string>
+    <string name="MostrarIdiomas">Mostrar idiomes</string>
+
+
 </resources>

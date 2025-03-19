@@ -33,6 +33,10 @@
     <string name="Desarrolladores">Desarrollado por: SpartanHack</string>
     <string name="Ajustes">Ajustes</string>
     <string name="MenúPrincipal">Menú Principal</string>
+    <string name="ConfiguraciondelaAplicación">Configuración de la Aplicación</string>
+    <string name="DarkTheme">Tema oscuro</string>
+    <string name="Idioma">Idioma</string>
+    <string name="MostrarIdiomas">Mostrar idiomas</string>
 
 
 </resources>
