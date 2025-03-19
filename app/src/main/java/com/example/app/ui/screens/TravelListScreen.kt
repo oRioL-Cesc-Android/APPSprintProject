@@ -74,7 +74,7 @@ fun TravelListScreen(
                     viewModel.addTravelItem(newItem)
                 },
                 containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.White
+                contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
                 Icon(imageVector = Icons.Default.Edit, contentDescription = "Agregar viaje")
             }

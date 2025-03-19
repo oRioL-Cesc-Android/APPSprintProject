@@ -20,7 +20,7 @@
     <string name="Guardar">Guardar</string>
     <string name="Eliminar">Eliminar</string>
     <string name="Editar">Editar</string>
-    <string name="TerminosCond">TermesiCondicions</string>
+    <string name="TerminosCond">Termes i Condicions</string>
     <string name="DescrTerCond">vacunes.</string>
 
     <string name="Mapa">Mapa</string>
@@ -38,6 +38,9 @@
     <string name="DarkTheme">Tema fosc</string>
     <string name="Idioma">Idioma</string>
     <string name="MostrarIdiomas">Mostrar idiomes</string>
+    <string name="CorreoContraseñaIncorrecta">El camp del Correu o la contrasenya no pot estar buit</string>
+    <string name="CorreoFormatError">Format de correu incorrecte</string>
+    <string name="Bienvenido">Benvingut</string>
 
 
 </resources>

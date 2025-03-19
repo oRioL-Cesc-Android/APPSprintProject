@@ -1,126 +1,101 @@
 package com.example.app.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.app.R
+import com.example.app.ui.theme.APPTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavHostController) {
-    // Estado para controlar la visibilidad del menú desplegable
     val showMenu = remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.MenúPrincipal)) },
-                actions = {
-                    // Icono de menú desplegable
-                    IconButton(onClick = { showMenu.value = true }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "Más opciones")
+    APPTheme {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(stringResource(R.string.MenúPrincipal), fontWeight = FontWeight.Bold, fontSize = 20.sp) },
+                    actions = {
+                        IconButton(onClick = { showMenu.value = true }) {
+                            Icon(Icons.Default.MoreVert, contentDescription = "Más opciones")
+                        }
+
+                        DropdownMenu(
+                            expanded = showMenu.value,
+                            onDismissRequest = { showMenu.value = false }
+                        ) {
+                            DropdownMenuItem(text = { Text("About") }, onClick = { navController.navigate("about"); showMenu.value = false })
+                            DropdownMenuItem(text = { Text("Version") }, onClick = { navController.navigate("version"); showMenu.value = false })
+                            DropdownMenuItem(text = { Text(stringResource(R.string.Ajustes)) }, onClick = { navController.navigate("SettingsScreen"); showMenu.value = false })
+                            DropdownMenuItem(text = { Text(stringResource(R.string.TerminosCond)) }, onClick = { navController.navigate("TermsCondScreen"); showMenu.value = false })
+                        }
                     }
-
-                    // Menú desplegable
-                    DropdownMenu(
-                        expanded = showMenu.value,
-                        onDismissRequest = { showMenu.value = false }
-                    ) {
-                        // Opción "About"
-                        DropdownMenuItem(
-                            text = { Text("About") },
-                            onClick = {
-                                navController.navigate("about")
-                                showMenu.value = false // Cierra el menú después de la navegación
-                            }
-                        )
-
-                        // Opción "Version"
-                        DropdownMenuItem(
-                            text = { Text("Version") },
-                            onClick = {
-                                navController.navigate("version")
-                                showMenu.value = false // Cierra el menú después de la navegación
-                            }
-                        )
-
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.Ajustes)) },
-                            onClick = {
-                                navController.navigate("SettingsScreen")
-                                showMenu.value = false // Cierra el menú después de la navegación
-                            }
-                        )
-
-                        // Opción "Login"
-                        DropdownMenuItem(
-                            text = { Text("Login") },
-                            onClick = {
-                                navController.navigate("login")
-                                showMenu.value = false // Cierra el menú después de la navegación
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.TerminosCond)) },
-                            onClick = {
-                                navController.navigate("TermsCondScreen")
-                                showMenu.value = false // Cierra el menú después de la navegación
-                            }
-                        )
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically) // Corrected this line
+                )
+            }
+        ) { innerPadding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .background(MaterialTheme.colorScheme.background),
+                contentAlignment = Alignment.Center
             ) {
-                // Botón para ir a la pantalla "Travel List"
-                Button(onClick = { navController.navigate("Travel List") }) {
-                    Text(stringResource(R.string.ListaViajes))
-                }
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically)
+                ) {
+                    Text(
+                        text = stringResource(R.string.Bienvenido),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
 
-                // Botón para ir a la pantalla "Trip Details Screen"
-                Button(onClick = { navController.navigate("Trip Details Screen") }) {
-                    Text(stringResource(R.string.DetallesViaje))
-                }
+                    val buttonColors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
 
-                // Botón para ir a la pantalla "Map Screen"
-                Button(onClick = { navController.navigate("Map Screen") }) {
-                    Text(stringResource(R.string.Mapa))
-                }
+                    Button(
+                        onClick = { navController.navigate("Travel List") },
+                        colors = buttonColors,
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.fillMaxWidth(0.7f)
+                    ) { Text(stringResource(R.string.ListaViajes)) }
 
-                // Botón para ir a la pantalla "ExploreScreen"
-                Button(onClick = { navController.navigate("ExploreScreen") }) {
-                    Text(stringResource(R.string.ExploreScreen))
+                    Button(
+                        onClick = { navController.navigate("Trip Details Screen") },
+                        colors = buttonColors,
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.fillMaxWidth(0.7f)
+                    ) { Text(stringResource(R.string.DetallesViaje)) }
+
+                    Button(
+                        onClick = { navController.navigate("Map Screen") },
+                        colors = buttonColors,
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.fillMaxWidth(0.7f)
+                    ) { Text(stringResource(R.string.Mapa)) }
+
+                    Button(
+                        onClick = { navController.navigate("ExploreScreen") },
+                        colors = buttonColors,
+                        shape = RoundedCornerShape(16.dp),
+                        modifier = Modifier.fillMaxWidth(0.7f)
+                    ) { Text(stringResource(R.string.ExploreScreen)) }
                 }
             }
         }
