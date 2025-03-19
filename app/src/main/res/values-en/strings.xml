@@ -20,8 +20,8 @@
     <string name="Guardar">Save</string>
     <string name="Eliminar">Delete</string>
     <string name="Editar">Edit</string>
-    <string name="TerminosCond">Terms &amp; conditions</string>
-    <string name="DescrTerCond">Descripcion</string>
+    <string name="TerminosCond">Termsconditions</string>
+    <string name="DescrTerCond">describe</string>
     <string name="Mapa">Map</string>
     <string name="LoginFailed">Login Failed</string>
     <string name="InvalidLogin">Invalid username or password.</string>
@@ -31,7 +31,5 @@
     <string name="AboutDescription">This app is designed to help you plan and manage your trips efficiently. You can add destinations, view trip details, and explore new experiences.</string>
     <string name="Desarrolladores">Developed by: SpartanHack</string>
     <string name="Ajustes">Settings</string>
-    <string name="MenúPrincipal">Home</string>
-
 
 </resources>
