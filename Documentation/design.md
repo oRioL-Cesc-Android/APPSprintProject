@@ -1,5 +1,5 @@
 
-``mermaid
+```mermaid
 classDiagram
     class Usuario {
         +String nombre
