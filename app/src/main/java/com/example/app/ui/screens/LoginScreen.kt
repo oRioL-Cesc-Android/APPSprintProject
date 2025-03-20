@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -22,6 +23,7 @@ fun LoginScreen(navController: NavController) {
     var showAlert by remember { mutableStateOf(false) }
     var alertMessage by remember { mutableStateOf("") }
     val loginUtils = LoginUtils()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -67,11 +69,11 @@ fun LoginScreen(navController: NavController) {
                 onClick = {
                     when {
                         username.isBlank() || password.isBlank() -> {
-                            alertMessage = "El usuario y la contraseña no pueden estar vacíos."
+                            alertMessage = context.getString(R.string.CorreoContraseñaIncorrecta)
                             showAlert = true
                         }
                         !loginUtils.isValidEmailAddress(username) -> {
-                            alertMessage = "El formato del correo es inválido."
+                            alertMessage = context.getString(R.string.CorreoFormatError)
                             showAlert = true
                         }
                         else -> {

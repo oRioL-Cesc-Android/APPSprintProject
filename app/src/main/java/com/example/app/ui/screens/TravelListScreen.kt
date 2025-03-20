@@ -76,6 +76,9 @@ fun TravelListScreen(
                 },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Color.Black
+
+                contentColor = MaterialTheme.colorScheme.onPrimary
+
             ) {
                 Icon(imageVector = Icons.Default.Edit, contentDescription = "Agregar viaje")
             }
