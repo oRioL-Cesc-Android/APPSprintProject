@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+//import com.example.app.models.TravelItem
 
 // Modelo de datos
 data class TravelItem(
@@ -74,7 +75,7 @@ fun TravelListScreen(
                     viewModel.addTravelItem(newItem)
                 },
                 containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.White
+                contentColor = Color.Black
             ) {
                 Icon(imageVector = Icons.Default.Edit, contentDescription = "Agregar viaje")
             }
@@ -114,32 +115,100 @@ fun TravelListItem(
     var rating by remember { mutableStateOf(item.rating.toString()) }
     var duration by remember { mutableStateOf(item.duration) }
 
+    // Variables de error
+    var titleError by remember { mutableStateOf(false) }
+    var locationError by remember { mutableStateOf(false) }
+    var descriptionError by remember { mutableStateOf(false) }
+    var ratingError by remember { mutableStateOf(false) }
+    var durationError by remember { mutableStateOf(false) }
+
     if (isEditing) {
         AlertDialog(
             onDismissRequest = { isEditing = false },
             title = { Text("Editar Viaje") },
             text = {
                 Column {
-                    OutlinedTextField(value = title, onValueChange = { title = it }, label = { Text("Título") })
-                    OutlinedTextField(value = location, onValueChange = { location = it }, label = { Text("Ubicación") })
-                    OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text("Descripción") })
-                    OutlinedTextField(value = rating, onValueChange = { rating = it }, label = { Text("Valoración") })
-                    OutlinedTextField(value = duration, onValueChange = { duration = it }, label = { Text("Duración") })
+                    OutlinedTextField(
+                        value = title,
+                        onValueChange = {
+                            title = it
+                            titleError = it.isBlank()
+                        },
+                        label = { Text("Título") },
+                        isError = titleError
+                    )
+                    if (titleError) Text("El título es obligatorio", color = Color.Red)
+
+                    OutlinedTextField(
+                        value = location,
+                        onValueChange = {
+                            location = it
+                            locationError = it.isBlank()
+                        },
+                        label = { Text("Ubicación") },
+                        isError = locationError
+                    )
+                    if (locationError) Text("La ubicación es obligatoria", color = Color.Red)
+
+                    OutlinedTextField(
+                        value = description,
+                        onValueChange = {
+                            description = it
+                            descriptionError = it.isBlank()
+                        },
+                        label = { Text("Descripción") },
+                        isError = descriptionError
+                    )
+                    if (descriptionError) Text("La descripción es obligatoria", color = Color.Red)
+
+                    OutlinedTextField(
+                        value = rating,
+                        onValueChange = {
+                            rating = it
+                            ratingError = it.toFloatOrNull() == null
+                        },
+                        label = { Text("Valoración") },
+                        isError = ratingError
+                    )
+                    if (ratingError) Text("Ingrese una valoración válida (número)", color = Color.Red)
+
+                    OutlinedTextField(
+                        value = duration,
+                        onValueChange = {
+                            duration = it
+                            durationError = it.isBlank()
+                        },
+                        label = { Text("Duración") },
+                        isError = durationError
+                    )
+                    if (durationError) Text("La duración es obligatoria", color = Color.Red)
                 }
             },
             confirmButton = {
-                Button(onClick = {
-                    val updatedItem = item.copy(
-                        title = title,
-                        location = location,
-                        description = description,
-                        rating = rating.toFloatOrNull() ?: item.rating,
-                        duration = duration,
-                        isEditing = false
-                    )
-                    onSaveClick(updatedItem)
-                    isEditing = false
-                }) {
+                val hasErrors = titleError || locationError || descriptionError || ratingError || durationError
+                Button(
+                    onClick = {
+                        titleError = title.isBlank()
+                        locationError = location.isBlank()
+                        descriptionError = description.isBlank()
+                        ratingError = rating.toFloatOrNull() == null
+                        durationError = duration.isBlank()
+
+                        if (!hasErrors) {
+                            val updatedItem = item.copy(
+                                title = title,
+                                location = location,
+                                description = description,
+                                rating = rating.toFloatOrNull() ?: item.rating,
+                                duration = duration,
+                                isEditing = false
+                            )
+                            onSaveClick(updatedItem)
+                            isEditing = false
+                        }
+                    },
+                    enabled = !hasErrors // Botón deshabilitado si hay errores
+                ) {
                     Text("Guardar")
                 }
             },
@@ -175,6 +244,7 @@ fun TravelListItem(
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
