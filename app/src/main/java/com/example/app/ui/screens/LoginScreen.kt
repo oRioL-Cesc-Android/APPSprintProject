@@ -24,6 +24,8 @@ fun LoginScreen(navController: NavController) {
     var showAlert by remember { mutableStateOf(false) }
     var alertMessage by remember { mutableStateOf("") }
     val loginUtils = LoginUtils()
+    val username_default = stringResource(R.string.default_user)
+    val pass_default = stringResource(R.string.default_pass)
     val context = LocalContext.current
 
     Scaffold(
@@ -79,7 +81,7 @@ fun LoginScreen(navController: NavController) {
                             showAlert = true
                             Log.e("LogIn", "Email format incorrect.")
                         }
-                        username != "default_user" || password != "default_pass" -> {
+                        username != username_default || password != pass_default -> {
                             alertMessage = "Usuario o contraseña incorrectos"
                             showAlert = true
                             Log.e("LogIn", "Invalid credentials.")
