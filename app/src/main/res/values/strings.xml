@@ -42,6 +42,26 @@
     <string name="Bienvenido">Bienvenido</string>
     <string name="EliminarActividad">Eliminar actividad</string>
     <string name="DuraciónError">Ingrese una duración válida</string>
+    <string name="DescripciónError">La descripción no puede estar vacía</string>
+    <string name="ErrorValoración">Formato de valoración incorrecto</string>
+    <string name="ErrorDuracion">Duración incorrecta</string>
+    <string name="ErrorUbicacion">Ubicación vacía</string>
+    <string name="Ubicacion">Ubicación de actividad</string>
+    <string name="ErrorNombreActividad">El nombre de la actividad es obligatorio</string>
+
+    <string name="titulo_label">Título: %1$s</string>
+    <string name="ubicacion_label">Ubicación: %1$s</string>
+    <string name="descripcion_label">Descripción: %1$s</string>
+    <string name="valoracion_label">Valoración: %1$s</string>
+    <string name="duracion_label">Duración: %1$s días</string>
+    <string name="actividades_label">Actividades:</string>
+    <string name="actividad_label">Actividad: %1$s</string>
+    <string name="error_message_form">Por favor, completa todos los campos correctamente antes de guardar.</string>
+    <string name="Actividades">Actividades</string>
+    <string name="ErrorTitulo">El título es obligatorio</string>
+    <string name="EditarViajeAct">Editar Viajes y Actividades</string>
+    <string name="content_description_add_travel">Agregar viaje</string>
+    <string name="Lista_de_Viajes">Lista de Viajes</string>
 
 
 </resources>

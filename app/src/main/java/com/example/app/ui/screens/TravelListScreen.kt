@@ -18,8 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -63,7 +65,7 @@ fun TravelListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Lista de Viajes") },
+                title = { Text(stringResource(R.string.Lista_de_Viajes)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back Icon")
@@ -88,7 +90,9 @@ fun TravelListScreen(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = "Agregar viaje")
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = stringResource(R.string.content_description_add_travel))
                 Log.i("ListItem", "Travel added successfully")
             }
 
@@ -153,7 +157,7 @@ fun TravelListItem(
     if (isEditing) {
         AlertDialog(
             onDismissRequest = { viewModel.stopEditing() },
-            title = { Text("Editar Viaje y Actividades") },
+            title = { Text(stringResource(R.string.EditarViajeAct)) },
             text = {
                 Column {
                     OutlinedTextField(
@@ -162,12 +166,12 @@ fun TravelListItem(
                             title = it
                             titleError = it.isBlank()
                         },
-                        label = { Text("Título") },
+                        label = { Text(stringResource(R.string.Titulo)) },
 
                         isError = titleError
                     )
                     if (titleError) {
-                        Text("El título es obligatorio", color = Color.Red)
+                        Text(stringResource(R.string.ErrorTitulo), color = Color.Red)
                         Log.e("ListScreen", "Error titulo")}
 
 
@@ -177,11 +181,11 @@ fun TravelListItem(
                             location = it
                             locationError = it.isBlank()
                         },
-                        label = { Text("Ubicación") },
+                        label = { Text(stringResource(R.string.Ubicacion)) },
                         isError = locationError
                     )
                     if (locationError) {
-                            Text("La ubicación es obligatoria", color = Color.Red)
+                            Text(stringResource(R.string.ErrorUbicacion), color = Color.Red)
                             Log.e("ListScreen", "Error ubicación")}
 
                     OutlinedTextField(
@@ -190,11 +194,11 @@ fun TravelListItem(
                             description = it
                             descriptionError = it.isBlank()
                         },
-                        label = { Text("Descripción") },
+                        label = { Text(stringResource(R.string.Descripción)) },
                         isError = descriptionError
                     )
                     if (descriptionError) {
-                        Text("La descripción es obligatoria", color = Color.Red)
+                        Text(stringResource(R.string.DescripciónError), color = Color.Red)
                         Log.e("ListScreen", "Error descripción")
                     }
 
@@ -204,11 +208,11 @@ fun TravelListItem(
                             rating = it
                             ratingError = it.toFloatOrNull() == null
                         },
-                        label = { Text("Valoración") },
+                        label = { Text(stringResource(R.string.Valoración)) },
                         isError = ratingError
                     )
                     if (ratingError){
-                        Text("Ingrese una valoración válida (número)", color = Color.Red)
+                        Text(stringResource(R.string.ErrorValoración), color = Color.Red)
                         Log.e("ListScreen", "Error valorción")}
 
                     OutlinedTextField(
@@ -217,14 +221,14 @@ fun TravelListItem(
                             duration = it
                             durationError = it.isBlank()
                         },
-                        label = { Text("Duración") },
+                        label = { Text(stringResource(R.string.Duración)) },
                         isError = durationError
                     )
                     if (durationError){
-                        Text("La duración es obligatoria", color = Color.Red)
+                        Text(stringResource(R.string.ErrorDuracion), color = Color.Red)
                         Log.e("ListScreen", "Duración obligatoria") }
 
-                    Text("Actividades", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.Actividades), style = MaterialTheme.typography.titleMedium)
                     // Hacer las actividades deslizables horizontalmente
                     LazyRow(
                         modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
@@ -284,9 +288,12 @@ fun TravelListItem(
                             .weight(1f)
                     ) {
                         Text(
-                            text = "Agregar",
+                            text = stringResource(R.string.Agregar),
                             maxLines = 1,
-                            softWrap = false
+                            softWrap = false,
+                            textAlign = TextAlign.Center,
+                            fontSize = 10.sp
+
                         )
                     }
 
@@ -300,7 +307,9 @@ fun TravelListItem(
                         Text(
                             text = stringResource(R.string.Cancelar),
                             maxLines = 1,
-                            softWrap = false
+                            softWrap = false,
+                            textAlign = TextAlign.Center,
+                            fontSize = 10.sp
                         )
                     }
 
@@ -332,9 +341,11 @@ fun TravelListItem(
                             .weight(1f)
                     ) {
                         Text(
-                            text = "Guardar",
+                            text = stringResource(R.string.Guardar),
                             maxLines = 1,
-                            softWrap = false
+                            softWrap = false,
+                            textAlign = TextAlign.Center,
+                            fontSize = 10.sp
                         )
                     }
                 }
@@ -347,29 +358,31 @@ fun TravelListItem(
     } else {
         Column {
             // Muestra los detalles del viaje
-            Text(text = "Título: $title")
-            Text(text = "Ubicación: $location")
-            Text(text = "Descripción: $description")
-            Text(text = "Valoración: $rating")
-            Text(text = "Duración: $duration días")
-            Text(text = "Actividades:")
+            Text(text = stringResource(R.string.titulo_label, title))
+            Text(text = stringResource(R.string.ubicacion_label, location))
+            Text(text = stringResource(R.string.descripcion_label, description))
+            Text(text = stringResource(R.string.valoracion_label, rating))
+            Text(text = stringResource(R.string.duracion_label, duration))
+            Text(text = stringResource(R.string.actividades_label))
+
             // Deslizante de actividades en lugar de columnas
             LazyRow(
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
             ) {
                 items(activities) { activity ->
-                    Text(text = "Actividad: ${activity.nameActivity}")
+                    Text(text = stringResource(R.string.actividad_label, activity.nameActivity))
+
                 }
             }
 
             // Botones para editar y eliminar
             Row {
                 Button(onClick = { viewModel.startEditing(item.id) }) {
-                    Text("Editar")
+                    Text(stringResource(R.string.Editar))
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 Button(onClick = { onDeleteClick() }) {
-                    Text("Eliminar")
+                    Text(stringResource(R.string.Eliminar))
                 }
             }
         }
@@ -403,7 +416,7 @@ fun ActivityListItem(
             isError = nameError,
             modifier = Modifier.fillMaxWidth()
         )
-        if (nameError){ Text("El nombre de la actividad es obligatorio", color = Color.Red)
+        if (nameError){ Text(stringResource(R.string.ErrorNombreActividad), color = Color.Red)
             Log.e("ListScreen", "Error nombre actividad")}
 
         OutlinedTextField(
@@ -413,11 +426,11 @@ fun ActivityListItem(
                 locationError = it.isBlank()
                 onActivityLocationChange(it)
             },
-            label = { Text("Ubicación de actividad") },
+            label = { Text(stringResource(R.string.Ubicacion)) },
             isError = locationError,
             modifier = Modifier.fillMaxWidth()
         )
-        if (locationError) { Text("La ubicación es obligatoria", color = Color.Red)
+        if (locationError) { Text(stringResource(R.string.ErrorUbicacion), color = Color.Red)
             Log.e("ListScreen", "Ubicación Error")}
 
         OutlinedTextField(
@@ -427,7 +440,7 @@ fun ActivityListItem(
                 durationError = it.toIntOrNull() == null
                 onActivityDurationChange(it.toIntOrNull() ?: 0)
             },
-            label = { Text("Duración (días)") },
+            label = { Text(stringResource(R.string.Duración)) },
             isError = durationError,
             modifier = Modifier.fillMaxWidth()
         )

@@ -43,6 +43,26 @@
     <string name="Bienvenido">Benvingut</string>
     <string name="EliminarActividad">Eliminar activitat</string>
     <string name="DuraciónError">Introdueixi una duració válida</string>
+    <string name="DescripciónError">La descripció no pot estar buida</string>
+    <string name="ErrorValoración">Format de valoració incorrecte</string>
+    <string name="ErrorDuracion">Duració incorrecte</string>
+    <string name="ErrorUbicacion">Ubicació buida</string>
+    <string name="Ubicacion">Ubicació de l\'activitat</string>
+    <string name="ErrorNombreActividad">El nom de l\' activitat es obligatori</string>
+
+    <string name="titulo_label">Títol: %1$s</string>
+    <string name="ubicacion_label">Ubicació: %1$s</string>
+    <string name="descripcion_label">Descripció: %1$s</string>
+    <string name="valoracion_label">Valoració: %1$s</string>
+    <string name="duracion_label">Durada: %1$s dies</string>
+    <string name="actividades_label">Activitats:</string>
+    <string name="actividad_label">Activitat: %1$s</string>
+    <string name="error_message_form">Si us plau, completa tots els camps correctament abans de desar.</string>
+    <string name="Actividades">Activitats</string>
+    <string name="ErrorTitulo">El títul és obligatori</string>
+    <string name="EditarViajeAct">Editar Viatges y Activitats</string>
+    <string name="content_description_add_travel">Afegir viatge</string>
+    <string name="Lista_de_Viajes">Llista de Viatges</string>
 
 
 </resources>

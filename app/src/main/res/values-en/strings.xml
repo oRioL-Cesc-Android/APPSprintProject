@@ -20,7 +20,7 @@
     <string name="Guardar">Save</string>
     <string name="Eliminar">Delete</string>
     <string name="Editar">Edit</string>
-    <string name="TerminosCond">Termsconditions</string>
+    <string name="TerminosCond">Terms and conditions</string>
     <string name="DescrTerCond">describe</string>
     <string name="Mapa">Map</string>
     <string name="LoginFailed">Login Failed</string>
@@ -42,5 +42,26 @@
     <string name="Bienvenido">Welcome</string>
     <string name="EliminarActividad">Delete Activity</string>
     <string name="DuraciónError">Add correct duration, please</string>
+    <string name="DescripciónError">Description can\'t be empty</string>
+    <string name="ErrorValoración">Rating wrong format</string>
+    <string name="ErrorDuracion">Wrong duration</string>
+    <string name="ErrorUbicacion">Location empty</string>
+    <string name="Ubicacion">Location of the activity</string>
+    <string name="ErrorNombreActividad">The name of the activity is mandatory</string>
+
+    <string name="titulo_label">Title: %1$s</string>
+    <string name="ubicacion_label">Location: %1$s</string>
+    <string name="descripcion_label">Description: %1$s</string>
+    <string name="valoracion_label">Rating: %1$s</string>
+    <string name="duracion_label">Duration: %1$s days</string>
+    <string name="actividades_label">Activities:</string>
+    <string name="actividad_label">Activity: %1$s</string>
+    <string name="error_message_form">Please complete all fields correctly before saving.</string>
+    <string name="Actividades">Activities</string>
+    <string name="ErrorTitulo">The title is mandatory</string>
+    <string name="EditarViajeAct">Edit Travels and Activities</string>
+    <string name="content_description_add_travel">Add travel</string>
+    <string name="Lista_de_Viajes">Travel List</string>
+
 
 </resources>

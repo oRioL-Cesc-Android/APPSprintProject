@@ -51,11 +51,16 @@ class TravelListViewModel @Inject constructor() : ViewModel() {
 
     fun removeActivityFromTravel(travelId: Int, activity: Activitys) {
         viewModelScope.launch {
-            _travelItems.value = _travelItems.value.map {
-                if (it.id == travelId) it.copy(activities = it.activities - activity) else it
+            _travelItems.value = _travelItems.value.map { travel ->
+                if (travel.id == travelId) {
+                    travel.copy(
+                        activities = travel.activities.filter { it.nameActivity != activity.nameActivity }
+                    )
+                } else travel
             }
         }
     }
+
 
     fun updateActivityInTravel(travelId: Int, updatedActivity: Activitys) {
         viewModelScope.launch {
