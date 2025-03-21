@@ -37,5 +37,8 @@
     <string name="DarkTheme">Dark Theme</string>
     <string name="Idioma">Language</string>
     <string name="MostrarIdiomas">Show Languages</string>
+    <string name="CorreoContraseñaIncorrecta">El correo o la contraseña no puede estar vacío</string>
+    <string name="CorreoFormatError">Formato de correo incorrecto</string>
+    <string name="Bienvenido">Welcome</string>
 
 </resources>
