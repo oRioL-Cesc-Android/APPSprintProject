@@ -1,5 +1,6 @@
 package com.example.app.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -71,7 +72,9 @@ fun SettingsScreen(
 
             LanguageDropdown(
                 selectedLanguage = language,
-                onLanguageSelected = { newLang -> viewModel.updateLanguage(newLang) },
+                onLanguageSelected = { newLang -> viewModel.updateLanguage(newLang)
+                    Log.i("Language", "\uD83C\uDF0D Language changed correctly to $newLang")
+                                     },
                 availableLanguages = listOf("en", "es", "cat")
             )
 

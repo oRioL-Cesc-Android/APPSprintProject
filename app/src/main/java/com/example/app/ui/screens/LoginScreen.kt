@@ -1,5 +1,6 @@
 package com.example.app.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -71,13 +72,16 @@ fun LoginScreen(navController: NavController) {
                         username.isBlank() || password.isBlank() -> {
                             alertMessage = context.getString(R.string.CorreoContraseñaIncorrecta)
                             showAlert = true
+                            Log.e("LogIn", "Email or password incorrect.")
                         }
                         !loginUtils.isValidEmailAddress(username) -> {
                             alertMessage = context.getString(R.string.CorreoFormatError)
+                            Log.e("LogIn", "Email format incorrect.")
                             showAlert = true
                         }
                         else -> {
                             navController.navigate("home") {
+                                Log.i("LogIn", "✅LogIn successful")
                                 popUpTo("login") { inclusive = true }
                             }
                         }
@@ -94,6 +98,7 @@ fun LoginScreen(navController: NavController) {
                 onDismissRequest = { showAlert = false },
                 title = { Text("Error") },
                 text = { Text(alertMessage) },
+
                 confirmButton = {
                     Button(onClick = { showAlert = false }) {
                         Text("OK")
