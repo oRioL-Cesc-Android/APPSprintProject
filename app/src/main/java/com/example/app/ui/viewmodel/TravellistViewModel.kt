@@ -32,14 +32,13 @@ class TravelListViewModel @Inject constructor() : ViewModel() {
             _travelItems.value = _travelItems.value - item
         }
     }
-
     fun saveUpdatedTravelItem(updatedItem: TravelItem) {
-        viewModelScope.launch {
-            _travelItems.value = _travelItems.value.map {
-                if (it.id == updatedItem.id) updatedItem.copy(isEditing = false) else it
-            }
+        // Aquí actualizas el viaje con las actividades editadas
+        _travelItems.value = _travelItems.value.map {
+            if (it.id == updatedItem.id) updatedItem else it
         }
     }
+
     fun addActivityToTravel(travelId: Int, activity: Activitys) {
         viewModelScope.launch {
             _travelItems.value = _travelItems.value.map {

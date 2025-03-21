@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -48,7 +49,6 @@ data class Activitys (
     val ubicacion: String,
     var duration: Int
 )
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TravelListScreen(
@@ -83,9 +83,6 @@ fun TravelListScreen(
                 },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = Color.Black
-
-                contentColor = MaterialTheme.colorScheme.onPrimary
-
             ) {
                 Icon(imageVector = Icons.Default.Edit, contentDescription = "Agregar viaje")
             }
@@ -104,14 +101,7 @@ fun TravelListScreen(
                         onEditClick = { viewModel.updateTravelItem(item.copy(isEditing = true)) },
                         onDeleteClick = { viewModel.deleteTravelItem(item) },
                         onSaveClick = { viewModel.saveUpdatedTravelItem(it) },
-                        onAddActivityClick = { travelId ->
-                            val newActivity = Activitys(
-                                nameActivity = "Nueva Actividad",
-                                ubicacion = "Ubicación",
-                                duration = 2
-                            )
-                            viewModel.addActivityToTravel(travelId, newActivity)
-                        }
+                        viewModel = viewModel // Pasamos el ViewModel para manejar las actividades
                     )
                 }
             }
@@ -125,7 +115,7 @@ fun TravelListItem(
     onEditClick: (TravelItem) -> Unit,
     onDeleteClick: () -> Unit,
     onSaveClick: (TravelItem) -> Unit,
-    onAddActivityClick: (Int) -> Unit
+    viewModel: TravelListViewModel
 ) {
     var isEditing by remember { mutableStateOf(item.isEditing) }
     var title by remember { mutableStateOf(item.title) }
@@ -133,14 +123,12 @@ fun TravelListItem(
     var description by remember { mutableStateOf(item.description) }
     var rating by remember { mutableStateOf(item.rating.toString()) }
     var duration by remember { mutableStateOf(item.duration) }
-    var activities by remember { mutableStateOf(item.activities.toMutableList()) }
-
+    var activities by remember { mutableStateOf(item.activities) }
     var titleError by remember { mutableStateOf(false) }
     var locationError by remember { mutableStateOf(false) }
     var descriptionError by remember { mutableStateOf(false) }
     var ratingError by remember { mutableStateOf(false) }
     var durationError by remember { mutableStateOf(false) }
-    var activitiesError by remember { mutableStateOf(false) }
 
     if (isEditing) {
         AlertDialog(
@@ -203,83 +191,167 @@ fun TravelListItem(
                     )
                     if (durationError) Text("La duración es obligatoria", color = Color.Red)
 
-                    Text("Actividades:", style = MaterialTheme.typography.titleSmall)
-                    activities.forEachIndexed { index, activity ->
-                        Column {
-                            OutlinedTextField(
-                                value = activity.nameActivity,
-                                onValueChange = {
-                                    activities[index] = activity.copy(nameActivity = it)
-                                    activitiesError = it.isBlank()
+                    Text("Actividades", style = MaterialTheme.typography.titleMedium)
+                    // Hacer las actividades deslizables horizontalmente
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                    ) {
+                        items(activities) { activity ->
+                            ActivityListItem(
+                                activity = activity,
+                                onActivityNameChange = { newName ->
+                                    activities = activities.toMutableList().apply {
+                                        this[activities.indexOf(activity)] = activity.copy(nameActivity = newName)
+                                    }
+                                    viewModel.updateActivityInTravel(item.id, activity.copy(nameActivity = newName))
                                 },
-                                label = { Text("Nombre de la actividad") },
-                                isError = activitiesError
-                            )
-                            if (activitiesError) Text("El nombre de la actividad es obligatorio", color = Color.Red)
-
-                            OutlinedTextField(
-                                value = activity.ubicacion,
-                                onValueChange = {
-                                    activities[index] = activity.copy(ubicacion = it)
-                                    activitiesError = it.isBlank()
+                                onActivityLocationChange = { newLocation ->
+                                    activities = activities.toMutableList().apply {
+                                        this[activities.indexOf(activity)] = activity.copy(ubicacion = newLocation)
+                                    }
+                                    viewModel.updateActivityInTravel(item.id, activity.copy(ubicacion = newLocation))
                                 },
-                                label = { Text("Ubicación") },
-                                isError = activitiesError
-                            )
-                            if (activitiesError) Text("La ubicación de la actividad es obligatoria", color = Color.Red)
-
-                            OutlinedTextField(
-                                value = activity.duration.toString(),
-                                onValueChange = {
-                                    activities[index] = activity.copy(duration = it.toIntOrNull() ?: activity.duration)
-                                    activitiesError = it.toIntOrNull() == null
+                                onActivityDurationChange = { newDuration ->
+                                    activities = activities.toMutableList().apply {
+                                        this[activities.indexOf(activity)] = activity.copy(duration = newDuration)
+                                    }
+                                    viewModel.updateActivityInTravel(item.id, activity.copy(duration = newDuration))
                                 },
-                                label = { Text("Duración en horas") },
-                                isError = activitiesError
+                                onDeleteClick = {
+                                    activities = activities.toMutableList().apply { remove(activity) }
+                                    viewModel.removeActivityFromTravel(item.id, activity)
+                                }
                             )
-                            if (activitiesError) Text("Ingrese una duración válida (número de horas)", color = Color.Red)
-
-                            Button(onClick = { activities.removeAt(index) }) {
-                                Text("Eliminar Actividad")
-                            }
                         }
                     }
+
                     Button(onClick = {
-                        activities.add(Activitys("Nueva Actividad", "Ubicación", 2))
-                    }) {
-                        Text("Agregar Nueva Actividad")
+                        val newActivity = Activitys(
+                            nameActivity = "Nueva Actividad",
+                            ubicacion = "Ubicación",
+                            duration = 2
+                        )
+                        activities = activities.toMutableList().apply { add(newActivity) }
+                        viewModel.addActivityToTravel(item.id, newActivity)
+
+                    },
+                    ) {
+                        Text("Agregar actividad")
                     }
                 }
             },
             confirmButton = {
-                val hasErrors = titleError || locationError || descriptionError || ratingError || durationError || activitiesError
-                Button(
-                    onClick = {
-                        if (!hasErrors) {
-                            val updatedItem = item.copy(
-                                title = title,
-                                location = location,
-                                description = description,
-                                rating = rating.toFloatOrNull() ?: item.rating,
-                                duration = duration,
-                                activities = activities,
-                                isEditing = false
-                            )
-                            onSaveClick(updatedItem)
-                            isEditing = false
-                        }
-                    },
-                    enabled = !hasErrors
-                ) {
+                Button(onClick = {
+                    val updatedItem = item.copy(
+                        title = title,
+                        location = location,
+                        description = description,
+                        rating = rating.toFloat(),
+                        duration = duration,
+                        activities = activities
+                    )
+                    onSaveClick(updatedItem)
+                    isEditing = false
+                }) {
                     Text("Guardar")
-                }
-            },
-            dismissButton = {
-                Button(onClick = { isEditing = false }) {
-                    Text("Cancelar")
                 }
             }
         )
+    } else {
+        Column {
+            // Muestra los detalles del viaje
+            Text(text = "Título: $title")
+            Text(text = "Ubicación: $location")
+            Text(text = "Descripción: $description")
+            Text(text = "Valoración: $rating")
+            Text(text = "Duración: $duration días")
+            Text(text = "Actividades:")
+            // Deslizante de actividades en lugar de columnas
+            LazyRow(
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            ) {
+                items(activities) { activity ->
+                    Text(text = "Actividad: ${activity.nameActivity}")
+                }
+            }
+
+            // Botones para editar y eliminar
+            Row {
+                Button(onClick = { isEditing = true }) {
+                    Text("Editar")
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(onClick = { onDeleteClick() }) {
+                    Text("Eliminar")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ActivityListItem(
+    activity: Activitys,
+    onActivityNameChange: (String) -> Unit,
+    onActivityLocationChange: (String) -> Unit,
+    onActivityDurationChange: (Int) -> Unit,
+    onDeleteClick: () -> Unit
+) {
+    var activityName by remember { mutableStateOf(activity.nameActivity) }
+    var location by remember { mutableStateOf(activity.ubicacion) }
+    var duration by remember { mutableStateOf(activity.duration.toString()) }
+    var nameError by remember { mutableStateOf(false) }
+    var locationError by remember { mutableStateOf(false) }
+    var durationError by remember { mutableStateOf(false) }
+
+    Column(modifier = Modifier.padding(8.dp).width(220.dp)) {
+        OutlinedTextField(
+            value = activityName,
+            onValueChange = {
+                activityName = it
+                nameError = it.isBlank()
+                onActivityNameChange(it)
+            },
+            label = { Text("Nombre de actividad") },
+            isError = nameError,
+            modifier = Modifier.fillMaxWidth()
+        )
+        if (nameError) Text("El nombre de la actividad es obligatorio", color = Color.Red)
+
+        OutlinedTextField(
+            value = location,
+            onValueChange = {
+                location = it
+                locationError = it.isBlank()
+                onActivityLocationChange(it)
+            },
+            label = { Text("Ubicación de actividad") },
+            isError = locationError,
+            modifier = Modifier.fillMaxWidth()
+        )
+        if (locationError) Text("La ubicación es obligatoria", color = Color.Red)
+
+        OutlinedTextField(
+            value = duration,
+            onValueChange = {
+                duration = it
+                durationError = it.toIntOrNull() == null
+                onActivityDurationChange(it.toIntOrNull() ?: 0)
+            },
+            label = { Text("Duración (días)") },
+            isError = durationError,
+            modifier = Modifier.fillMaxWidth()
+        )
+        if (durationError) Text("Ingrese una duración válida", color = Color.Red)
+
+        Row(
+            horizontalArrangement = Arrangement.End,
+            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+        ) {
+            IconButton(onClick = { onDeleteClick() }) {
+                Icon(imageVector = Icons.Default.Delete, contentDescription = "Eliminar actividad")
+            }
+        }
     }
 }
 
