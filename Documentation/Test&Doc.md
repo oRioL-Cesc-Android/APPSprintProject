@@ -16,7 +16,9 @@ Inyección de dependencias usando Hilt: Se ha incorporado Hilt para una gestión
 
 
 ✅ Descripción de los Tests del TravelListViewModel:
-Los tests unitarios aseguran que el comportamiento del TravelListViewModel sea correcto. A continuación, se describe el propósito de cada uno:
+
+Los tests unitarios aseguran que el comportamiento del TravelListViewModel sea correcto. 
+A continuación, se describe el propósito de cada uno:
 
 addTravelItem adds a new item
 Verifica que al agregar un nuevo viaje, este se añada correctamente a la lista del ViewModel.
