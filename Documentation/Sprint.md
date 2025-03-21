@@ -55,3 +55,31 @@ T4. Customization (2 Points)
     T4.5: Oriol Ferrer
 
     T4.6: Oriol Ferrer
+
+Sprint 02 - Applications for Mobile Devices
+
+Course: 105025-2425
+Institution: University of Lleida (Campus Igualada)
+Professor: Vítor da Silva Verbel
+Team Members: Oriol Ferrer, Cesc Sierra
+T1. Implement Travel Management Logic (5 Points)
+
+    T1.1 Cesc Sierra
+    T1.2 Cesc Sierra
+    T1.3 Oriol Ferrer
+    T1.4 Oriol Ferrer
+    T1.5 Oriol Ferrer   
+
+T2. Design and Implement Itinerary Flow (2 Points)
+
+    T2.1 Cesc Sierra
+    T2.2 Cesc Sierra
+    T2.3 Cesc Sierra
+
+T3. Implement Data Validation and Testing (3 Points)
+    
+    T3.1 Oriol Ferrer
+    T3.2 Cesc Sierra
+    T3.3 Oriol Ferrer
+    T3.4 Oriol Ferrer 
+    T3.5 Oriol Ferrer 
