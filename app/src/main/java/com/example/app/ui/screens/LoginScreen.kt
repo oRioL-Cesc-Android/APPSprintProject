@@ -72,18 +72,23 @@ fun LoginScreen(navController: NavController) {
                         username.isBlank() || password.isBlank() -> {
                             alertMessage = context.getString(R.string.CorreoContraseñaIncorrecta)
                             showAlert = true
-                            Log.e("LogIn", "Email or password incorrect.")
+                            Log.e("LogIn", "Email or password is blank.")
                         }
                         !loginUtils.isValidEmailAddress(username) -> {
                             alertMessage = context.getString(R.string.CorreoFormatError)
-                            Log.e("LogIn", "Email format incorrect.")
                             showAlert = true
+                            Log.e("LogIn", "Email format incorrect.")
+                        }
+                        username != "default_user" || password != "default_pass" -> {
+                            alertMessage = "Usuario o contraseña incorrectos"
+                            showAlert = true
+                            Log.e("LogIn", "Invalid credentials.")
                         }
                         else -> {
                             navController.navigate("home") {
-                                Log.i("LogIn", "✅LogIn successful")
                                 popUpTo("login") { inclusive = true }
                             }
+                            Log.i("LogIn", "✅ LogIn successful")
                         }
                     }
                 },
@@ -91,6 +96,8 @@ fun LoginScreen(navController: NavController) {
             ) {
                 Text(text = "Login")
             }
+
+
         }
 
         if (showAlert) {

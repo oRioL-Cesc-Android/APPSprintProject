@@ -23,7 +23,8 @@ class TravelListViewModel @Inject constructor() : ViewModel() {
 
     fun updateTravelItem(updatedItem: TravelItem) {
         viewModelScope.launch {
-            _travelItems.value = _travelItems.value.map { if (it.id == updatedItem.id) updatedItem else it }
+            _travelItems.value =
+                _travelItems.value.map { if (it.id == updatedItem.id) updatedItem else it }
         }
     }
 
@@ -32,6 +33,7 @@ class TravelListViewModel @Inject constructor() : ViewModel() {
             _travelItems.value = _travelItems.value - item
         }
     }
+
     fun saveUpdatedTravelItem(updatedItem: TravelItem) {
         // Aquí actualizas el viaje con las actividades editadas
         _travelItems.value = _travelItems.value.map {
@@ -65,6 +67,19 @@ class TravelListViewModel @Inject constructor() : ViewModel() {
                 } else it
             }
         }
+    }
+
+    // TravelListViewModel.kt
+
+    private val _editingItemId = MutableStateFlow<Int?>(null)
+    val editingItemId: StateFlow<Int?> = _editingItemId
+
+    fun startEditing(id: Int) {
+        _editingItemId.value = id
+    }
+
+    fun stopEditing() {
+        _editingItemId.value = null
     }
 
 }

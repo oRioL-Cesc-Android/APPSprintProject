@@ -1,5 +1,6 @@
 package com.example.app.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -42,7 +43,8 @@ data class TravelItem(
     var rating: Float,
     var duration: String,
     var activities: List<Activitys> = emptyList(),
-    var isEditing: Boolean = false
+
+
 )
 data class Activitys (
     val nameActivity: String,
@@ -56,6 +58,7 @@ fun TravelListScreen(
     viewModel: TravelListViewModel = hiltViewModel()
 ) {
     val travelItems by viewModel.travelItems.collectAsState()
+    val editingItemId by viewModel.editingItemId.collectAsState()
 
     Scaffold(
         topBar = {
@@ -73,19 +76,22 @@ fun TravelListScreen(
                 onClick = {
                     val newItem = TravelItem(
                         id = (travelItems.maxOfOrNull { it.id } ?: 0) + 1,
-                        title = "Nuevo Viaje",
-                        location = "Destino",
-                        description = "Descripción breve",
-                        rating = 5.0f,
-                        duration = "3 días"
+                        title = "",
+                        location = "",
+                        description = "",
+                        rating = 0f,
+                        duration = ""
                     )
                     viewModel.addTravelItem(newItem)
+                    viewModel.startEditing(newItem.id) // <- ahora controlamos edición desde ViewModel
                 },
                 containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = Color.Black
+                contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
                 Icon(imageVector = Icons.Default.Edit, contentDescription = "Agregar viaje")
+                Log.i("ListItem", "Travel added successfully")
             }
+
         }
     ) { innerPadding ->
         Box(
@@ -96,14 +102,21 @@ fun TravelListScreen(
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(travelItems) { item ->
+                    val isEditing = editingItemId == item.id
                     TravelListItem(
                         item = item,
-                        onEditClick = { viewModel.updateTravelItem(item.copy(isEditing = true)) },
+                        isEditing = isEditing,
+                        onEditClick = { viewModel.startEditing(item.id) },
                         onDeleteClick = { viewModel.deleteTravelItem(item) },
-                        onSaveClick = { viewModel.saveUpdatedTravelItem(it) },
-                        viewModel = viewModel // Pasamos el ViewModel para manejar las actividades
+                        onSaveClick = {
+                            viewModel.saveUpdatedTravelItem(it)
+                            viewModel.stopEditing()
+                        },
+                        viewModel = viewModel,
+                        navController = navController
                     )
                 }
+
             }
         }
     }
@@ -112,12 +125,19 @@ fun TravelListScreen(
 @Composable
 fun TravelListItem(
     item: TravelItem,
-    onEditClick: (TravelItem) -> Unit,
+    navController: NavHostController,
+    isEditing: Boolean,
+    onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onSaveClick: (TravelItem) -> Unit,
     viewModel: TravelListViewModel
 ) {
-    var isEditing by remember { mutableStateOf(item.isEditing) }
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
+    val editingItemId by viewModel.editingItemId.collectAsState()
+    val isEditing = item.id == editingItemId
+
     var title by remember { mutableStateOf(item.title) }
     var location by remember { mutableStateOf(item.location) }
     var description by remember { mutableStateOf(item.description) }
@@ -132,7 +152,7 @@ fun TravelListItem(
 
     if (isEditing) {
         AlertDialog(
-            onDismissRequest = { isEditing = false },
+            onDismissRequest = { viewModel.stopEditing() },
             title = { Text("Editar Viaje y Actividades") },
             text = {
                 Column {
@@ -143,9 +163,13 @@ fun TravelListItem(
                             titleError = it.isBlank()
                         },
                         label = { Text("Título") },
+
                         isError = titleError
                     )
-                    if (titleError) Text("El título es obligatorio", color = Color.Red)
+                    if (titleError) {
+                        Text("El título es obligatorio", color = Color.Red)
+                        Log.e("ListScreen", "Error titulo")}
+
 
                     OutlinedTextField(
                         value = location,
@@ -156,7 +180,9 @@ fun TravelListItem(
                         label = { Text("Ubicación") },
                         isError = locationError
                     )
-                    if (locationError) Text("La ubicación es obligatoria", color = Color.Red)
+                    if (locationError) {
+                            Text("La ubicación es obligatoria", color = Color.Red)
+                            Log.e("ListScreen", "Error ubicación")}
 
                     OutlinedTextField(
                         value = description,
@@ -167,7 +193,10 @@ fun TravelListItem(
                         label = { Text("Descripción") },
                         isError = descriptionError
                     )
-                    if (descriptionError) Text("La descripción es obligatoria", color = Color.Red)
+                    if (descriptionError) {
+                        Text("La descripción es obligatoria", color = Color.Red)
+                        Log.e("ListScreen", "Error descripción")
+                    }
 
                     OutlinedTextField(
                         value = rating,
@@ -178,7 +207,9 @@ fun TravelListItem(
                         label = { Text("Valoración") },
                         isError = ratingError
                     )
-                    if (ratingError) Text("Ingrese una valoración válida (número)", color = Color.Red)
+                    if (ratingError){
+                        Text("Ingrese una valoración válida (número)", color = Color.Red)
+                        Log.e("ListScreen", "Error valorción")}
 
                     OutlinedTextField(
                         value = duration,
@@ -189,7 +220,9 @@ fun TravelListItem(
                         label = { Text("Duración") },
                         isError = durationError
                     )
-                    if (durationError) Text("La duración es obligatoria", color = Color.Red)
+                    if (durationError){
+                        Text("La duración es obligatoria", color = Color.Red)
+                        Log.e("ListScreen", "Duración obligatoria") }
 
                     Text("Actividades", style = MaterialTheme.typography.titleMedium)
                     // Hacer las actividades deslizables horizontalmente
@@ -225,37 +258,91 @@ fun TravelListItem(
                         }
                     }
 
-                    Button(onClick = {
-                        val newActivity = Activitys(
-                            nameActivity = "Nueva Actividad",
-                            ubicacion = "Ubicación",
-                            duration = 2
-                        )
-                        activities = activities.toMutableList().apply { add(newActivity) }
-                        viewModel.addActivityToTravel(item.id, newActivity)
 
-                    },
-                    ) {
-                        Text("Agregar actividad")
-                    }
                 }
             },
+
             confirmButton = {
-                Button(onClick = {
-                    val updatedItem = item.copy(
-                        title = title,
-                        location = location,
-                        description = description,
-                        rating = rating.toFloat(),
-                        duration = duration,
-                        activities = activities
-                    )
-                    onSaveClick(updatedItem)
-                    isEditing = false
-                }) {
-                    Text("Guardar")
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            val newActivity = Activitys(
+                                nameActivity = "",
+                                ubicacion = "",
+                                duration = 0
+                            )
+                            activities = activities.toMutableList().apply { add(newActivity) }
+                            viewModel.addActivityToTravel(item.id, newActivity)
+                            Log.i("ListScreen", "Actividad Agregada")
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = "Agregar",
+                            maxLines = 1,
+                            softWrap = false
+                        )
+                    }
+
+                    Button(
+                        onClick = {
+                            navController.navigate("Travel List")
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.Cancelar),
+                            maxLines = 1,
+                            softWrap = false
+                        )
+                    }
+
+                    Button(
+                        onClick = {
+                            titleError = title.isBlank()
+                            locationError = location.isBlank()
+                            descriptionError = description.isBlank()
+                            ratingError = rating.toFloatOrNull() == null
+                            durationError = duration.isBlank()
+
+                            if (titleError || locationError || descriptionError || ratingError || durationError) {
+                                errorMessage = "Por favor, completa todos los campos correctamente antes de guardar."
+                                showErrorDialog = true
+                            } else {
+                                val updatedItem = item.copy(
+                                    title = title,
+                                    location = location,
+                                    description = description,
+                                    rating = rating.toFloat(),
+                                    duration = duration,
+                                    activities = activities
+                                )
+                                onSaveClick(updatedItem)
+                                viewModel.stopEditing()
+                            }
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = "Guardar",
+                            maxLines = 1,
+                            softWrap = false
+                        )
+                    }
                 }
             }
+
+
+
+
         )
     } else {
         Column {
@@ -277,7 +364,7 @@ fun TravelListItem(
 
             // Botones para editar y eliminar
             Row {
-                Button(onClick = { isEditing = true }) {
+                Button(onClick = { viewModel.startEditing(item.id) }) {
                     Text("Editar")
                 }
                 Spacer(modifier = Modifier.width(8.dp))
@@ -316,7 +403,8 @@ fun ActivityListItem(
             isError = nameError,
             modifier = Modifier.fillMaxWidth()
         )
-        if (nameError) Text("El nombre de la actividad es obligatorio", color = Color.Red)
+        if (nameError){ Text("El nombre de la actividad es obligatorio", color = Color.Red)
+            Log.e("ListScreen", "Error nombre actividad")}
 
         OutlinedTextField(
             value = location,
@@ -329,7 +417,8 @@ fun ActivityListItem(
             isError = locationError,
             modifier = Modifier.fillMaxWidth()
         )
-        if (locationError) Text("La ubicación es obligatoria", color = Color.Red)
+        if (locationError) { Text("La ubicación es obligatoria", color = Color.Red)
+            Log.e("ListScreen", "Ubicación Error")}
 
         OutlinedTextField(
             value = duration,
@@ -342,14 +431,15 @@ fun ActivityListItem(
             isError = durationError,
             modifier = Modifier.fillMaxWidth()
         )
-        if (durationError) Text("Ingrese una duración válida", color = Color.Red)
+        if (durationError){ Text(stringResource(R.string.DuraciónError), color = Color.Red)
+            Log.e("ListScreen", "Duración incorrecta") }
 
         Row(
             horizontalArrangement = Arrangement.End,
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
         ) {
             IconButton(onClick = { onDeleteClick() }) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = "Eliminar actividad")
+                Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(R.string.EliminarActividad))
             }
         }
     }

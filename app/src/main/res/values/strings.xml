@@ -40,6 +40,8 @@
     <string name="CorreoContraseñaIncorrecta">Email o contraseña vacío</string>
     <string name="CorreoFormatError">Formato de email incorrecto</string>
     <string name="Bienvenido">Bienvenido</string>
+    <string name="EliminarActividad">Eliminar actividad</string>
+    <string name="DuraciónError">Ingrese una duración válida</string>
 
 
 </resources>

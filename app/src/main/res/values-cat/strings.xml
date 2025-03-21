@@ -41,6 +41,8 @@
     <string name="CorreoContraseñaIncorrecta">El camp del Correu o la contrasenya no pot estar buit</string>
     <string name="CorreoFormatError">Format de correu incorrecte</string>
     <string name="Bienvenido">Benvingut</string>
+    <string name="EliminarActividad">Eliminar activitat</string>
+    <string name="DuraciónError">Introdueixi una duració válida</string>
 
 
 </resources>
