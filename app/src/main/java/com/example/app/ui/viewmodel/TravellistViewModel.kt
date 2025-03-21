@@ -2,6 +2,7 @@ package com.example.app.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.app.ui.screens.Activitys
 import com.example.app.ui.screens.TravelItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,8 +12,9 @@ import javax.inject.Inject
 @HiltViewModel
 class TravelListViewModel @Inject constructor() : ViewModel() {
     private val _travelItems = MutableStateFlow<List<TravelItem>>(emptyList())
+    private val _activitys = MutableStateFlow<List<Activitys>>(emptyList())
     val travelItems: StateFlow<List<TravelItem>> = _travelItems
-
+    val activitys: StateFlow<List<Activitys>> = _activitys
     fun addTravelItem(item: TravelItem) {
         viewModelScope.launch {
             _travelItems.value = _travelItems.value + item
@@ -38,4 +40,32 @@ class TravelListViewModel @Inject constructor() : ViewModel() {
             }
         }
     }
+    fun addActivityToTravel(travelId: Int, activity: Activitys) {
+        viewModelScope.launch {
+            _travelItems.value = _travelItems.value.map {
+                if (it.id == travelId) it.copy(activities = it.activities + activity) else it
+            }
+        }
+    }
+
+    fun removeActivityFromTravel(travelId: Int, activity: Activitys) {
+        viewModelScope.launch {
+            _travelItems.value = _travelItems.value.map {
+                if (it.id == travelId) it.copy(activities = it.activities - activity) else it
+            }
+        }
+    }
+
+    fun updateActivityInTravel(travelId: Int, updatedActivity: Activitys) {
+        viewModelScope.launch {
+            _travelItems.value = _travelItems.value.map {
+                if (it.id == travelId) {
+                    it.copy(activities = it.activities.map { act ->
+                        if (act.nameActivity == updatedActivity.nameActivity) updatedActivity else act
+                    })
+                } else it
+            }
+        }
+    }
+
 }

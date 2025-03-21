@@ -15,6 +15,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,6 +23,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.app.R
 import com.example.app.ui.viewmodel.TravelListViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,9 +40,14 @@ data class TravelItem(
     var description: String,
     var rating: Float,
     var duration: String,
+    var activities: List<Activitys> = emptyList(),
     var isEditing: Boolean = false
 )
-
+data class Activitys (
+    val nameActivity: String,
+    val ubicacion: String,
+    var duration: Int
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,7 +100,15 @@ fun TravelListScreen(
                         item = item,
                         onEditClick = { viewModel.updateTravelItem(item.copy(isEditing = true)) },
                         onDeleteClick = { viewModel.deleteTravelItem(item) },
-                        onSaveClick = { viewModel.saveUpdatedTravelItem(it) }
+                        onSaveClick = { viewModel.saveUpdatedTravelItem(it) },
+                        onAddActivityClick = { travelId ->
+                            val newActivity = Activitys(
+                                nameActivity = "Nueva Actividad",
+                                ubicacion = "Ubicación",
+                                duration = 2
+                            )
+                            viewModel.addActivityToTravel(travelId, newActivity)
+                        }
                     )
                 }
             }
@@ -106,7 +121,8 @@ fun TravelListItem(
     item: TravelItem,
     onEditClick: (TravelItem) -> Unit,
     onDeleteClick: () -> Unit,
-    onSaveClick: (TravelItem) -> Unit
+    onSaveClick: (TravelItem) -> Unit,
+    onAddActivityClick: (Int) -> Unit
 ) {
     var isEditing by remember { mutableStateOf(item.isEditing) }
     var title by remember { mutableStateOf(item.title) }
@@ -114,18 +130,19 @@ fun TravelListItem(
     var description by remember { mutableStateOf(item.description) }
     var rating by remember { mutableStateOf(item.rating.toString()) }
     var duration by remember { mutableStateOf(item.duration) }
+    var activities by remember { mutableStateOf(item.activities.toMutableList()) }
 
-    // Variables de error
     var titleError by remember { mutableStateOf(false) }
     var locationError by remember { mutableStateOf(false) }
     var descriptionError by remember { mutableStateOf(false) }
     var ratingError by remember { mutableStateOf(false) }
     var durationError by remember { mutableStateOf(false) }
+    var activitiesError by remember { mutableStateOf(false) }
 
     if (isEditing) {
         AlertDialog(
             onDismissRequest = { isEditing = false },
-            title = { Text("Editar Viaje") },
+            title = { Text("Editar Viaje y Actividades") },
             text = {
                 Column {
                     OutlinedTextField(
@@ -182,18 +199,59 @@ fun TravelListItem(
                         isError = durationError
                     )
                     if (durationError) Text("La duración es obligatoria", color = Color.Red)
+
+                    Text("Actividades:", style = MaterialTheme.typography.titleSmall)
+                    activities.forEachIndexed { index, activity ->
+                        Column {
+                            OutlinedTextField(
+                                value = activity.nameActivity,
+                                onValueChange = {
+                                    activities[index] = activity.copy(nameActivity = it)
+                                    activitiesError = it.isBlank()
+                                },
+                                label = { Text("Nombre de la actividad") },
+                                isError = activitiesError
+                            )
+                            if (activitiesError) Text("El nombre de la actividad es obligatorio", color = Color.Red)
+
+                            OutlinedTextField(
+                                value = activity.ubicacion,
+                                onValueChange = {
+                                    activities[index] = activity.copy(ubicacion = it)
+                                    activitiesError = it.isBlank()
+                                },
+                                label = { Text("Ubicación") },
+                                isError = activitiesError
+                            )
+                            if (activitiesError) Text("La ubicación de la actividad es obligatoria", color = Color.Red)
+
+                            OutlinedTextField(
+                                value = activity.duration.toString(),
+                                onValueChange = {
+                                    activities[index] = activity.copy(duration = it.toIntOrNull() ?: activity.duration)
+                                    activitiesError = it.toIntOrNull() == null
+                                },
+                                label = { Text("Duración en horas") },
+                                isError = activitiesError
+                            )
+                            if (activitiesError) Text("Ingrese una duración válida (número de horas)", color = Color.Red)
+
+                            Button(onClick = { activities.removeAt(index) }) {
+                                Text("Eliminar Actividad")
+                            }
+                        }
+                    }
+                    Button(onClick = {
+                        activities.add(Activitys("Nueva Actividad", "Ubicación", 2))
+                    }) {
+                        Text("Agregar Nueva Actividad")
+                    }
                 }
             },
             confirmButton = {
-                val hasErrors = titleError || locationError || descriptionError || ratingError || durationError
+                val hasErrors = titleError || locationError || descriptionError || ratingError || durationError || activitiesError
                 Button(
                     onClick = {
-                        titleError = title.isBlank()
-                        locationError = location.isBlank()
-                        descriptionError = description.isBlank()
-                        ratingError = rating.toFloatOrNull() == null
-                        durationError = duration.isBlank()
-
                         if (!hasErrors) {
                             val updatedItem = item.copy(
                                 title = title,
@@ -201,13 +259,14 @@ fun TravelListItem(
                                 description = description,
                                 rating = rating.toFloatOrNull() ?: item.rating,
                                 duration = duration,
+                                activities = activities,
                                 isEditing = false
                             )
                             onSaveClick(updatedItem)
                             isEditing = false
                         }
                     },
-                    enabled = !hasErrors // Botón deshabilitado si hay errores
+                    enabled = !hasErrors
                 ) {
                     Text("Guardar")
                 }
@@ -218,30 +277,6 @@ fun TravelListItem(
                 }
             }
         )
-    }
-
-    Row(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth()
-            .border(BorderStroke(2.dp, Color(0XFF018786)), RoundedCornerShape(20)),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(modifier = Modifier.padding(8.dp).weight(1f)) {
-            Text(text = item.title, style = MaterialTheme.typography.titleMedium)
-            Text(text = "Localización: ${item.location}", style = MaterialTheme.typography.bodySmall)
-            Text(text = "Descripción: ${item.description}", style = MaterialTheme.typography.bodySmall)
-            Text(text = "Valoración: ${item.rating}/10", style = MaterialTheme.typography.bodySmall)
-            Text(text = "Duración: ${item.duration}", style = MaterialTheme.typography.bodySmall)
-        }
-        Row(modifier = Modifier.padding(8.dp)) {
-            IconButton(onClick = { isEditing = true }) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = "Editar")
-            }
-            IconButton(onClick = onDeleteClick) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = "Eliminar")
-            }
-        }
     }
 }
 
