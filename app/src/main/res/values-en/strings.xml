@@ -62,6 +62,9 @@
     <string name="EditarViajeAct">Edit Travels and Activities</string>
     <string name="content_description_add_travel">Add travel</string>
     <string name="Lista_de_Viajes">Travel List</string>
+    <string name="Login">LogIn</string>
+    <string name="usuario">User</string>
+    <string name="contraseña">Password</string>
 
 
 </resources>

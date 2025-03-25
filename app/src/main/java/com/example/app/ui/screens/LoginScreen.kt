@@ -31,7 +31,7 @@ fun LoginScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("LogIn") },
+                title = { Text(stringResource(R.string.Login)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -51,19 +51,19 @@ fun LoginScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Login Screen", style = MaterialTheme.typography.headlineMedium)
+            Text(text = stringResource(R.string.Login), style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(20.dp))
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
-                label = { Text("Username") },
+                label = { Text(stringResource(R.string.usuario)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(10.dp))
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password") },
+                label = { Text(stringResource(R.string.contraseña)) },
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation()
             )
@@ -96,7 +96,7 @@ fun LoginScreen(navController: NavController) {
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Login")
+                Text(text = stringResource(R.string.Login))
             }
 
 
