@@ -84,7 +84,20 @@ class TravelListViewModel @Inject constructor() : ViewModel() {
     }
 
     fun stopEditing() {
-        _editingItemId.value = null
+        val currentEditingItem = _travelItems.value.find { it.id == _editingItemId.value }
+
+        // Si el item está vacío, lo eliminamos antes de salir de edición
+        if (currentEditingItem != null && currentEditingItem.title.isBlank() &&
+            currentEditingItem.location.isBlank() &&
+            currentEditingItem.description.isBlank() &&
+            currentEditingItem.rating == 0f &&
+            currentEditingItem.duration.isBlank()) {
+
+            _travelItems.value = _travelItems.value - currentEditingItem
+        }
+
+        _editingItemId.value = -1
     }
+
 
 }

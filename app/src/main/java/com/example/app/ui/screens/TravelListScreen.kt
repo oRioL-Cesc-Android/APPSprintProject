@@ -67,7 +67,12 @@ fun TravelListScreen(
             TopAppBar(
                 title = { Text(stringResource(R.string.Lista_de_Viajes)) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = {
+                        viewModel.stopEditing()
+                        navController.navigate("home"){
+                            popUpTo("home"){inclusive = true}
+                        }
+                    }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back Icon")
                     }
                 }
@@ -299,7 +304,8 @@ fun TravelListItem(
 
                     Button(
                         onClick = {
-                            navController.navigate("Travel List")
+                            viewModel.stopEditing()
+                            //navController.navigate("Travel List")
                         },
                         modifier = Modifier
                             .weight(1f)
