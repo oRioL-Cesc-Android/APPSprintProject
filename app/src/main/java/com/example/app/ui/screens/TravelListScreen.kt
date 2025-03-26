@@ -1,20 +1,16 @@
 package com.example.app.ui.screens
 
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -23,17 +19,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.app.R
 import com.example.app.ui.viewmodel.TravelListViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+
 //import com.example.app.models.TravelItem
 
 // Modelo de datos
@@ -49,10 +39,12 @@ data class TravelItem(
 
 )
 data class Activitys (
+    val activity_id: Int = 0,  // Added this field
     val nameActivity: String,
     val ubicacion: String,
-    var duration: Int
+    val duration: Int  // Changed from String to Int to match your database
 )
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TravelListScreen(
@@ -118,7 +110,7 @@ fun TravelListScreen(
                         onEditClick = { viewModel.startEditing(item.id) },
                         onDeleteClick = { viewModel.deleteTravelItem(item) },
                         onSaveClick = {
-                            viewModel.saveUpdatedTravelItem(it)
+                            viewModel.updateTravelItem(it)
                             viewModel.stopEditing()
                         },
                         viewModel = viewModel,
@@ -281,6 +273,7 @@ fun TravelListItem(
                     Button(
                         onClick = {
                             val newActivity = Activitys(
+                                activity_id = 0,
                                 nameActivity = "",
                                 ubicacion = "",
                                 duration = 0

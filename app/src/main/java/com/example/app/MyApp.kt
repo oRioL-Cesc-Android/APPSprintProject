@@ -10,4 +10,6 @@ import javax.inject.Inject
 
 
 @HiltAndroidApp
-class MyApp : Application()
+class MyApp : Application(){
+
+}
