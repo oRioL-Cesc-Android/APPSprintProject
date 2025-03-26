@@ -3,15 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id ("kotlin-kapt")
-
-
-
-
-
-
-    id ("com.google.dagger.hilt.android")
-
-
+    alias(libs.plugins.android.hilt)
+    alias(libs.plugins.room)
 }
 
 android {
@@ -26,6 +19,10 @@ android {
         versionName = "0.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        room {
+            schemaDirectory("$projectDir/schemas")
+        }
     }
 
     buildTypes {
@@ -51,12 +48,6 @@ android {
 
 dependencies {
 
-    // Hilt dependencies
-    implementation(libs.hilt.android)
-    implementation(libs.androidx.hilt.navigation.compose.v100) // Esto es necesario para hiltViewModel()
-
-    kapt(libs.hilt.compiler)
-
     // Room dependencies
     val room_version = "2.6.1"
     implementation(libs.androidx.room.runtime)
@@ -76,15 +67,14 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.hilt.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.compiler)
 
-    implementation (libs.hilt.android.v248)
-    kapt (libs.dagger.hilt.android.compiler)
-    kapt (libs.androidx.hilt.compiler)
-
-    // Hilt ViewModel extension
-    implementation (libs.androidx.hilt.lifecycle.viewmodel)
-    implementation (libs.androidx.hilt.navigation.compose.v110)
+    // Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.hilt.compiler)
+    kaptAndroidTest(libs.hilt.compiler)
 
     // Material Design & Navigation
     implementation(libs.androidx.material3)
