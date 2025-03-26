@@ -3,7 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id ("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.android.hilt)
+    alias(libs.plugins.room)
 }
 
 android {
@@ -18,6 +19,10 @@ android {
         versionName = "0.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        room {
+            schemaDirectory("$projectDir/schemas")
+        }
     }
 
     buildTypes {
@@ -43,6 +48,17 @@ android {
 
 dependencies {
 
+    // Room dependencies
+    val room_version = "2.6.1"
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt("androidx.room:room-compiler:$room_version")
+
+
+
+
+
+    // Other dependencies
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -51,22 +67,36 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.compiler)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.hilt.compiler)
+    kaptAndroidTest(libs.hilt.compiler)
+
+    // Material Design & Navigation
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.android)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.preference.ktx)
+
+    // Testing dependencies
     testImplementation(libs.junit)
-    implementation(libs.androidx.appcompat)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
-    implementation(libs.androidx.hilt.navigation.compose)
+
+    // Other dependencies
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.room.common)
 }
+
 kapt{
     correctErrorTypes = true
 }
