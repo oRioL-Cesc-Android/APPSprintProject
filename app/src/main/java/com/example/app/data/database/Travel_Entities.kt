@@ -7,7 +7,7 @@ import com.example.app.ui.screens.Activitys
 @Entity
 data class Travel_Entities(
     @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    val id: Int = 0,
     var title: String,
     var location: String,
     var description: String,

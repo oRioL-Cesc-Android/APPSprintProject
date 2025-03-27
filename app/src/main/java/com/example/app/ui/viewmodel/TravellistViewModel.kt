@@ -1,5 +1,6 @@
 package com.example.app.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.app.data.database.DAO_Travel
@@ -88,29 +89,60 @@ class TravelListViewModel @Inject constructor(
 
     fun addActivityToTravel(travelId: Int, activity: Activitys) {
         viewModelScope.launch {
-            activityDAO.addActivity(
-                Activites_Entities(
-                    travel_id = travelId,
-                    nameActivity = activity.nameActivity,
-                    ubicacion = activity.ubicacion,
-                    duration = activity.duration
+            try {
+                val generatedId = activityDAO.addActivity(
+                    Activites_Entities(
+                        travel_id = travelId,
+                        nameActivity = activity.nameActivity,
+                        ubicacion = activity.ubicacion,
+                        duration = activity.duration
+                    )
                 )
-            )
+                Log.d("ViewModel", "Actividad insertada correctamente con ID: $generatedId, Nombre: ${activity.nameActivity}")
+
+                // Verificar si realmente se guardó la actividad
+                val activities = activityDAO.getActivitiesForTravel(travelId).firstOrNull()
+                Log.d("ViewModel", "Actividades después de la inserción: $activities")
+
+            } catch (e: Exception) {
+                Log.e("ViewModel", "Error insertando actividad: ${e.message}", e)
+            }
         }
     }
 
-    fun removeActivityFromTravel(travelId: Int, activity: Activitys) {
+
+
+
+    /*fun removeActivityFromTravel(travelId: Int, activity: Activitys) {
         viewModelScope.launch {
             activityDAO.deleteActivity(
                 Activites_Entities(
                     travel_id = travelId,
+                    activity_id = activity.activity_id,
                     nameActivity = activity.nameActivity,
                     ubicacion = activity.ubicacion,
                     duration = activity.duration
                 )
             )
         }
+    }*/
+
+    fun removeActivityFromTravel(travelId: Int, activity: Activitys) {
+        viewModelScope.launch {
+            Log.d("ViewModel", "Llamando a eliminar actividad con ID: ${activity.activity_id}")
+            activityDAO.deleteActivity(
+                Activites_Entities(
+                    travel_id = travelId,
+                    activity_id = activity.activity_id,
+                    nameActivity = "",
+                    ubicacion = "",
+                    duration = 0
+                ))
+        }
     }
+
+
+
 
     fun updateActivityInTravel(travelId: Int, updatedActivity: Activitys) {
         viewModelScope.launch {

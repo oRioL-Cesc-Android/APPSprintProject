@@ -253,7 +253,7 @@ fun TravelListItem(
                                 },
                                 onDeleteClick = {
                                     activities = activities.toMutableList().apply { remove(activity) }
-                                    viewModel.removeActivityFromTravel(item.id, activity)
+                                    viewModel.removeActivityFromTravel(travelId = item.id, activity = activity) // ✅ Pasa ambos parámetros
                                 }
                             )
                         }
@@ -330,8 +330,9 @@ fun TravelListItem(
                                     description = description,
                                     rating = rating.toFloat(),
                                     duration = duration,
-                                    activities = activities
+                                    activities = activities // <-- Asegurar que se guarda la nueva lista
                                 )
+
                                 onSaveClick(updatedItem)
                                 viewModel.stopEditing()
                             }
