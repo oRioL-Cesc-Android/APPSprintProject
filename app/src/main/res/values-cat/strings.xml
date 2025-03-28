@@ -66,6 +66,12 @@
     <string name="Login">Inici de sessió</string>
     <string name="usuario">Usuari</string>
     <string name="contraseña">Contrasenya</string>
+    <string name="FechaInicio">Data d\'inici</string>
+    <string name="ErrorFechaInicio">La data d\'inici no pot estar buida</string>
+    <string name="FechaFinal">Data final</string>
+    <string name="ErrorFechaFinal">La data final no pot estar buida</string>
+    <string name="fechainicio_label">Data d\'inici: %1$s</string>
+    <string name="fechafinal_label">Data de fi: %1$s</string>
 
 
 </resources>

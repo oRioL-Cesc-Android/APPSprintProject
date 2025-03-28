@@ -65,6 +65,12 @@
     <string name="Login">LogIn</string>
     <string name="usuario">User</string>
     <string name="contraseña">Password</string>
+    <string name="FechaInicio">Start date</string>
+    <string name="ErrorFechaInicio">Initial date can\'t be empty</string>
+    <string name="FechaFinal">Final date</string>
+    <string name="ErrorFechaFinal">Final date can\'t be empty</string>
+    <string name="fechainicio_label">Initial date: %1$s</string>
+    <string name="fechafinal_label">Data final: %1$s</string>
 
 
 </resources>

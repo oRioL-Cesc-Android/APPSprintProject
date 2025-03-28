@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "83c19262a3f8b69273c2e0cf91be3e13",
+    "identityHash": "391ff94ce55f886348712d2111da8af3",
     "entities": [
       {
         "tableName": "Travel_Entities",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `location` TEXT NOT NULL, `description` TEXT NOT NULL, `rating` REAL NOT NULL, `duration` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `location` TEXT NOT NULL, `description` TEXT NOT NULL, `rating` REAL NOT NULL, `fechainicio` INTEGER NOT NULL, `fechafinal` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -39,9 +39,15 @@
             "notNull": true
           },
           {
-            "fieldPath": "duration",
-            "columnName": "duration",
-            "affinity": "TEXT",
+            "fieldPath": "fechainicio",
+            "columnName": "fechainicio",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechafinal",
+            "columnName": "fechafinal",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -114,7 +120,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '83c19262a3f8b69273c2e0cf91be3e13')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '391ff94ce55f886348712d2111da8af3')"
     ]
   }
 }

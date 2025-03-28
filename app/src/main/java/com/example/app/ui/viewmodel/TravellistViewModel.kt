@@ -15,6 +15,8 @@ import com.example.app.ui.screens.TravelItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,7 +43,9 @@ class TravelListViewModel @Inject constructor(
                 location = travel.travel.location,
                 description = travel.travel.description,
                 rating = travel.travel.rating,
-                duration = travel.travel.duration,
+                fechainicio = travel.travel.fechainicio,
+                fechafinal = travel.travel.fechafinal,
+
                 activities = travel.activities.map {
                     Activitys(
                         activity_id = it.activity_id,  // Pass the activity_id
@@ -63,7 +67,8 @@ class TravelListViewModel @Inject constructor(
                     location = item.location,
                     description = item.description,
                     rating = item.rating,
-                    duration = item.duration
+                    fechainicio = item.fechainicio,
+                    fechafinal = item.fechafinal
                 )
             )
         }
@@ -78,8 +83,9 @@ class TravelListViewModel @Inject constructor(
                     updatedItem.location,
                     updatedItem.description,
                     updatedItem.rating,
-                    updatedItem.duration
-                )
+                    updatedItem.fechainicio,
+                    updatedItem.fechafinal
+                    )
             )
         }
     }
@@ -93,7 +99,8 @@ class TravelListViewModel @Inject constructor(
                     location = item.location,
                     description = item.description,
                     rating = item.rating,
-                    duration = item.duration
+                    fechainicio = item.fechainicio,
+                    fechafinal = item.fechafinal
                 )
             )
         }
@@ -145,7 +152,21 @@ class TravelListViewModel @Inject constructor(
     }
 
 
-
+    fun updateTravel( updatedTravel: TravelItem){
+        viewModelScope.launch {
+            DAO.updateTravelItem(
+                Travel_Entities(
+                    id = updatedTravel.id,
+                    title = updatedTravel.title,
+                    location = updatedTravel.location,
+                    description = updatedTravel.description,
+                    rating = updatedTravel.rating,
+                    fechainicio = updatedTravel.fechainicio,
+                    fechafinal = updatedTravel.fechafinal
+                )
+            )
+        }
+    }
 
     fun updateActivityInTravel(travelId: Int, updatedActivity: Activitys) {
         viewModelScope.launch {
@@ -172,7 +193,8 @@ class TravelListViewModel @Inject constructor(
                 currentEditingItem.location.isBlank() &&
                 currentEditingItem.description.isBlank() &&
                 currentEditingItem.rating == 0f &&
-                currentEditingItem.duration.isBlank()
+                currentEditingItem.fechainicio < LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) &&
+                currentEditingItem.fechafinal < currentEditingItem.fechainicio
             ) {
                 DAO.deleteTravelItem(currentEditingItem)
             }

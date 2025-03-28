@@ -65,6 +65,12 @@
     <string name="Login">Inicio de sesión</string>
     <string name="usuario">Usuario</string>
     <string name="contraseña">Contraseña</string>
+    <string name="FechaInicio">Fecha de inicio</string>
+    <string name="ErrorFechaInicio">La fecha de inicio debe estar rellenada</string>
+    <string name="FechaFinal">Fecha final</string>
+    <string name="ErrorFechaFinal">La fecha debe estar rellena</string>
+    <string name="fechainicio_label">Fecha de inicio: %1$s</string>
+    <string name="fechafinal_label">Fecha final: %1$s</string>
 
 
 </resources>

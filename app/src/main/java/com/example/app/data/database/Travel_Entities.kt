@@ -12,7 +12,8 @@ data class Travel_Entities(
     var location: String,
     var description: String,
     var rating: Float,
-    var duration: String,
+    var fechainicio: Long,
+    var fechafinal: Long
     //var activities: List<Activitys> = emptyList(),
 
     )

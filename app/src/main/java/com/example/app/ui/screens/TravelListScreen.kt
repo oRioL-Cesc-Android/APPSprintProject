@@ -1,6 +1,8 @@
 package com.example.app.ui.screens
 
+import android.icu.util.LocaleData
 import android.util.Log
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -13,16 +15,24 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.app.R
 import com.example.app.ui.viewmodel.TravelListViewModel
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 //import com.example.app.models.TravelItem
 
@@ -33,7 +43,8 @@ data class TravelItem(
     var location: String,
     var description: String,
     var rating: Float,
-    var duration: String,
+    var fechainicio: Long,
+    var fechafinal: Long,
     var activities: List<Activitys> = emptyList(),
 
 
@@ -79,7 +90,9 @@ fun TravelListScreen(
                         location = "",
                         description = "",
                         rating = 0f,
-                        duration = ""
+                        fechainicio = (LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) * 1000),
+
+                        fechafinal = (LocalDateTime.now().plusDays(1).toEpochSecond(ZoneOffset.UTC) * 1000)
                     )
                     viewModel.addTravelItem(newItem)
                     viewModel.startEditing(newItem.id) // <- ahora controlamos edición desde ViewModel
@@ -143,12 +156,20 @@ fun TravelListItem(
     var location by remember { mutableStateOf(item.location) }
     var description by remember { mutableStateOf(item.description) }
     var rating by remember { mutableStateOf(item.rating.toString()) }
-    var duration by remember { mutableStateOf(item.duration) }
+    var fechainicio by remember { mutableStateOf(item.fechainicio.toString()) }
+    var fechafinal by remember { mutableStateOf(item.fechafinal.toString()) }
+
+
+
+
+
+
     var titleError by remember { mutableStateOf(false) }
     var locationError by remember { mutableStateOf(false) }
     var descriptionError by remember { mutableStateOf(false) }
     var ratingError by remember { mutableStateOf(false) }
-    var durationError by remember { mutableStateOf(false) }
+    var fechainicioError by remember { mutableStateOf(false) }
+    var fechafinalError by remember { mutableStateOf(false) }
 
     if (isEditing) {
         AlertDialog(
@@ -161,6 +182,9 @@ fun TravelListItem(
                         onValueChange = {
                             title = it
                             titleError = it.isBlank()
+                            if (!titleError) {
+                                viewModel.updateTravel(item.copy(title = it))
+                            }
                         },
                         label = { Text(stringResource(R.string.Titulo)) },
 
@@ -176,6 +200,9 @@ fun TravelListItem(
                         onValueChange = {
                             location = it
                             locationError = it.isBlank()
+                            if (!locationError) {
+                                viewModel.updateTravel(item.copy(location = it))
+                            }
                         },
                         label = { Text(stringResource(R.string.Ubicacion)) },
                         isError = locationError
@@ -189,6 +216,9 @@ fun TravelListItem(
                         onValueChange = {
                             description = it
                             descriptionError = it.isBlank()
+                            if (!descriptionError) {
+                                viewModel.updateTravel(item.copy(description = it))
+                            }
                         },
                         label = { Text(stringResource(R.string.Descripción)) },
                         isError = descriptionError
@@ -202,7 +232,10 @@ fun TravelListItem(
                         value = rating,
                         onValueChange = {
                             rating = it
-                            ratingError = it.toFloatOrNull() == null
+                            ratingError = it.isBlank() || !it.isDigitsOnly() || it.toFloat() > 10 || it.toFloat() < 0
+                            if(!ratingError) {
+                                viewModel.updateTravel(item.copy(rating = it.toFloat()))
+                            }
                         },
                         label = { Text(stringResource(R.string.Valoración)) },
                         isError = ratingError
@@ -211,18 +244,29 @@ fun TravelListItem(
                         Text(stringResource(R.string.ErrorValoración), color = Color.Red)
                         Log.e("ListScreen", "Error valorción")}
 
-                    OutlinedTextField(
-                        value = duration,
-                        onValueChange = {
-                            duration = it
-                            durationError = it.isBlank()
-                        },
-                        label = { Text(stringResource(R.string.Duración)) },
-                        isError = durationError
+                    DatePickerButton(
+                        label = stringResource(R.string.FechaInicio), // Nombre del campo
+                        timestamp = item.fechainicio, // Valor actual en formato Long
+                        onDateSelected = { newTimestamp ->
+                            viewModel.updateTravel(item.copy(fechainicio = newTimestamp)) // Guarda la nueva fecha
+                        }
                     )
-                    if (durationError){
-                        Text(stringResource(R.string.ErrorDuracion), color = Color.Red)
-                        Log.e("ListScreen", "Duración obligatoria") }
+
+
+                    if (fechainicioError){
+                        Text(stringResource(R.string.ErrorFechaInicio), color = Color.Red)
+                        Log.e("ListScreen", "Fecha inicio obligatoria") }
+
+                    DatePickerButton(
+                        label = stringResource(R.string.FechaFinal), // Nombre del campo
+                        timestamp = item.fechafinal, // Valor actual en formato Long
+                        onDateSelected = { newTimestamp ->
+                            viewModel.updateTravel(item.copy(fechafinal = newTimestamp)) // Guarda la nueva fecha
+                        }
+                    )
+                    if (fechafinalError){
+                        Text(stringResource(R.string.ErrorFechaFinal), color = Color.Red)
+                        Log.e("ListScreen", "Fecha inicio obligatoria") }
 
                     Text(stringResource(R.string.Actividades), style = MaterialTheme.typography.titleMedium)
                     // Hacer las actividades deslizables horizontalmente
@@ -312,23 +356,27 @@ fun TravelListItem(
                     }
 
                     Button(
+                        enabled = !ratingError && !titleError && !locationError && !descriptionError && !fechainicioError && !fechafinalError,
                         onClick = {
-                            titleError = title.isBlank()
-                            locationError = location.isBlank()
-                            descriptionError = description.isBlank()
-                            ratingError = rating.toFloatOrNull() == null
-                            durationError = duration.isBlank()
+                            titleError = item.title.isBlank()
+                            locationError = item.location.isBlank()
+                            descriptionError = item.description.isBlank()
+                            ratingError = item.rating < 0 || item.rating > 10
+                            fechafinalError = item.fechafinal < item.fechainicio
+                            fechainicioError = item.fechainicio < LocalDateTime.now().toEpochSecond(
+                                ZoneOffset.UTC)
 
-                            if (titleError || locationError || descriptionError || ratingError || durationError) {
+                            if (titleError || locationError || descriptionError || ratingError || fechainicioError || fechafinalError) {
                                 errorMessage = "Por favor, completa todos los campos correctamente antes de guardar."
                                 showErrorDialog = true
                             } else {
                                 val updatedItem = item.copy(
-                                    title = title,
-                                    location = location,
-                                    description = description,
-                                    rating = rating.toFloat(),
-                                    duration = duration,
+                                    title = item.title,
+                                    location = item.location,
+                                    description = item.description,
+                                    rating = item.rating,
+                                    fechainicio = item.fechainicio,
+                                    fechafinal = item.fechafinal,
                                     activities = item.activities // <-- Asegurar que se guarda la nueva lista
                                 )
 
@@ -357,11 +405,12 @@ fun TravelListItem(
     } else {
         Column {
             // Muestra los detalles del viaje
-            Text(text = stringResource(R.string.titulo_label, title))
-            Text(text = stringResource(R.string.ubicacion_label, location))
-            Text(text = stringResource(R.string.descripcion_label, description))
-            Text(text = stringResource(R.string.valoracion_label, rating))
-            Text(text = stringResource(R.string.duracion_label, duration))
+            Text(text = stringResource(R.string.titulo_label, item.title))
+            Text(text = stringResource(R.string.ubicacion_label, item.location))
+            Text(text = stringResource(R.string.descripcion_label, item.description))
+            Text(text = stringResource(R.string.valoracion_label, item.rating))
+            Text(text = stringResource(R.string.fechainicio_label, SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(item.fechainicio))))
+            Text(text = stringResource(R.string.fechafinal_label, SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(item.fechafinal))))
             Text(text = stringResource(R.string.actividades_label))
 
             // Deslizante de actividades en lugar de columnas
@@ -386,7 +435,60 @@ fun TravelListItem(
             }
         }
     }
+
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DatePickerButton(
+    label: String,
+    timestamp: Long?,
+    onDateSelected: (Long) -> Unit
+) {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+
+    // ✅ Si no hay fecha seleccionada, usa la fecha actual correctamente
+    val defaultTimestamp = timestamp ?: System.currentTimeMillis()
+    calendar.timeInMillis = defaultTimestamp
+
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    var selectedDate by remember { mutableStateOf(
+        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(defaultTimestamp))
+    ) }
+
+    var showDatePicker by remember { mutableStateOf(false) }
+
+    if (showDatePicker) {
+        android.app.DatePickerDialog(
+            context,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                val newCalendar = Calendar.getInstance().apply {
+                    set(selectedYear, selectedMonth, selectedDay)
+                }
+                val newTimestamp = newCalendar.timeInMillis
+                selectedDate =
+                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(newTimestamp))
+                onDateSelected(newTimestamp)
+            },
+            year, month, day
+        ).show()
+        showDatePicker = false
+    }
+
+    Button(onClick = { showDatePicker = true }) {
+        Text(text = "$label: $selectedDate")
+    }
+}
+
+
+
+
+
+
 
 @Composable
 fun ActivityListItem(
