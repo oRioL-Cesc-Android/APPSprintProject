@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import javax.inject.Inject
 import androidx.room.Delete
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -34,18 +35,6 @@ interface DAO_Activity {
 
 
 
-    @Query("""
-    UPDATE Activites_Entities 
-    SET nameActivity = :name, 
-        ubicacion = :ubicacion, 
-        duration = :duration 
-    WHERE travel_id = :travelId 
-    AND activity_id = :activityId
-""")
-    suspend fun updateActivity(
-        travelId: Int,
-        activityId: Int,  // Changed to Int
-        name: String,
-        ubicacion: String,
-        duration: Int
-    )}
+    @Upsert
+    suspend fun updateActivity(activity: Activites_Entities)
+}

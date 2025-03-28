@@ -16,13 +16,13 @@ interface DAO_Travel {
     suspend fun addTravelItem(travelEntities: Travel_Entities)
 
     @Query("SELECT * FROM TRAVEL_ENTITIES")
-    fun ObtenerTravel(): Flow<List<Travel_Entities>>
+    fun ObtenerTravel(): Flow<List<TravelRelation>>
 
     @Delete
     suspend fun deleteTravelItem(travelEntities: Travel_Entities)
 
-    @Query("UPDATE Travel_Entities SET title = :title, location = :location, description = :description, rating = :rating, duration = :duration WHERE id = :id")
-    suspend fun updateTravelItem(id: Int, title: String, location: String, description: String, rating: Float, duration: String)
+    @Upsert
+    suspend fun updateTravelItem(travelEntities: Travel_Entities)
 
     @Query("SELECT * FROM TRAVEL_ENTITIES WHERE id = :travelId LIMIT 1")
     suspend fun getTravelById(travelId: Int): Travel_Entities?

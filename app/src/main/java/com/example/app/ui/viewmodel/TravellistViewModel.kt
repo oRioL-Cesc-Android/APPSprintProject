@@ -1,5 +1,8 @@
 package com.example.app.ui.viewmodel
 
+import android.R.attr.description
+import android.R.attr.duration
+import android.R.attr.rating
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,22 +27,29 @@ class TravelListViewModel @Inject constructor(
 
     val travelItems: StateFlow<List<TravelItem>> = DAO.ObtenerTravel().map { travelList ->
         travelList.map { travel ->
-            val activities = activityDAO.getActivitiesForTravel(travel.id).firstOrNull()?.map {
-                Activitys(
-                    activity_id = it.activity_id,  // Pass the activity_id
-                    nameActivity = it.nameActivity,
-                    ubicacion = it.ubicacion,
-                    duration = it.duration
-                )
-            } ?: emptyList()
+//            val activities = activityDAO.getActivitiesForTravel(travel.id).firstOrNull()?.map {
+//                Activitys(
+//                    activity_id = it.activity_id,  // Pass the activity_id
+//                    nameActivity = it.nameActivity,
+//                    ubicacion = it.ubicacion,
+//                    duration = it.duration
+//                )
+//            } ?: emptyList()
             TravelItem(
-                id = travel.id,
-                title = travel.title,
-                location = travel.location,
-                description = travel.description,
-                rating = travel.rating,
-                duration = travel.duration,
-                activities = activities
+                id = travel.travel.id,
+                title = travel.travel.title,
+                location = travel.travel.location,
+                description = travel.travel.description,
+                rating = travel.travel.rating,
+                duration = travel.travel.duration,
+                activities = travel.activities.map {
+                    Activitys(
+                        activity_id = it.activity_id,  // Pass the activity_id
+                        nameActivity = it.nameActivity,
+                        ubicacion = it.ubicacion,
+                        duration = it.duration
+                    )
+                }
             )
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
@@ -62,12 +72,14 @@ class TravelListViewModel @Inject constructor(
     fun updateTravelItem(updatedItem: TravelItem) {
         viewModelScope.launch {
             DAO.updateTravelItem(
-                updatedItem.id,
-                updatedItem.title,
-                updatedItem.location,
-                updatedItem.description,
-                updatedItem.rating,
-                updatedItem.duration
+                Travel_Entities(
+                    updatedItem.id,
+                    updatedItem.title,
+                    updatedItem.location,
+                    updatedItem.description,
+                    updatedItem.rating,
+                    updatedItem.duration
+                )
             )
         }
     }
@@ -89,24 +101,15 @@ class TravelListViewModel @Inject constructor(
 
     fun addActivityToTravel(travelId: Int, activity: Activitys) {
         viewModelScope.launch {
-            try {
-                val generatedId = activityDAO.addActivity(
-                    Activites_Entities(
-                        travel_id = travelId,
-                        nameActivity = activity.nameActivity,
-                        ubicacion = activity.ubicacion,
-                        duration = activity.duration
-                    )
+            activityDAO.updateActivity(
+                Activites_Entities(
+                    travel_id = travelId,
+                    activity_id = activity.activity_id,  // Now using Int
+                    nameActivity = activity.nameActivity,
+                    ubicacion = activity.ubicacion,
+                    duration = activity.duration
                 )
-                Log.d("ViewModel", "Actividad insertada correctamente con ID: $generatedId, Nombre: ${activity.nameActivity}")
-
-                // Verificar si realmente se guardó la actividad
-                val activities = activityDAO.getActivitiesForTravel(travelId).firstOrNull()
-                Log.d("ViewModel", "Actividades después de la inserción: $activities")
-
-            } catch (e: Exception) {
-                Log.e("ViewModel", "Error insertando actividad: ${e.message}", e)
-            }
+            )
         }
     }
 
@@ -147,11 +150,13 @@ class TravelListViewModel @Inject constructor(
     fun updateActivityInTravel(travelId: Int, updatedActivity: Activitys) {
         viewModelScope.launch {
             activityDAO.updateActivity(
-                travelId = travelId,
-                activityId = updatedActivity.activity_id,  // Now using Int
-                name = updatedActivity.nameActivity,
-                ubicacion = updatedActivity.ubicacion,
-                duration = updatedActivity.duration
+                Activites_Entities(
+                    travel_id = travelId,
+                    activity_id = updatedActivity.activity_id,  // Now using Int
+                    nameActivity = updatedActivity.nameActivity,
+                    ubicacion = updatedActivity.ubicacion,
+                    duration = updatedActivity.duration
+                )
             )
         }
     }

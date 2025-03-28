@@ -144,7 +144,6 @@ fun TravelListItem(
     var description by remember { mutableStateOf(item.description) }
     var rating by remember { mutableStateOf(item.rating.toString()) }
     var duration by remember { mutableStateOf(item.duration) }
-    var activities by remember { mutableStateOf(item.activities) }
     var titleError by remember { mutableStateOf(false) }
     var locationError by remember { mutableStateOf(false) }
     var descriptionError by remember { mutableStateOf(false) }
@@ -230,29 +229,29 @@ fun TravelListItem(
                     LazyRow(
                         modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
                     ) {
-                        items(activities) { activity ->
+                        items(item.activities) { activity ->
                             ActivityListItem(
                                 activity = activity,
                                 onActivityNameChange = { newName ->
-                                    activities = activities.toMutableList().apply {
-                                        this[activities.indexOf(activity)] = activity.copy(nameActivity = newName)
-                                    }
+//                                    activities = activities.toMutableList().apply {
+//                                        this[activities.indexOf(activity)] = activity.copy(nameActivity = newName)
+//                                    }
                                     viewModel.updateActivityInTravel(item.id, activity.copy(nameActivity = newName))
                                 },
                                 onActivityLocationChange = { newLocation ->
-                                    activities = activities.toMutableList().apply {
-                                        this[activities.indexOf(activity)] = activity.copy(ubicacion = newLocation)
-                                    }
+//                                    activities = activities.toMutableList().apply {
+//                                        this[activities.indexOf(activity)] = activity.copy(ubicacion = newLocation)
+//                                    }
                                     viewModel.updateActivityInTravel(item.id, activity.copy(ubicacion = newLocation))
                                 },
                                 onActivityDurationChange = { newDuration ->
-                                    activities = activities.toMutableList().apply {
-                                        this[activities.indexOf(activity)] = activity.copy(duration = newDuration)
-                                    }
+//                                    activities = activities.toMutableList().apply {
+//                                        this[activities.indexOf(activity)] = activity.copy(duration = newDuration)
+//                                    }
                                     viewModel.updateActivityInTravel(item.id, activity.copy(duration = newDuration))
                                 },
                                 onDeleteClick = {
-                                    activities = activities.toMutableList().apply { remove(activity) }
+//                                    activities = activities.toMutableList().apply { remove(activity) }
                                     viewModel.removeActivityFromTravel(travelId = item.id, activity = activity) // ✅ Pasa ambos parámetros
                                 }
                             )
@@ -278,7 +277,7 @@ fun TravelListItem(
                                 ubicacion = "",
                                 duration = 0
                             )
-                            activities = activities.toMutableList().apply { add(newActivity) }
+//                            activities = activities.toMutableList().apply { add(newActivity) }
                             viewModel.addActivityToTravel(item.id, newActivity)
                             Log.i("ListScreen", "Actividad Agregada")
                         },
@@ -330,7 +329,7 @@ fun TravelListItem(
                                     description = description,
                                     rating = rating.toFloat(),
                                     duration = duration,
-                                    activities = activities // <-- Asegurar que se guarda la nueva lista
+                                    activities = item.activities // <-- Asegurar que se guarda la nueva lista
                                 )
 
                                 onSaveClick(updatedItem)
@@ -369,7 +368,7 @@ fun TravelListItem(
             LazyRow(
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
             ) {
-                items(activities) { activity ->
+                items(item.activities) { activity ->
                     Text(text = stringResource(R.string.actividad_label, activity.nameActivity))
 
                 }
