@@ -114,7 +114,10 @@ fun TravelListScreen(
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(), // Permite desplazamiento vertical
+                verticalArrangement = Arrangement.spacedBy(8.dp) // Espacio entre elementos
+            ) {
                 items(travelItems) { item ->
                     val isEditing = editingItemId == item.id
                     TravelListItem(
@@ -130,9 +133,9 @@ fun TravelListScreen(
                         navController = navController
                     )
                 }
-
             }
         }
+
     }
 }
 
@@ -505,6 +508,13 @@ fun ActivityListItem(
     var locationError by remember { mutableStateOf(false) }
     var durationError by remember { mutableStateOf(false) }
 
+    Card(
+        modifier = Modifier
+            .fillMaxWidth() // Se expande en el ancho
+            .wrapContentHeight() // Se expande en la altura
+            .padding(8.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.LightGray)
+    ){
     Column(modifier = Modifier.padding(8.dp).width(220.dp)) {
         OutlinedTextField(
             value = activityName,
@@ -558,7 +568,7 @@ fun ActivityListItem(
         }
     }
 }
-
+}
 
 @Preview(showBackground = true)
 @Composable
