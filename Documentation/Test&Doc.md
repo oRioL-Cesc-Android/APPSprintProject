@@ -71,7 +71,7 @@ La entidad `Travel_Entities` almacena información sobre cada viaje, incluyendo:
 - **Valoración**: Puntuación asignada al viaje.
 - **Fecha de inicio**: Momento en que comienza el viaje.
 - **Fecha de finalización**: Momento en que termina el viaje.
-
+Nota: Se ha cambiado el campo duration por fechainicio y fechafinal en Travel_Entities.
 ### Activites_Entities
 La entidad `Activites_Entities` contiene información sobre las actividades relacionadas con un viaje específico, incluyendo:
 - **ID de actividad**: Identificador único de la actividad.
