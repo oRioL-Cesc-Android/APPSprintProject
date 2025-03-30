@@ -56,3 +56,57 @@ Se han ejecutado un total de 7 tests unitarios sobre el `TravelListViewModel`. T
 | updateActivityInTravel updates an activity correctly   | ✅ Correcto |
 | startEditing and stopEditing change editingItemId      | ✅ Correcto |
 
+# Sprint3 Database
+
+Nuestra base de datos está diseñada para gestionar información relacionada con viajes y sus respectivas actividades. Se compone de dos entidades principales: `Travel_Entities` y `Activites_Entities`, que están relacionadas entre sí para mantener una estructura organizada y funcional.
+
+## Estructura de la Base de Datos
+
+### Travel_Entities
+La entidad `Travel_Entities` almacena información sobre cada viaje, incluyendo:
+- **ID**: Identificador único del viaje.
+- **Título**: Nombre del viaje.
+- **Ubicación**: Lugar donde se desarrolla el viaje.
+- **Descripción**: Breve resumen del viaje.
+- **Valoración**: Puntuación asignada al viaje.
+- **Fecha de inicio**: Momento en que comienza el viaje.
+- **Fecha de finalización**: Momento en que termina el viaje.
+
+### Activites_Entities
+La entidad `Activites_Entities` contiene información sobre las actividades relacionadas con un viaje específico, incluyendo:
+- **ID de actividad**: Identificador único de la actividad.
+- **ID de viaje**: Referencia al viaje al que pertenece la actividad.
+- **Nombre de la actividad**: Título de la actividad.
+- **Ubicación**: Lugar donde se lleva a cabo la actividad.
+- **Duración**: Tiempo estimado de la actividad.
+
+## Relación entre Entidades
+Cada viaje puede contener múltiples actividades, estableciendo una relación uno a muchos entre `Travel_Entities` y `Activites_Entities`. Esta relación permite organizar de manera eficiente las actividades dentro de cada viaje y facilita su administración dentro de la base de datos.
+
+## Diagrama de la Base de Datos
+```mermaid
+erDiagram
+    Travel_Entities {
+        INT id PK "Primary Key, Auto Increment"
+        STRING title
+        STRING location
+        STRING description
+        FLOAT rating
+        LONG fechainicio
+        LONG fechafinal
+    }
+
+    Activites_Entities {
+        INT activity_id PK "Primary Key, Auto Increment"
+        INT travel_id FK "Foreign Key referencing Travel_Entities(id)"
+        STRING nameActivity
+        STRING ubicacion
+        INT duration
+    }
+
+    Travel_Entities ||--o{ Activites_Entities : "has many"
+```
+
+##Cambios
+Nuevos campos en actividad: Ya no existe el campo Duración sino los campos fechaInicio y fechaFinal.
+
