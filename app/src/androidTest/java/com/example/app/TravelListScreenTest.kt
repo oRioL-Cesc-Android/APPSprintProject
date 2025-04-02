@@ -1,6 +1,6 @@
 package com.example.app
 
-import com.example.app.ui.screens.Activitys
+import com.example.app.ui.screens.ActivityItems
 import com.example.app.ui.screens.TravelItem
 import com.example.app.ui.viewmodel.TravelListViewModel
 import kotlinx.coroutines.Dispatchers
@@ -61,7 +61,7 @@ class TravelListViewModelTest {
         viewModel.addTravelItem(travel)
         advanceUntilIdle()
 
-        val activity = Activitys("Museo", "Centro", 2)
+        val activity = ActivityItems("Museo", "Centro", 2)
         viewModel.addActivityToTravel(travel.id, activity)
         advanceUntilIdle()
 
@@ -72,7 +72,7 @@ class TravelListViewModelTest {
 
     @Test
     fun `removeActivityFromTravel removes activity correctly`() = runTest {
-        val activity = Activitys("Museo", "Centro", 2)
+        val activity = ActivityItems("Museo", "Centro", 2)
         val travel = TravelItem(
             id = 1,
             title = "Viaje A",
@@ -97,7 +97,7 @@ class TravelListViewModelTest {
 
     @Test
     fun `updateActivityInTravel updates an activity correctly`() = runTest {
-        val activity = Activitys("Museo", "Centro", 2)
+        val activity = ActivityItems("Museo", "Centro", 2)
         val travel = TravelItem(1, "Viaje A", "Madrid", "Bonito viaje", 4.5f, "5 días", listOf(activity))
         viewModel.addTravelItem(travel)
         advanceUntilIdle() // <-- Asegurarte de que se ha añadido el travel

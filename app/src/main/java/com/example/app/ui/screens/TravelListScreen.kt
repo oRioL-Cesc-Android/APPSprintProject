@@ -1,8 +1,6 @@
 package com.example.app.ui.screens
 
-import android.icu.util.LocaleData
 import android.util.Log
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -26,6 +24,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.app.R
+import com.example.app.models.ActivityItems
+import com.example.app.models.TravelItem
 import com.example.app.ui.viewmodel.TravelListViewModel
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -36,25 +36,8 @@ import java.util.Locale
 
 //import com.example.app.models.TravelItem
 
-// Modelo de datos
-data class TravelItem(
-    val id: Int,
-    var title: String,
-    var location: String,
-    var description: String,
-    var rating: Float,
-    var fechainicio: Long,
-    var fechafinal: Long,
-    var activities: List<Activitys> = emptyList(),
 
 
-)
-data class Activitys (
-    val activity_id: Int = 0,  // Added this field
-    val nameActivity: String,
-    val ubicacion: String,
-    val duration: Int  // Changed from String to Int to match your database
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -318,7 +301,7 @@ fun TravelListItem(
                 ) {
                     Button(
                         onClick = {
-                            val newActivity = Activitys(
+                            val newActivity = ActivityItems(
                                 activity_id = 0,
                                 nameActivity = "",
                                 ubicacion = "",
@@ -495,7 +478,7 @@ fun DatePickerButton(
 
 @Composable
 fun ActivityListItem(
-    activity: Activitys,
+    activity: ActivityItems,
     onActivityNameChange: (String) -> Unit,
     onActivityLocationChange: (String) -> Unit,
     onActivityDurationChange: (Int) -> Unit,

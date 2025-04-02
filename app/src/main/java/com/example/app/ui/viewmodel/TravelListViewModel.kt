@@ -1,8 +1,5 @@
 package com.example.app.ui.viewmodel
 
-import android.R.attr.description
-import android.R.attr.duration
-import android.R.attr.rating
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,8 +7,9 @@ import com.example.app.data.database.DAO_Travel
 import com.example.app.data.database.Travel_Entities
 import com.example.app.data.database.DAO_Activity
 import com.example.app.data.database.Activites_Entities
-import com.example.app.ui.screens.Activitys
-import com.example.app.ui.screens.TravelItem
+import com.example.app.models.ActivityItems
+import com.example.app.models.TravelItem
+
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -47,7 +45,7 @@ class TravelListViewModel @Inject constructor(
                 fechafinal = travel.travel.fechafinal,
 
                 activities = travel.activities.map {
-                    Activitys(
+                    ActivityItems(
                         activity_id = it.activity_id,  // Pass the activity_id
                         nameActivity = it.nameActivity,
                         ubicacion = it.ubicacion,
@@ -106,7 +104,7 @@ class TravelListViewModel @Inject constructor(
         }
     }
 
-    fun addActivityToTravel(travelId: Int, activity: Activitys) {
+    fun addActivityToTravel(travelId: Int, activity: ActivityItems) {
         viewModelScope.launch {
             activityDAO.updateActivity(
                 Activites_Entities(
@@ -137,7 +135,7 @@ class TravelListViewModel @Inject constructor(
         }
     }*/
 
-    fun removeActivityFromTravel(travelId: Int, activity: Activitys) {
+    fun removeActivityFromTravel(travelId: Int, activity: ActivityItems) {
         viewModelScope.launch {
             Log.d("ViewModel", "Llamando a eliminar actividad con ID: ${activity.activity_id}")
             activityDAO.deleteActivity(
@@ -168,7 +166,7 @@ class TravelListViewModel @Inject constructor(
         }
     }
 
-    fun updateActivityInTravel(travelId: Int, updatedActivity: Activitys) {
+    fun updateActivityInTravel(travelId: Int, updatedActivity: ActivityItems) {
         viewModelScope.launch {
             activityDAO.updateActivity(
                 Activites_Entities(
