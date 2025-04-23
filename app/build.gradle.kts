@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.app"
+    namespace = "com.TravelPlanner"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.app"
+        applicationId = "com.TravelPlanner"
         minSdk = 31
         targetSdk = 35
         versionCode = 1

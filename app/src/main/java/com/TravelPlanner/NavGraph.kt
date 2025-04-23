@@ -1,0 +1,38 @@
+package com.TravelPlanner
+
+
+import TripDetailsScreen
+import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.TravelPlanner.ui.view.AboutScreen
+import com.TravelPlanner.ui.view.ExploreScreen
+import com.TravelPlanner.ui.view.HomeScreen
+import com.TravelPlanner.ui.view.LoginScreen
+import com.TravelPlanner.ui.view.MapScreen
+import com.TravelPlanner.ui.view.SettingsScreen
+import com.TravelPlanner.ui.view.TermsCondScreen
+import com.TravelPlanner.ui.view.TravelListScreen
+import com.TravelPlanner.ui.view.VersionScreen
+//import com.example.localpreferences.ui.view.SettingsScreen
+
+@Composable
+fun NavGraph(navController: NavHostController) {
+    NavHost(navController = navController, startDestination = "login") {
+        composable("login") { LoginScreen(navController) }
+        composable("about") { AboutScreen(navController) }
+        composable("version") { VersionScreen(navController) }
+        composable("home") {  HomeScreen(navController) }
+        composable("Travel List") {  TravelListScreen(navController, hiltViewModel()) }
+        composable("Trip Details Screen") {  TripDetailsScreen(navController) }
+        composable("Map Screen") {  MapScreen(navController) }
+        composable("ExploreScreen") {  ExploreScreen(navController) }
+        composable("TermsCondScreen") {  TermsCondScreen(navController) }
+        composable("SettingsScreen") { SettingsScreen(navController) }
+
+
+
+    }
+}
