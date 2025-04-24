@@ -16,11 +16,14 @@ import com.TravelPlanner.ui.view.SettingsScreen
 import com.TravelPlanner.ui.view.TermsCondScreen
 import com.TravelPlanner.ui.view.TravelListScreen
 import com.TravelPlanner.ui.view.VersionScreen
+import com.google.firebase.auth.FirebaseAuth
+
 //import com.example.localpreferences.ui.view.SettingsScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "login") {
+    val auth = FirebaseAuth.getInstance()
+    NavHost(navController = navController, startDestination = if (auth.currentUser != null) "home" else "login") {
         composable("login") { LoginScreen(navController) }
         composable("about") { AboutScreen(navController) }
         composable("version") { VersionScreen(navController) }

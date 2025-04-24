@@ -71,6 +71,8 @@
     <string name="ErrorFechaFinal">La fecha debe estar rellena</string>
     <string name="fechainicio_label">Fecha de inicio: %1$s</string>
     <string name="fechafinal_label">Fecha final: %1$s</string>
+    <string name="LogOut">Cerrar Sesión</string>
+    <string name="NoTienesCuenta_Regístrate">¿No tienes cuenta? Regístrate</string>
 
 
 </resources>

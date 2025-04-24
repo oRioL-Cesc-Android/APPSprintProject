@@ -5,6 +5,7 @@ plugins {
     id ("kotlin-kapt")
     alias(libs.plugins.android.hilt)
     alias(libs.plugins.room)
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -48,6 +49,8 @@ android {
 
 dependencies {
 
+    implementation(libs.firebase.auth)
+    implementation(libs.androidx.benchmark.macro)
     // Room dependencies
     val room_version = "2.6.1"
     implementation(libs.androidx.room.runtime)

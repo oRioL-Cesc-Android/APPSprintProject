@@ -1,5 +1,6 @@
 package com.TravelPlanner.ui.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,12 +17,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.TravelPlanner.R
 import com.TravelPlanner.ui.theme.APPTheme
+import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavHostController) {
     val showMenu = remember { mutableStateOf(false) }
-
+    val auth = FirebaseAuth.getInstance()
     APPTheme {
         Scaffold(
             topBar = {
@@ -40,6 +42,12 @@ fun HomeScreen(navController: NavHostController) {
                             DropdownMenuItem(text = { Text("Version") }, onClick = { navController.navigate("version"); showMenu.value = false })
                             DropdownMenuItem(text = { Text(stringResource(R.string.Ajustes)) }, onClick = { navController.navigate("SettingsScreen"); showMenu.value = false })
                             DropdownMenuItem(text = { Text(stringResource(R.string.TerminosCond)) }, onClick = { navController.navigate("TermsCondScreen"); showMenu.value = false })
+                            DropdownMenuItem(text = { Text(stringResource(R.string.LogOut))}, onClick = {
+                                auth.signOut()
+                                Log.i("LogOut","Sesión cerrada correctamente" )
+                                navController.navigate("login");
+                                showMenu.value = false
+                            })
                         }
                     }
                 )

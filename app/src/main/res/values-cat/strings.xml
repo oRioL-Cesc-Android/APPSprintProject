@@ -72,6 +72,8 @@
     <string name="ErrorFechaFinal">La data final no pot estar buida</string>
     <string name="fechainicio_label">Data d\'inici: %1$s</string>
     <string name="fechafinal_label">Data de fi: %1$s</string>
+    <string name="LogOut">Tancar Sessió</string>
+    <string name="NoTienesCuenta_Regístrate">¿No tens compte? Registrat aqui</string>
 
 
 </resources>

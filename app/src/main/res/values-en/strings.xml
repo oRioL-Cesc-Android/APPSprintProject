@@ -71,6 +71,8 @@
     <string name="ErrorFechaFinal">Final date can\'t be empty</string>
     <string name="fechainicio_label">Initial date: %1$s</string>
     <string name="fechafinal_label">Data final: %1$s</string>
+    <string name="LogOut">LogOut</string>
+    <string name="NoTienesCuenta_Regístrate">¿Don\'t have an account? Register here</string>
 
 
 </resources>

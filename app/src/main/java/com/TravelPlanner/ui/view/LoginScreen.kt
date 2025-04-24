@@ -2,6 +2,7 @@ package com.TravelPlanner.ui.view
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import com.google.firebase.auth.FirebaseAuth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -27,6 +28,7 @@ fun LoginScreen(navController: NavController) {
     val username_default = stringResource(R.string.default_user)
     val pass_default = stringResource(R.string.default_pass)
     val context = LocalContext.current
+    val auth = FirebaseAuth.getInstance()
 
     Scaffold(
         topBar = {
@@ -70,35 +72,45 @@ fun LoginScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
             Button(
                 onClick = {
-                    when {
-                        username.isBlank() || password.isBlank() -> {
-                            alertMessage = context.getString(R.string.CorreoContraseñaIncorrecta)
-                            showAlert = true
-                            Log.e("LogIn", "Email or password is blank.")
-                        }
-                        !loginUtils.isValidEmailAddress(username) -> {
-                            alertMessage = context.getString(R.string.CorreoFormatError)
-                            showAlert = true
-                            Log.e("LogIn", "Email format incorrect.")
-                        }
-                        username != username_default || password != pass_default -> {
-                            alertMessage = "Usuario o contraseña incorrectos"
-                            showAlert = true
-                            Log.e("LogIn", "Invalid credentials.")
-                        }
-                        else -> {
-                            navController.navigate("home") {
-                                popUpTo("login") { inclusive = true }
+                    if (username.isBlank() || password.isBlank()) {
+                        alertMessage = context.getString(R.string.CorreoContraseñaIncorrecta)
+                        showAlert = true
+                        Log.e("LogIn", "Email or password is blank.")
+                    } else if (!loginUtils.isValidEmailAddress(username)) {
+                        alertMessage = context.getString(R.string.CorreoFormatError)
+                        showAlert = true
+                        Log.e("LogIn", "Email format incorrect.")
+                    } else {
+                        auth.signInWithEmailAndPassword(username, password)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Log.i("LogIn", "✅ Firebase login successful")
+                                    navController.navigate("home") {
+                                        popUpTo("login") { inclusive = true }
+                                    }
+                                } else {
+                                    Log.e("LogIn", "❌ Firebase login failed", task.exception)
+                                    alertMessage = task.exception?.localizedMessage ?: "Error desconocido"
+                                    showAlert = true
+                                }
                             }
-                            Log.i("LogIn", "✅ LogIn successful")
-                        }
                     }
+
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = stringResource(R.string.Login))
             }
 
+            Spacer(modifier = Modifier.height(10.dp))
+
+            TextButton(
+                onClick = {
+                    navController.navigate("register")
+                },
+            ) {
+                Text(text = stringResource(R.string.NoTienesCuenta_Regístrate))
+            }
 
         }
 
