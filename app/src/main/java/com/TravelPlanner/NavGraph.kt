@@ -12,13 +12,13 @@ import com.TravelPlanner.ui.view.ExploreScreen
 import com.TravelPlanner.ui.view.HomeScreen
 import com.TravelPlanner.ui.view.LoginScreen
 import com.TravelPlanner.ui.view.MapScreen
+import com.TravelPlanner.ui.view.RegisterScreen
 import com.TravelPlanner.ui.view.SettingsScreen
 import com.TravelPlanner.ui.view.TermsCondScreen
 import com.TravelPlanner.ui.view.TravelListScreen
 import com.TravelPlanner.ui.view.VersionScreen
 import com.google.firebase.auth.FirebaseAuth
 
-//import com.example.localpreferences.ui.view.SettingsScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -34,7 +34,7 @@ fun NavGraph(navController: NavHostController) {
         composable("ExploreScreen") {  ExploreScreen(navController) }
         composable("TermsCondScreen") {  TermsCondScreen(navController) }
         composable("SettingsScreen") { SettingsScreen(navController) }
-
+        composable("register") { RegisterScreen(navController) }
 
 
     }

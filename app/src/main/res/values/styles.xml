@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Estilo para el DatePickerDialog con tema de Material3 -->
+    <style name="MyDatePickerDialog" >
+        <!-- Color de texto en el diálogo -->
+        <item name="android:textColorPrimary">#FFFFFF</item> <!-- Blanco para el texto general -->
+        <item name="android:textColor">#FFFFFF</item> <!-- Blanco para los textos generales -->
+        <item name="android:windowBackground">#46141d</item> <!-- Fondo rojo oscuro -->
+        <item name="android:textColorSecondary">#FFFFFF</item> <!-- Blanco para los días de la semana -->
+        <item name="android:buttonBarStyle">@style/MyDialogButtonBar</item> <!-- Personaliza los botones -->
+    </style>
+
+    <!-- Estilo para los botones del DatePickerDialog -->
+    <style name="MyDialogButtonBar" >
+        <item name="android:textColor">#FFFFFF</item> <!-- Blanco para los botones -->
+    </style>
+</resources>
+

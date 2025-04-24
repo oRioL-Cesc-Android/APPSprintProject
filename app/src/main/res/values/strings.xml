@@ -74,5 +74,22 @@
     <string name="LogOut">Cerrar Sesión</string>
     <string name="NoTienesCuenta_Regístrate">¿No tienes cuenta? Regístrate</string>
 
+    <string name="register">Registrarse</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="birthdate">Fecha de nacimiento</string>
+    <string name="address">Dirección</string>
+    <string name="country">País</string>
+    <string name="prefix">Prefijo</string>
+    <string name="phone_number">Número de teléfono</string>
+    <string name="receive_emails">Quiero recibir correos</string>
+    <string name="registering">Registrando...</string>
+    <string name="error_email_password_required">Correo y contraseña requeridos</string>
+    <string name="error_phone_invalid">El número debe tener entre 8 y 15 dígitos</string>
+    <string name="registration_successful">Registro exitoso</string>
+    <string name="registration_failed">Registro fallido: %1$s</string>
+    <string name="userInvalid">Usuario no puede estar en blanco</string>
+
 
 </resources>

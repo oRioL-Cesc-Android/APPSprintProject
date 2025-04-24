@@ -62,7 +62,7 @@
     <string name="EditarViajeAct">Edit Travels and Activities</string>
     <string name="content_description_add_travel">Add travel</string>
     <string name="Lista_de_Viajes">Travel List</string>
-    <string name="Login">LogIn</string>
+    <string name="Login">Log In</string>
     <string name="usuario">User</string>
     <string name="contraseña">Password</string>
     <string name="FechaInicio">Start date</string>
@@ -73,6 +73,24 @@
     <string name="fechafinal_label">Data final: %1$s</string>
     <string name="LogOut">LogOut</string>
     <string name="NoTienesCuenta_Regístrate">¿Don\'t have an account? Register here</string>
+
+
+        <string name="register">Register</string>
+        <string name="email">Email</string>
+        <string name="password">Password</string>
+        <string name="username">Username</string>
+        <string name="birthdate">Birthdate</string>
+        <string name="address">Address</string>
+        <string name="country">Country</string>
+        <string name="prefix">Prefix</string>
+        <string name="phone_number">Phone Number</string>
+        <string name="receive_emails">I want to receive emails</string>
+        <string name="registering">Registering...</string>
+        <string name="error_email_password_required">Email and password required</string>
+        <string name="error_phone_invalid">Phone number must be between 8 and 15 digits</string>
+        <string name="registration_successful">Registered successfully</string>
+        <string name="registration_failed">Registration failed: %1$s</string>
+    <string name="userInvalid">User can\'t be empty</string>
 
 
 </resources>

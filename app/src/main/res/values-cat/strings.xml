@@ -75,5 +75,22 @@
     <string name="LogOut">Tancar Sessió</string>
     <string name="NoTienesCuenta_Regístrate">¿No tens compte? Registrat aqui</string>
 
+        <string name="register">Registrar-se</string>
+        <string name="email">Correu electrònic</string>
+        <string name="password">Contrasenya</string>
+        <string name="username">Nom d\'usuari</string>
+        <string name="birthdate">Data de naixement</string>
+        <string name="address">Adreça</string>
+        <string name="country">País</string>
+        <string name="prefix">Prefix</string>
+        <string name="phone_number">Número de telèfon</string>
+        <string name="receive_emails">Vull rebre correus</string>
+        <string name="registering">Registrant...</string>
+        <string name="error_email_password_required">Correu i contrasenya requerits</string>
+        <string name="error_phone_invalid">El número ha de tenir entre 8 i 15 dígits</string>
+        <string name="registration_successful">Registre completat amb èxit</string>
+        <string name="registration_failed">Registre fallit: %1$s</string>
+    <string name="userInvalid">L\'usuari no pot estar en blanc</string>
+
 
 </resources>

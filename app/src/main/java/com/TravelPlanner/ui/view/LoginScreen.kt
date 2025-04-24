@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.TravelPlanner.R
 import com.TravelPlanner.utils.LoginUtils
+import androidx.compose.ui.res.stringResource
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

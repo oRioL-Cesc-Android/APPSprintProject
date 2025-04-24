@@ -1,6 +1,7 @@
 package com.TravelPlanner.ui.view
 
 import android.util.Log
+import android.view.ContextThemeWrapper
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -438,8 +439,8 @@ fun DatePickerButton(
     var showDatePicker by remember { mutableStateOf(false) }
 
     if (showDatePicker) {
-        android.app.DatePickerDialog(
-            context,
+        val dialog = android.app.DatePickerDialog(
+            ContextThemeWrapper(context, R.style.MyDatePickerDialog),
             { _, selectedYear, selectedMonth, selectedDay ->
                 val newCalendar = Calendar.getInstance().apply {
                     set(selectedYear, selectedMonth, selectedDay)
@@ -450,7 +451,14 @@ fun DatePickerButton(
                 onDateSelected(newTimestamp)
             },
             year, month, day
-        ).show()
+        )
+
+
+
+
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialog.show()
+
         showDatePicker = false
     }
 
