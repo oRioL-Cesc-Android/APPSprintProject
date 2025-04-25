@@ -6,7 +6,9 @@ import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.TravelPlanner.data.database.DAO.DAO_Activity
 import com.TravelPlanner.data.database.DAO.DAO_Travel
+import com.TravelPlanner.data.database.DAO.UserDao
 import com.TravelPlanner.data.database.database
+import com.TravelPlanner.data.repository.User_Repo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,6 +32,7 @@ object AppModule {
     @Singleton
     fun provideRoom(@ApplicationContext appContext: Context): database {
         return Room.databaseBuilder(appContext, database::class.java, "DB_TravelPlanner")
+
             .build()
     }
 
@@ -45,5 +48,19 @@ object AppModule {
     @Singleton
     fun provideActivityDao(db: database): DAO_Activity {
         return db.ObtenerActivityDao()
+    }
+
+
+
+    @Provides
+    @Singleton
+    fun provideUserDao(db: database): UserDao {
+        return db.userDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(userDao: UserDao): User_Repo {
+        return User_Repo(userDao)
     }
 }

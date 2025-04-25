@@ -91,6 +91,7 @@
         <string name="registration_successful">Registre completat amb èxit</string>
         <string name="registration_failed">Registre fallit: %1$s</string>
     <string name="userInvalid">L\'usuari no pot estar en blanc</string>
+    <string name="emailsinverificar">Por favor verifica tu correo electrónico antes de iniciar sesión.</string>
 
 
 </resources>

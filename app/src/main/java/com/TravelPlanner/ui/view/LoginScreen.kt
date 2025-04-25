@@ -74,29 +74,30 @@ fun LoginScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
             Button(
                 onClick = {
-                    if (username.isBlank() || password.isBlank()) {
-                        alertMessage = context.getString(R.string.CorreoContraseñaIncorrecta)
-                        showAlert = true
-                        Log.e("LogIn", "Email or password is blank.")
-                    } else if (!loginUtils.isValidEmailAddress(username)) {
-                        alertMessage = context.getString(R.string.CorreoFormatError)
-                        showAlert = true
-                        Log.e("LogIn", "Email format incorrect.")
-                    } else {
-                        auth.signInWithEmailAndPassword(username, password)
-                            .addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
+                    auth.signInWithEmailAndPassword(username, password)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                val user = auth.currentUser
+                                // Verificar si el usuario ha confirmado su correo electrónico
+                                if (user != null && !user.isEmailVerified) {
+                                    // Mostrar mensaje de error si el usuario no ha verificado su correo
+                                    alertMessage = "Email no verificado"
+                                    showAlert = true
+                                    Log.e("LogIn", "Email not verified")
+                                } else {
+                                    // Si el correo está verificado, navega a la pantalla de inicio
                                     Log.i("LogIn", "✅ Firebase login successful")
                                     navController.navigate("home") {
                                         popUpTo("login") { inclusive = true }
                                     }
-                                } else {
-                                    Log.e("LogIn", "❌ Firebase login failed", task.exception)
-                                    alertMessage = task.exception?.localizedMessage ?: "Error desconocido"
-                                    showAlert = true
                                 }
+                            } else {
+                                Log.e("LogIn", "❌ Firebase login failed", task.exception)
+                                alertMessage = task.exception?.localizedMessage ?: "Error desconocido"
+                                showAlert = true
                             }
-                    }
+                        }
+
 
                 },
                 modifier = Modifier.fillMaxWidth()

@@ -90,6 +90,7 @@
     <string name="registration_successful">Registro exitoso</string>
     <string name="registration_failed">Registro fallido: %1$s</string>
     <string name="userInvalid">Usuario no puede estar en blanco</string>
+    <string name="emailsinverificar">Por favor verifica tu correo electrónico antes de iniciar sesión.</string>
 
 
 </resources>
