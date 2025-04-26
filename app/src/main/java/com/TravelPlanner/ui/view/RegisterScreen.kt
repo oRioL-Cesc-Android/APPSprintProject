@@ -42,7 +42,17 @@ fun RegisterScreen(
     var loading by remember { mutableStateOf(false) }
     var verificationSent by remember { mutableStateOf(false) }
 
-    val countryCodes = mapOf("🇪🇸 España" to "+34", "🇺🇸 USA" to "+1", "🇬🇧 UK" to "+44") // recorta aquí o usa más
+    val countryCodes = mapOf(
+        "🇺🇸 USA" to "+1", "🇪🇸 Spain" to "+34", "🇬🇧 UK" to "+44", "🇩🇪 Germany" to "+49",
+        "🇫🇷 France" to "+33", "🇲🇽 Mexico" to "+52", "🇯🇵 Japan" to "+81", "🇧🇷 Brazil" to "+55",
+        "🇨🇦 Canada" to "+1", "🇦🇷 Argentina" to "+54", "🇨🇱 Chile" to "+56", "🇨🇴 Colombia" to "+57",
+        "🇵🇪 Peru" to "+51", "🇮🇹 Italy" to "+39", "🇵🇹 Portugal" to "+351", "🇳🇱 Netherlands" to "+31",
+        "🇧🇪 Belgium" to "+32", "🇨🇭 Switzerland" to "+41", "🇸🇪 Sweden" to "+46", "🇳🇴 Norway" to "+47",
+        "🇫🇮 Finland" to "+358", "🇩🇰 Denmark" to "+45", "🇮🇳 India" to "+91", "🇨🇳 China" to "+86",
+        "🇷🇺 Russia" to "+7", "🇰🇷 South Korea" to "+82", "🇦🇺 Australia" to "+61", "🇳🇿 New Zealand" to "+64",
+        "🇿🇦 South Africa" to "+27", "🇪🇬 Egypt" to "+20", "🇸🇦 Saudi Arabia" to "+966",
+        "🇦🇪 UAE" to "+971", "🇹🇷 Turkey" to "+90", "🇵🇰 Pakistan" to "+92", "🇮🇩 Indonesia" to "+62"
+    )
     val countries = countryCodes.keys.toList()
     var expandedCountry by remember { mutableStateOf(false) }
 
@@ -201,7 +211,11 @@ fun RegisterScreen(
                                 val newUser = User_Entities(
                                     username = username,
                                     email = email,
-                                    password = password
+                                    password = password,
+                                    address = address,
+                                    BirthDate = birthdateTimestamp,
+                                    country = selectedCountry,
+                                    phonenumber = phone
                                 )
                                 userViewModel.registerUser(
                                     user = newUser,
@@ -248,6 +262,16 @@ fun RegisterScreen(
                 enabled = !loading
             ) {
                 Text(if (loading) stringResource(R.string.registering) else stringResource(R.string.register))
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            TextButton(
+                onClick = {
+                    navController.navigate("login")
+                },
+            ) {
+                Text(text = stringResource(R.string.TienesCuenta_IniciaSesion))
             }
         }
     }

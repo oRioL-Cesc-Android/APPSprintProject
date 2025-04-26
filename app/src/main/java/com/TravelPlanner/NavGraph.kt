@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.TravelPlanner.ui.view.AboutScreen
 import com.TravelPlanner.ui.view.ExploreScreen
+import com.TravelPlanner.ui.view.ForgotPasswordScreen
 import com.TravelPlanner.ui.view.HomeScreen
 import com.TravelPlanner.ui.view.LoginScreen
 import com.TravelPlanner.ui.view.MapScreen
@@ -35,6 +36,7 @@ fun NavGraph(navController: NavHostController) {
         composable("TermsCondScreen") {  TermsCondScreen(navController) }
         composable("SettingsScreen") { SettingsScreen(navController) }
         composable("register") { RegisterScreen(navController) }
+        composable("forgot_password") { ForgotPasswordScreen(navController)}
 
 
     }

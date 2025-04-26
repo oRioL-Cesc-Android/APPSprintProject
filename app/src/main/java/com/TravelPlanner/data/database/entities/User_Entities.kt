@@ -9,5 +9,10 @@ data class User_Entities(
     @PrimaryKey
     val username: String,
     val email: String,
-    val password: String
+    val password: String,
+    val address: String,
+    val BirthDate: Long?,
+    val country: String,
+    val phonenumber: String
+
 )

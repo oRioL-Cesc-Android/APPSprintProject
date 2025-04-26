@@ -27,20 +27,29 @@ fun LoginScreen(navController: NavController) {
     var showAlert by remember { mutableStateOf(false) }
     var alertMessage by remember { mutableStateOf("") }
     val loginUtils = LoginUtils()
-    val username_default = stringResource(R.string.default_user)
-    val pass_default = stringResource(R.string.default_pass)
     val context = LocalContext.current
     val auth = FirebaseAuth.getInstance()
+
+    // NUEVO: Traducciones necesarias
+    val loginTitle = stringResource(R.string.Login)
+    val usuarioLabel = stringResource(R.string.usuario)
+    val contraseñaLabel = stringResource(R.string.contraseña)
+    val noTienesCuenta = stringResource(R.string.NoTienesCuenta_Regístrate)
+    val olvidasteContraseña = stringResource(R.string.olvidaste_contraseña)
+    val emailNoVerificado = stringResource(R.string.email_no_verificado)
+    val errorDialogTitle = stringResource(R.string.error)
+    val okButtonText = stringResource(R.string.ok)
+    val errorDesconocido = stringResource(R.string.error_desconocido)
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.Login)) },
+                title = { Text(loginTitle) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back Icon"
+                            contentDescription = stringResource(R.string.icono_atras)
                         )
                     }
                 }
@@ -55,19 +64,19 @@ fun LoginScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = stringResource(R.string.Login), style = MaterialTheme.typography.headlineMedium)
+            Text(text = loginTitle, style = MaterialTheme.typography.headlineMedium)
             Spacer(modifier = Modifier.height(20.dp))
             OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
-                label = { Text(stringResource(R.string.usuario)) },
+                label = { Text(usuarioLabel) },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(10.dp))
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text(stringResource(R.string.contraseña)) },
+                label = { Text(contraseñaLabel) },
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation()
             )
@@ -78,14 +87,11 @@ fun LoginScreen(navController: NavController) {
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 val user = auth.currentUser
-                                // Verificar si el usuario ha confirmado su correo electrónico
                                 if (user != null && !user.isEmailVerified) {
-                                    // Mostrar mensaje de error si el usuario no ha verificado su correo
-                                    alertMessage = "Email no verificado"
+                                    alertMessage = emailNoVerificado
                                     showAlert = true
                                     Log.e("LogIn", "Email not verified")
                                 } else {
-                                    // Si el correo está verificado, navega a la pantalla de inicio
                                     Log.i("LogIn", "✅ Firebase login successful")
                                     navController.navigate("home") {
                                         popUpTo("login") { inclusive = true }
@@ -93,39 +99,41 @@ fun LoginScreen(navController: NavController) {
                                 }
                             } else {
                                 Log.e("LogIn", "❌ Firebase login failed", task.exception)
-                                alertMessage = task.exception?.localizedMessage ?: "Error desconocido"
+                                alertMessage = task.exception?.localizedMessage ?: errorDesconocido
                                 showAlert = true
                             }
                         }
-
-
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = stringResource(R.string.Login))
+                Text(loginTitle)
             }
 
             Spacer(modifier = Modifier.height(10.dp))
 
             TextButton(
-                onClick = {
-                    navController.navigate("register")
-                },
+                onClick = { navController.navigate("register") }
             ) {
-                Text(text = stringResource(R.string.NoTienesCuenta_Regístrate))
+                Text(noTienesCuenta)
             }
 
+            Spacer(modifier = Modifier.height(5.dp))
+
+            TextButton(
+                onClick = { navController.navigate("forgot_password") }
+            ) {
+                Text(olvidasteContraseña)
+            }
         }
 
         if (showAlert) {
             AlertDialog(
                 onDismissRequest = { showAlert = false },
-                title = { Text("Error") },
+                title = { Text(errorDialogTitle) },
                 text = { Text(alertMessage) },
-
                 confirmButton = {
                     Button(onClick = { showAlert = false }) {
-                        Text("OK")
+                        Text(okButtonText)
                     }
                 }
             )

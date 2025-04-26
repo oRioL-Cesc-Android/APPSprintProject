@@ -72,7 +72,7 @@
     <string name="fechainicio_label">Initial date: %1$s</string>
     <string name="fechafinal_label">Data final: %1$s</string>
     <string name="LogOut">LogOut</string>
-    <string name="NoTienesCuenta_Regístrate">¿Don\'t have an account? Register here</string>
+    <string name="NoTienesCuenta_Regístrate">Don\'t have an account? Register here</string>
 
 
     <string name="register">Register</string>
@@ -91,7 +91,27 @@
     <string name="registration_successful">Registered successfully</string>
     <string name="registration_failed">Registration failed: %1$s</string>
     <string name="userInvalid">User can\'t be empty</string>
-    <string name="emailsinverificar">Por favor verifica tu correo electrónico antes de iniciar sesión.</string>
+    <string name="emailsinverificar">Please, verify your email before signing up.</string>
+    <string name="TienesCuenta_IniciaSesion">You have an account ? Log In HERE</string>
+    <string name="recuperar_contraseña">Recover Password</string>
+
+    <string name="ingresa_correo_para_recuperar">Enter your email address to reset your password</string>
+    <string name="correo_electronico">Email address</string>
+    <string name="enviar_correo">Send email</string>
+    <string name="correo_enviado">Recovery email sent</string>
+    <string name="error_enviar_correo">Error sending email: </string>
+    <string name="recuperacion_contraseña">Password Recovery</string>
+
+    <string name="olvidaste_contraseña">Forgot your password?</string>
+    <string name="email_no_verificado">Email not verified</string>
+    <string name="error">Error</string>
+    <string name="ok">OK</string>
+    <string name="error_desconocido">Unknown error</string>
+    <string name="icono_atras">Back Icon</string>
+    <string name="email_vacio">Please enter your email address</string>
+
+
+
 
 
 </resources>

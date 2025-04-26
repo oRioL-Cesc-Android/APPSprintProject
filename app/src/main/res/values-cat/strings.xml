@@ -75,23 +75,38 @@
     <string name="LogOut">Tancar Sessió</string>
     <string name="NoTienesCuenta_Regístrate">¿No tens compte? Registrat aqui</string>
 
-        <string name="register">Registrar-se</string>
-        <string name="email">Correu electrònic</string>
-        <string name="password">Contrasenya</string>
-        <string name="username">Nom d\'usuari</string>
-        <string name="birthdate">Data de naixement</string>
-        <string name="address">Adreça</string>
-        <string name="country">País</string>
-        <string name="prefix">Prefix</string>
-        <string name="phone_number">Número de telèfon</string>
-        <string name="receive_emails">Vull rebre correus</string>
-        <string name="registering">Registrant...</string>
-        <string name="error_email_password_required">Correu i contrasenya requerits</string>
-        <string name="error_phone_invalid">El número ha de tenir entre 8 i 15 dígits</string>
-        <string name="registration_successful">Registre completat amb èxit</string>
-        <string name="registration_failed">Registre fallit: %1$s</string>
+    <string name="register">Registrar-se</string>
+    <string name="email">Correu electrònic</string>
+    <string name="password">Contrasenya</string>
+    <string name="username">Nom d\'usuari</string>
+    <string name="birthdate">Data de naixement</string>
+    <string name="address">Adreça</string>
+    <string name="country">País</string>
+    <string name="prefix">Prefix</string>
+    <string name="phone_number">Número de telèfon</string>
+    <string name="receive_emails">Vull rebre correus</string>
+    <string name="registering">Registrant...</string>
+    <string name="error_email_password_required">Correu i contrasenya requerits</string>
+    <string name="error_phone_invalid">El número ha de tenir entre 8 i 15 dígits</string>
+    <string name="registration_successful">Registre completat amb èxit</string>
+    <string name="registration_failed">Registre fallit: %1$s</string>
     <string name="userInvalid">L\'usuari no pot estar en blanc</string>
     <string name="emailsinverificar">Por favor verifica tu correo electrónico antes de iniciar sesión.</string>
+    <string name="TienesCuenta_IniciaSesion">Ja tens un compte?, Inicia sessió aqui</string>
+    <string name="recuperar_contraseña">Recuperar Contrasenya</string>
+    <string name="icono_atras">Icona Enrere</string>
+    <string name="ingresa_correo_para_recuperar">Introdueix el teu correu electrònic per restablir la contrasenya</string>
+    <string name="correo_electronico">Correu electrònic</string>
+    <string name="enviar_correo">Enviar correu</string>
+    <string name="correo_enviado">Correu de recuperació enviat</string>
+    <string name="error_enviar_correo">Error en enviar correu: </string>
+    <string name="recuperacion_contraseña">Recuperació de Contrasenya</string>
+    <string name="olvidaste_contraseña">Has oblidat la contrasenya?</string>
+    <string name="email_no_verificado">Correu electrònic no verificat</string>
+    <string name="error">Error</string>
+    <string name="ok">OK</string>
+    <string name="error_desconocido">Error desconegut</string>
+    <string name="email_vacio">Si us plau, introdueix el teu correu electrònic</string>
 
 
 </resources>
