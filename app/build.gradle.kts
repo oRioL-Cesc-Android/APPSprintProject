@@ -51,11 +51,14 @@ dependencies {
 
     implementation(libs.firebase.auth)
     implementation(libs.androidx.benchmark.macro)
+    implementation(libs.androidx.room.common.jvm)
+
     // Room dependencies
     val room_version = "2.6.1"
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     kapt("androidx.room:room-compiler:$room_version")
+
 
 
 

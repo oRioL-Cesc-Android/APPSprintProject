@@ -5,6 +5,13 @@ import androidx.room.Relation
 
 data class TravelRelation(
     @Embedded val travel: Travel_Entities,
+
+    @Relation(
+        parentColumn = "userOwner",
+        entityColumn = "username"
+    )
+    val user: User_Entities,
+
     @Relation(
         entity = Activites_Entities::class,
         parentColumn = "id",

@@ -3,7 +3,6 @@ package com.TravelPlanner.data.database.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-
 @Entity(tableName = "user_table")
 data class User_Entities(
     @PrimaryKey
@@ -11,8 +10,8 @@ data class User_Entities(
     val email: String,
     val password: String,
     val address: String,
-    val BirthDate: Long?,
+    val birthDate: Long?,
     val country: String,
-    val phonenumber: String
-
+    val phoneNumber: String,
+    val acceptReceiveEmails: Boolean 
 )
