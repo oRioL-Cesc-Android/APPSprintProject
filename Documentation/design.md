@@ -56,7 +56,7 @@ classDiagram
     Viaje "*" -- "1" Mapa : shows locations
     Viaje "1" -- "*" PuntoIntinerario : contains
     Viaje "*" -- "*" Recomendaciones : gets
-'''
+```
 # Sprint3 Database
 
 Nuestra base de datos está diseñada para gestionar información relacionada con viajes y sus respectivas actividades. Se compone de dos entidades principales: `Travel_Entities` y `Activites_Entities`, que están relacionadas entre sí para mantener una estructura organizada y funcional.
