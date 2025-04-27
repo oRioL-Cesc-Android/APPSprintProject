@@ -10,6 +10,7 @@ data class TravelItem(
     var fechainicio: Long,
     var fechafinal: Long,
     var activities: List<ActivityItems> = emptyList(),
+    val usuario: String,
 
 
     )

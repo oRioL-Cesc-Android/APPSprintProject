@@ -76,7 +76,8 @@ fun TravelListScreen(
                         rating = 0f,
                         fechainicio = (LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) * 1000),
 
-                        fechafinal = (LocalDateTime.now().plusDays(1).toEpochSecond(ZoneOffset.UTC) * 1000)
+                        fechafinal = (LocalDateTime.now().plusDays(1).toEpochSecond(ZoneOffset.UTC) * 1000),
+                        usuario = travel.userOwner
                     )
                     viewModel.addTravelItem(newItem)
                     viewModel.startEditing(newItem.id) // <- ahora controlamos edición desde ViewModel

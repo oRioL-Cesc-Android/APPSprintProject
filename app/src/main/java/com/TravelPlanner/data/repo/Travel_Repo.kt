@@ -56,15 +56,16 @@ private fun TravelItem.toEntity(): Travel_Entities {
     )
 }
 
-private fun com.TravelPlanner.data.database.relations.TravelWithActivities.toTravelItem(): TravelItem {
+private fun com.TravelPlanner.data.database.entities.TravelRelation.toTravelItem(): TravelItem {
     return TravelItem(
         id = travel.id,
         title = travel.title,
         location = travel.location,
         description = travel.description,
-        rating = travel.rating,
+        rating = travel.valoracion,
         fechainicio = travel.fechainicio,
         fechafinal = travel.fechafinal,
+        usuario = travel.userOwner,
         activities = activities.map {
             ActivityItems(
                 activity_id = it.activity_id,

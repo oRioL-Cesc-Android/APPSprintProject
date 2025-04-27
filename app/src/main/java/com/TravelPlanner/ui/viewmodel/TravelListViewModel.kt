@@ -3,11 +3,12 @@ package com.TravelPlanner.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.TravelPlanner.data.repo.Travel_Repo
+//import com.TravelPlanner.data.repo.Travel_Repo
 import com.TravelPlanner.data.repo.Activity_Repo
 import com.TravelPlanner.models.ActivityItems
 import com.TravelPlanner.models.TravelItem
 import com.TravelPlanner.data.database.entities.Activites_Entities
+import com.TravelPlanner.data.repository.Travel_Repo
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -100,7 +101,7 @@ class TravelListViewModel @Inject constructor(
             if (currentItem.title.isBlank() &&
                 currentItem.location.isBlank() &&
                 currentItem.description.isBlank() &&
-                currentItem.rating == 0f &&
+                currentItem.valoracion == 0f &&
                 currentItem.fechainicio < LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) &&
                 currentItem.fechafinal < currentItem.fechainicio
             ) {
@@ -110,10 +111,11 @@ class TravelListViewModel @Inject constructor(
                         title = currentItem.title,
                         location = currentItem.location,
                         description = currentItem.description,
-                        rating = currentItem.rating,
+                        rating = currentItem.valoracion,
                         fechainicio = currentItem.fechainicio,
                         fechafinal = currentItem.fechafinal,
-                        activities = emptyList()
+                        activities = emptyList(),
+                        usuario = currentItem.userOwner
                     )
                 )
             }
