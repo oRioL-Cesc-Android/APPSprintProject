@@ -147,5 +147,6 @@ erDiagram
     User_Entities ||--o{ Travel_Entities : "has many"
     Travel_Entities ||--o{ Activites_Entities : "has many"
 ```
+
 User_Entities almacena la información de los usuarios registrados. Cada usuario es identificado de forma única mediante su username, que actúa como clave primaria. También se guarda el correo electrónico, la contraseña, la dirección, la fecha de nacimiento, el país y el número de teléfono.
 Travel_Entities contiene los datos de los viajes. Cada viaje tiene un identificador único id que es una clave primaria con autoincremento. Además, se registran campos como el título del viaje, su ubicación, una descripción, una calificación (rating), y las fechas de inicio y finalización. Cada viaje está asociado a un usuario a través de una clave foránea username que referencia a la entidad User_Entities.
