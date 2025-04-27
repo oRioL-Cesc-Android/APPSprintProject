@@ -113,6 +113,7 @@ class TravelListViewModel @Inject constructor(
                         rating = currentItem.rating,
                         fechainicio = currentItem.fechainicio,
                         fechafinal = currentItem.fechafinal,
+                        userName = currentItem.userName,
                         activities = emptyList()
                     )
                 )

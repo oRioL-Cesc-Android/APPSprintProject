@@ -12,8 +12,6 @@ data class Travel_Entities(
     var description: String,
     var rating: Float,
     var fechainicio: Long,
-    var fechafinal: Long
-    //var activities: List<Activitys> = emptyList(),
-
-    )
-
+    var fechafinal: Long,
+    var userName: String // Nueva columna que almacena el username del usuario que creó el viaje
+)
