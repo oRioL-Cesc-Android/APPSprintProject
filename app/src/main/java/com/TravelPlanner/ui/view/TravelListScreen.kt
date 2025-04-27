@@ -28,6 +28,8 @@ import com.TravelPlanner.R
 import com.TravelPlanner.models.ActivityItems
 import com.TravelPlanner.models.TravelItem
 import com.TravelPlanner.ui.viewmodel.TravelListViewModel
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -49,6 +51,11 @@ fun TravelListScreen(
     val travelItems by viewModel.travelItems.collectAsState()
     val editingItemId by viewModel.editingItemId.collectAsState()
 
+    val username = FirebaseAuth.getInstance().currentUser?.email ?: "Invitado"  // <- Corrección aquí
+
+    // Filtramos solo los viajes del usuario actual
+    val filteredTravelItems = travelItems.filter { it.userName == username }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -56,8 +63,8 @@ fun TravelListScreen(
                 navigationIcon = {
                     IconButton(onClick = {
                         viewModel.stopEditing()
-                        navController.navigate("home"){
-                            popUpTo("home"){inclusive = true}
+                        navController.navigate("home") {
+                            popUpTo("home") { inclusive = true }
                         }
                     }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back Icon")
@@ -75,21 +82,21 @@ fun TravelListScreen(
                         description = "",
                         rating = 0f,
                         fechainicio = (LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) * 1000),
-
-                        fechafinal = (LocalDateTime.now().plusDays(1).toEpochSecond(ZoneOffset.UTC) * 1000)
+                        fechafinal = (LocalDateTime.now().plusDays(1).toEpochSecond(ZoneOffset.UTC) * 1000),
+                        userName = username  // <- Asignamos bien el usuario
                     )
                     viewModel.addTravelItem(newItem)
-                    viewModel.startEditing(newItem.id) // <- ahora controlamos edición desde ViewModel
+                    viewModel.startEditing(newItem.id)
                 },
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = stringResource(R.string.content_description_add_travel))
+                    contentDescription = stringResource(R.string.content_description_add_travel)
+                )
                 Log.i("ListItem", "Travel added successfully")
             }
-
         }
     ) { innerPadding ->
         Box(
@@ -99,10 +106,10 @@ fun TravelListScreen(
                 .padding(16.dp)
         ) {
             LazyColumn(
-                modifier = Modifier.fillMaxSize(), // Permite desplazamiento vertical
-                verticalArrangement = Arrangement.spacedBy(8.dp) // Espacio entre elementos
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(travelItems) { item ->
+                items(filteredTravelItems) { item ->   // <- Usamos la lista filtrada
                     val isEditing = editingItemId == item.id
                     TravelListItem(
                         item = item,
@@ -119,7 +126,6 @@ fun TravelListScreen(
                 }
             }
         }
-
     }
 }
 

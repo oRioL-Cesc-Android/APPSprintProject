@@ -22,7 +22,8 @@ class Travel_Repo @Inject constructor(
                 description = item.description,
                 rating = item.rating,
                 fechainicio = item.fechainicio,
-                fechafinal = item.fechafinal
+                fechafinal = item.fechafinal,
+                userName = item.userName
             )
         )
     }
@@ -36,7 +37,8 @@ class Travel_Repo @Inject constructor(
                 description = item.description,
                 rating = item.rating,
                 fechainicio = item.fechainicio,
-                fechafinal = item.fechafinal
+                fechafinal = item.fechafinal,
+                userName = item.userName
             )
         )
     }
@@ -50,7 +52,9 @@ class Travel_Repo @Inject constructor(
                 description = item.description,
                 rating = item.rating,
                 fechainicio = item.fechainicio,
-                fechafinal = item.fechafinal
+                fechafinal = item.fechafinal,
+                userName = item.userName
+
             )
         )
     }
@@ -70,7 +74,7 @@ class Travel_Repo @Inject constructor(
                     rating = travel.travel.rating,
                     fechainicio = travel.travel.fechainicio,
                     fechafinal = travel.travel.fechafinal,
-
+                    userName = travel.travel.userName,
                     activities = travel.activities.map {
                         ActivityItems(
                             activity_id = it.activity_id,  // Pass the activity_id
