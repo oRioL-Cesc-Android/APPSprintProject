@@ -108,7 +108,7 @@ erDiagram
     Travel_Entities ||--o{ Activites_Entities : "has many"
 ```
 
-##Cambios
+## Cambios
 Nuevos campos en actividad: Ya no existe el campo Duración sino los campos fechaInicio y fechaFinal.
 
 ## SPRINT 4
