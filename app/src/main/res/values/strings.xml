@@ -106,7 +106,7 @@
     <string name="ok">OK</string>
     <string name="error_desconocido">Error desconocido</string>
     <string name="email_vacio">Por favor, introduce tu correo electrónico</string>
-
+    <string name="AgregarActividad">Agregar</string>
 
 
 </resources>

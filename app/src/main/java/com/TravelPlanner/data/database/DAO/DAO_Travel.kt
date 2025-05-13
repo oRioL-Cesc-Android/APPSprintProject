@@ -16,6 +16,7 @@ interface DAO_Travel {
     suspend fun addTravelItem(travelEntities: Travel_Entities)
 
     @Query("SELECT * FROM TRAVEL_ENTITIES")
+    @Transaction
     fun ObtenerTravel(): Flow<List<TravelRelation>>
 
     @Delete
@@ -32,4 +33,3 @@ interface DAO_Travel {
     fun getUserWithTravels(username: String): Flow<UserWithTravels>
 
 }
-

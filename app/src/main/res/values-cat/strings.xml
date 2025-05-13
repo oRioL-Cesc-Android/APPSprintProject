@@ -107,6 +107,7 @@
     <string name="ok">OK</string>
     <string name="error_desconocido">Error desconegut</string>
     <string name="email_vacio">Si us plau, introdueix el teu correu electrònic</string>
+    <string name="AgregarActividad">Afegir</string>
 
 
 </resources>

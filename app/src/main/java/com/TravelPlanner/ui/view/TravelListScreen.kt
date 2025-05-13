@@ -2,10 +2,12 @@ package com.TravelPlanner.ui.view
 
 import android.util.Log
 import android.view.ContextThemeWrapper
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
@@ -28,7 +30,6 @@ import com.TravelPlanner.R
 import com.TravelPlanner.models.ActivityItems
 import com.TravelPlanner.models.TravelItem
 import com.TravelPlanner.ui.viewmodel.TravelListViewModel
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -36,11 +37,6 @@ import java.time.ZoneOffset
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-
-//import com.example.app.models.TravelItem
-
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,10 +46,9 @@ fun TravelListScreen(
 ) {
     val travelItems by viewModel.travelItems.collectAsState()
     val editingItemId by viewModel.editingItemId.collectAsState()
+    val editingActivityId = remember { mutableStateOf<Int?>(null) }
 
-    val username = FirebaseAuth.getInstance().currentUser?.email ?: "Invitado"  // <- Corrección aquí
-
-    // Filtramos solo los viajes del usuario actual
+    val username = FirebaseAuth.getInstance().currentUser?.email ?: "Invitado"
     val filteredTravelItems = travelItems.filter { it.userName == username }
 
     Scaffold(
@@ -83,7 +78,7 @@ fun TravelListScreen(
                         rating = 0f,
                         fechainicio = (LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) * 1000),
                         fechafinal = (LocalDateTime.now().plusDays(1).toEpochSecond(ZoneOffset.UTC) * 1000),
-                        userName = username  // <- Asignamos bien el usuario
+                        userName = username
                     )
                     viewModel.addTravelItem(newItem)
                     viewModel.startEditing(newItem.id)
@@ -109,19 +104,39 @@ fun TravelListScreen(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(filteredTravelItems) { item ->   // <- Usamos la lista filtrada
+                items(filteredTravelItems) { item ->
                     val isEditing = editingItemId == item.id
+                    val editingActivity = item.activities.find { it.activity_id == editingActivityId.value }
                     TravelListItem(
                         item = item,
                         isEditing = isEditing,
+                        editingActivity = editingActivity,
                         onEditClick = { viewModel.startEditing(item.id) },
                         onDeleteClick = { viewModel.deleteTravelItem(item) },
                         onSaveClick = {
                             viewModel.updateTravelItem(it)
                             viewModel.stopEditing()
+                            editingActivityId.value = null
                         },
                         viewModel = viewModel,
-                        navController = navController
+                        navController = navController,
+                        onAddActivity = {
+                            // Bugfix: No asignar manualmente activity_id, dejar que Room lo autogenere
+                            val newActivity = ActivityItems(
+                                activity_id = 0, // Room lo autogenerará
+                                nameActivity = "",
+                                ubicacion = "",
+                                duration = 0
+                            )
+                            viewModel.addActivityToTravel(item.id, newActivity)
+                            // No modificar editingActivityId aquí, se actualizará cuando Room devuelva la nueva lista
+                        },
+                        onEditActivity = { activityId ->
+                            editingActivityId.value = activityId
+                        },
+                        onCloseActivityEdit = {
+                            editingActivityId.value = null
+                        }
                     )
                 }
             }
@@ -134,10 +149,14 @@ fun TravelListItem(
     item: TravelItem,
     navController: NavHostController,
     isEditing: Boolean,
+    editingActivity: ActivityItems?,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onSaveClick: (TravelItem) -> Unit,
-    viewModel: TravelListViewModel
+    viewModel: TravelListViewModel,
+    onAddActivity: () -> Unit,
+    onEditActivity: (Int) -> Unit,
+    onCloseActivityEdit: () -> Unit
 ) {
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
@@ -152,11 +171,6 @@ fun TravelListItem(
     var fechainicio by remember { mutableStateOf(item.fechainicio.toString()) }
     var fechafinal by remember { mutableStateOf(item.fechafinal.toString()) }
 
-
-
-
-
-
     var titleError by remember { mutableStateOf(false) }
     var locationError by remember { mutableStateOf(false) }
     var descriptionError by remember { mutableStateOf(false) }
@@ -166,130 +180,158 @@ fun TravelListItem(
 
     if (isEditing) {
         AlertDialog(
-            onDismissRequest = { viewModel.stopEditing() },
+            onDismissRequest = { viewModel.stopEditing(); onCloseActivityEdit() },
             title = { Text(stringResource(R.string.EditarViajeAct)) },
             text = {
-                Column {
-                    OutlinedTextField(
-                        value = title,
-                        onValueChange = {
-                            title = it
-                            titleError = it.isBlank()
-                            if (!titleError) {
-                                viewModel.updateTravel(item.copy(title = it))
-                            }
-                        },
-                        label = { Text(stringResource(R.string.Titulo)) },
-
-                        isError = titleError
-                    )
-                    if (titleError) {
-                        Text(stringResource(R.string.ErrorTitulo), color = Color.Red)
-                        Log.e("ListScreen", "Error titulo")}
-
-
-                    OutlinedTextField(
-                        value = location,
-                        onValueChange = {
-                            location = it
-                            locationError = it.isBlank()
-                            if (!locationError) {
-                                viewModel.updateTravel(item.copy(location = it))
-                            }
-                        },
-                        label = { Text(stringResource(R.string.Ubicacion)) },
-                        isError = locationError
-                    )
-                    if (locationError) {
-                            Text(stringResource(R.string.ErrorUbicacion), color = Color.Red)
-                            Log.e("ListScreen", "Error ubicación")}
-
-                    OutlinedTextField(
-                        value = description,
-                        onValueChange = {
-                            description = it
-                            descriptionError = it.isBlank()
-                            if (!descriptionError) {
-                                viewModel.updateTravel(item.copy(description = it))
-                            }
-                        },
-                        label = { Text(stringResource(R.string.Descripción)) },
-                        isError = descriptionError
-                    )
-                    if (descriptionError) {
-                        Text(stringResource(R.string.DescripciónError), color = Color.Red)
-                        Log.e("ListScreen", "Error descripción")
-                    }
-
-                    OutlinedTextField(
-                        value = rating,
-                        onValueChange = {
-                            rating = it
-                            ratingError = it.isBlank() || !it.isDigitsOnly() || it.toFloat() > 10 || it.toFloat() < 0
-                            if(!ratingError) {
-                                viewModel.updateTravel(item.copy(rating = it.toFloat()))
-                            }
-                        },
-                        label = { Text(stringResource(R.string.Valoración)) },
-                        isError = ratingError
-                    )
-                    if (ratingError){
-                        Text(stringResource(R.string.ErrorValoración), color = Color.Red)
-                        Log.e("ListScreen", "Error valorción")}
-
-                    DatePickerButton(
-                        label = stringResource(R.string.FechaInicio), // Nombre del campo
-                        timestamp = item.fechainicio, // Valor actual en formato Long
-                        onDateSelected = { newTimestamp ->
-                            viewModel.updateTravel(item.copy(fechainicio = newTimestamp)) // Guarda la nueva fecha
-                        }
-                    )
-
-
-                    if (fechainicioError){
-                        Text(stringResource(R.string.ErrorFechaInicio), color = Color.Red)
-                        Log.e("ListScreen", "Fecha inicio obligatoria") }
-
-                    DatePickerButton(
-                        label = stringResource(R.string.FechaFinal), // Nombre del campo
-                        timestamp = item.fechafinal, // Valor actual en formato Long
-                        onDateSelected = { newTimestamp ->
-                            viewModel.updateTravel(item.copy(fechafinal = newTimestamp)) // Guarda la nueva fecha
-                        }
-                    )
-                    if (fechafinalError){
-                        Text(stringResource(R.string.ErrorFechaFinal), color = Color.Red)
-                        Log.e("ListScreen", "Fecha inicio obligatoria") }
-
-                    Text(stringResource(R.string.Actividades), style = MaterialTheme.typography.titleMedium)
-                    // Hacer las actividades deslizables horizontalmente
-                    LazyRow(
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    // --- Datos del viaje ---
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 12.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                     ) {
-
-                        items(item.activities) { activity ->
-                            ActivityListItem(
-                                activity = activity,
-                                onActivityNameChange = { newName ->
-                                    viewModel.updateActivityInTravel(item.id, activity.copy(nameActivity = newName))
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text(stringResource(R.string.DetallesViaje), style = MaterialTheme.typography.titleMedium)
+                            OutlinedTextField(
+                                value = title,
+                                onValueChange = {
+                                    title = it
+                                    titleError = it.isBlank()
+                                    if (!titleError) {
+                                        viewModel.updateTravel(item.copy(title = it))
+                                    }
                                 },
-                                onActivityLocationChange = { newLocation ->
-                                    viewModel.updateActivityInTravel(item.id, activity.copy(ubicacion = newLocation))
+                                label = { Text(stringResource(R.string.Titulo)) },
+                                isError = titleError
+                            )
+                            if (titleError) {
+                                Text(stringResource(R.string.ErrorTitulo), color = Color.Red)
+                            }
+                            OutlinedTextField(
+                                value = location,
+                                onValueChange = {
+                                    location = it
+                                    locationError = it.isBlank()
+                                    if (!locationError) {
+                                        viewModel.updateTravel(item.copy(location = it))
+                                    }
                                 },
-                                onActivityDurationChange = { newDuration ->
-                                    viewModel.updateActivityInTravel(item.id, activity.copy(duration = newDuration))
+                                label = { Text(stringResource(R.string.Ubicacion)) },
+                                isError = locationError
+                            )
+                            if (locationError) {
+                                Text(stringResource(R.string.ErrorUbicacion), color = Color.Red)
+                            }
+                            OutlinedTextField(
+                                value = description,
+                                onValueChange = {
+                                    description = it
+                                    descriptionError = it.isBlank()
+                                    if (!descriptionError) {
+                                        viewModel.updateTravel(item.copy(description = it))
+                                    }
                                 },
-                                onDeleteClick = {
-                                    viewModel.removeActivityFromTravel(travelId = item.id, activity = activity) // ✅ Pasa ambos parámetros
+                                label = { Text(stringResource(R.string.Descripción)) },
+                                isError = descriptionError
+                            )
+                            if (descriptionError) {
+                                Text(stringResource(R.string.DescripciónError), color = Color.Red)
+                            }
+                            OutlinedTextField(
+                                value = rating,
+                                onValueChange = {
+                                    rating = it
+                                    ratingError = it.isBlank() || !it.isDigitsOnly() || it.toFloat() > 10 || it.toFloat() < 0
+                                    if (!ratingError) {
+                                        viewModel.updateTravel(item.copy(rating = it.toFloat()))
+                                    }
+                                },
+                                label = { Text(stringResource(R.string.Valoración)) },
+                                isError = ratingError
+                            )
+                            if (ratingError) {
+                                Text(stringResource(R.string.ErrorValoración), color = Color.Red)
+                            }
+                            DatePickerButton(
+                                label = stringResource(R.string.FechaInicio),
+                                timestamp = item.fechainicio,
+                                onDateSelected = { newTimestamp ->
+                                    viewModel.updateTravel(item.copy(fechainicio = newTimestamp))
                                 }
                             )
+                            if (fechainicioError) {
+                                Text(stringResource(R.string.ErrorFechaInicio), color = Color.Red)
+                            }
+                            DatePickerButton(
+                                label = stringResource(R.string.FechaFinal),
+                                timestamp = item.fechafinal,
+                                onDateSelected = { newTimestamp ->
+                                    viewModel.updateTravel(item.copy(fechafinal = newTimestamp))
+                                }
+                            )
+                            if (fechafinalError) {
+                                Text(stringResource(R.string.ErrorFechaFinal), color = Color.Red)
+                            }
                         }
                     }
 
+                    // --- Actividades ---
+                    Text(stringResource(R.string.Actividades), style = MaterialTheme.typography.titleMedium)
+                    Spacer(modifier = Modifier.height(8.dp))
 
+                    if (editingActivity != null) {
+                        ActivityEditDialog(
+                            activity = editingActivity,
+                            onActivityChange = { updated ->
+                                viewModel.updateActivityInTravel(item.id, updated)
+                            },
+                            onDeleteClick = {
+                                viewModel.removeActivityFromTravel(item.id, editingActivity)
+                                onCloseActivityEdit()
+                            },
+                            onClose = { onCloseActivityEdit() }
+                        )
+                    } else {
+                        // Mostrar todas las actividades, solo editables al clickar
+                        LazyColumn(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 120.dp, max = 350.dp)
+                        ) {
+                            items(item.activities) { activity ->
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 6.dp)
+                                        .clickable { onEditActivity(activity.activity_id) },
+                                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE3F2FD))
+                                ) {
+                                    Column(modifier = Modifier.padding(12.dp)) {
+                                        Text(
+                                            text = activity.nameActivity.ifBlank { "Nueva Actividad" },
+                                            style = MaterialTheme.typography.titleMedium
+                                        )
+                                        Spacer(modifier = Modifier.height(2.dp))
+                                        Text(
+                                            text = stringResource(R.string.Ubicacion) + ": " + activity.ubicacion,
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                        Text(
+                                            text = stringResource(R.string.Duración) + ": " + activity.duration.toString(),
+                                            style = MaterialTheme.typography.bodyMedium
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             },
-
             confirmButton = {
                 Row(
                     modifier = Modifier
@@ -299,34 +341,10 @@ fun TravelListItem(
                 ) {
                     Button(
                         onClick = {
-                            val newActivity = ActivityItems(
-                                activity_id = 0,
-                                nameActivity = "",
-                                ubicacion = "",
-                                duration = 0
-                            )
-                            viewModel.addActivityToTravel(item.id, newActivity)
-                            Log.i("ListScreen", "Actividad Agregada")
-                        },
-                        modifier = Modifier
-                            .weight(1f)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.Agregar),
-                            maxLines = 1,
-                            softWrap = false,
-                            textAlign = TextAlign.Center,
-                            fontSize = 10.sp
-
-                        )
-                    }
-
-                    Button(
-                        onClick = {
                             viewModel.stopEditing()
+                            onCloseActivityEdit()
                         },
-                        modifier = Modifier
-                            .weight(1f)
+                        modifier = Modifier.weight(1f)
                     ) {
                         Text(
                             text = stringResource(R.string.Cancelar),
@@ -336,7 +354,6 @@ fun TravelListItem(
                             fontSize = 10.sp
                         )
                     }
-
                     Button(
                         enabled = !ratingError && !titleError && !locationError && !descriptionError && !fechainicioError && !fechafinalError,
                         onClick = {
@@ -345,8 +362,7 @@ fun TravelListItem(
                             descriptionError = item.description.isBlank()
                             ratingError = item.rating < 0 || item.rating > 10
                             fechafinalError = item.fechafinal < item.fechainicio
-                            fechainicioError = item.fechainicio < LocalDateTime.now().toEpochSecond(
-                                ZoneOffset.UTC)
+                            fechainicioError = item.fechainicio < LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
 
                             if (titleError || locationError || descriptionError || ratingError || fechainicioError || fechafinalError) {
                                 errorMessage = "Por favor, completa todos los campos correctamente antes de guardar."
@@ -359,15 +375,14 @@ fun TravelListItem(
                                     rating = item.rating,
                                     fechainicio = item.fechainicio,
                                     fechafinal = item.fechafinal,
-                                    activities = item.activities // <-- Asegurar que se guarda la nueva lista
+                                    activities = item.activities
                                 )
-
                                 onSaveClick(updatedItem)
                                 viewModel.stopEditing()
+                                onCloseActivityEdit()
                             }
                         },
-                        modifier = Modifier
-                            .weight(1f)
+                        modifier = Modifier.weight(1f)
                     ) {
                         Text(
                             text = stringResource(R.string.Guardar),
@@ -377,37 +392,80 @@ fun TravelListItem(
                             fontSize = 10.sp
                         )
                     }
+                    Button(
+                        onClick = onAddActivity,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(stringResource(R.string.AgregarActividad))
+                    }
                 }
             }
-
-
-
-
         )
     } else {
-        Column {
-            // Muestra los detalles del viaje
-            Text(text = stringResource(R.string.titulo_label, item.title))
-            Text(text = stringResource(R.string.ubicacion_label, item.location))
-            Text(text = stringResource(R.string.descripcion_label, item.description))
-            Text(text = stringResource(R.string.valoracion_label, item.rating))
-            Text(text = stringResource(R.string.fechainicio_label, SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(item.fechainicio))))
-            Text(text = stringResource(R.string.fechafinal_label, SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(item.fechafinal))))
-            Text(text = stringResource(R.string.actividades_label))
-
-            // Deslizante de actividades en lugar de columnas
-            LazyRow(
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        ) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
             ) {
-                items(item.activities) { activity ->
-                    Text(text = stringResource(R.string.actividad_label, activity.nameActivity))
-
+                Column(modifier = Modifier.padding(12.dp)) {
+                    Text(text = stringResource(R.string.titulo_label, item.title), style = MaterialTheme.typography.titleMedium)
+                    Text(text = stringResource(R.string.ubicacion_label, item.location))
+                    Text(text = stringResource(R.string.descripcion_label, item.description))
+                    Text(text = stringResource(R.string.valoracion_label, item.rating))
+                    Text(
+                        text = stringResource(
+                            R.string.fechainicio_label,
+                            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(item.fechainicio))
+                        )
+                    )
+                    Text(
+                        text = stringResource(
+                            R.string.fechafinal_label,
+                            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(item.fechafinal))
+                        )
+                    )
                 }
             }
-
-            // Botones para editar y eliminar
-            Row {
-                Button(onClick = { viewModel.startEditing(item.id) }) {
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(text = stringResource(R.string.actividades_label), style = MaterialTheme.typography.titleMedium)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 80.dp, max = 350.dp)
+            ) {
+                items(item.activities) { activity ->
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 6.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFEFA8B3))
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Text(
+                                text = activity.nameActivity.ifBlank { "Nueva Actividad" },
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = stringResource(R.string.Ubicacion) + ": " + activity.ubicacion,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = stringResource(R.string.Duración) + ": " + activity.duration.toString(),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+                }
+            }
+            Row(
+                modifier = Modifier.padding(top = 8.dp)
+            ) {
+                Button(onClick = { onEditClick() }) {
                     Text(stringResource(R.string.Editar))
                 }
                 Spacer(modifier = Modifier.width(8.dp))
@@ -417,7 +475,6 @@ fun TravelListItem(
             }
         }
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -430,7 +487,6 @@ fun DatePickerButton(
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
 
-    // ✅ Si no hay fecha seleccionada, usa la fecha actual correctamente
     val defaultTimestamp = timestamp ?: System.currentTimeMillis()
     calendar.timeInMillis = defaultTimestamp
 
@@ -459,9 +515,6 @@ fun DatePickerButton(
             year, month, day
         )
 
-
-
-
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         dialog.show()
 
@@ -473,19 +526,12 @@ fun DatePickerButton(
     }
 }
 
-
-
-
-
-
-
 @Composable
-fun ActivityListItem(
+fun ActivityEditDialog(
     activity: ActivityItems,
-    onActivityNameChange: (String) -> Unit,
-    onActivityLocationChange: (String) -> Unit,
-    onActivityDurationChange: (Int) -> Unit,
-    onDeleteClick: () -> Unit
+    onActivityChange: (ActivityItems) -> Unit,
+    onDeleteClick: () -> Unit,
+    onClose: () -> Unit
 ) {
     var activityName by remember { mutableStateOf(activity.nameActivity) }
     var location by remember { mutableStateOf(activity.ubicacion) }
@@ -496,64 +542,69 @@ fun ActivityListItem(
 
     Card(
         modifier = Modifier
-            .fillMaxWidth() // Se expande en el ancho
-            .wrapContentHeight() // Se expande en la altura
+            .fillMaxWidth()
+            .wrapContentHeight()
             .padding(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.LightGray)
-    ){
-    Column(modifier = Modifier.padding(8.dp).width(220.dp)) {
-        OutlinedTextField(
-            value = activityName,
-            onValueChange = {
-                activityName = it
-                nameError = it.isBlank()
-                onActivityNameChange(it)
-            },
-            label = { Text("Nombre de actividad") },
-            isError = nameError,
-            modifier = Modifier.fillMaxWidth()
-        )
-        if (nameError){ Text(stringResource(R.string.ErrorNombreActividad), color = Color.Red)
-            Log.e("ListScreen", "Error nombre actividad")}
-
-        OutlinedTextField(
-            value = location,
-            onValueChange = {
-                location = it
-                locationError = it.isBlank()
-                onActivityLocationChange(it)
-            },
-            label = { Text(stringResource(R.string.Ubicacion)) },
-            isError = locationError,
-            modifier = Modifier.fillMaxWidth()
-        )
-        if (locationError) { Text(stringResource(R.string.ErrorUbicacion), color = Color.Red)
-            Log.e("ListScreen", "Ubicación Error")}
-
-        OutlinedTextField(
-            value = duration,
-            onValueChange = {
-                duration = it
-                durationError = it.toIntOrNull() == null
-                onActivityDurationChange(it.toIntOrNull() ?: 0)
-            },
-            label = { Text(stringResource(R.string.Duración)) },
-            isError = durationError,
-            modifier = Modifier.fillMaxWidth()
-        )
-        if (durationError){ Text(stringResource(R.string.DuraciónError), color = Color.Red)
-            Log.e("ListScreen", "Duración incorrecta") }
-
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-        ) {
-            IconButton(onClick = { onDeleteClick() }) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(R.string.EliminarActividad))
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF9C4))
+    ) {
+        Column(modifier = Modifier.padding(8.dp)) {
+            Text("Editar Actividad", style = MaterialTheme.typography.titleMedium)
+            OutlinedTextField(
+                value = activityName,
+                onValueChange = {
+                    activityName = it
+                    nameError = it.isBlank()
+                    onActivityChange(activity.copy(nameActivity = it))
+                },
+                label = { Text("Nombre de actividad") },
+                isError = nameError,
+                modifier = Modifier.fillMaxWidth()
+            )
+            if (nameError) {
+                Text(stringResource(R.string.ErrorNombreActividad), color = Color.Red)
+            }
+            OutlinedTextField(
+                value = location,
+                onValueChange = {
+                    location = it
+                    locationError = it.isBlank()
+                    onActivityChange(activity.copy(ubicacion = it))
+                },
+                label = { Text(stringResource(R.string.Ubicacion)) },
+                isError = locationError,
+                modifier = Modifier.fillMaxWidth()
+            )
+            if (locationError) {
+                Text(stringResource(R.string.ErrorUbicacion), color = Color.Red)
+            }
+            OutlinedTextField(
+                value = duration,
+                onValueChange = {
+                    duration = it
+                    durationError = it.toIntOrNull() == null
+                    onActivityChange(activity.copy(duration = it.toIntOrNull() ?: 0))
+                },
+                label = { Text(stringResource(R.string.Duración)) },
+                isError = durationError,
+                modifier = Modifier.fillMaxWidth()
+            )
+            if (durationError) {
+                Text(stringResource(R.string.DuraciónError), color = Color.Red)
+            }
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            ) {
+                Button(onClick = { onClose() }) {
+                    Text("Cerrar")
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                IconButton(onClick = { onDeleteClick(); onClose() }) {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(R.string.EliminarActividad))
+                }
             }
         }
     }
-}
 }
 
 @Preview(showBackground = true)
