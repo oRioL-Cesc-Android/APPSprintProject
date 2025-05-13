@@ -110,6 +110,13 @@
     <string name="icono_atras">Back Icon</string>
     <string name="email_vacio">Please enter your email address</string>
     <string name="AgregarActividad">Add</string>
+    <string name="Aceptar">Accept</string>
 
-
+    <string name="galeria_imagenes">Image gallery</string>
+    <string name="anadir_imagenes">Add images</string>
+    <string name="imagen_viaje">Travel image</string>
+    <string name="imagen_ampliada">Enlarged image</string>
+    <string name="nueva_actividad">New Activity</string>
+    <string name="editar_actividad">Edit Activity</string>
+    <string name="nombre_actividad">Activity name</string>
 </resources>

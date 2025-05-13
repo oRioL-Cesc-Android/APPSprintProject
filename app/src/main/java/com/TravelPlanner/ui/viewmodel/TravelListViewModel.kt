@@ -97,12 +97,12 @@ class TravelListViewModel @Inject constructor(
         viewModelScope.launch {
             val id = _editingItemId.value ?: return@launch
             val currentItem = travelRepo.getTravelById(id) ?: return@launch
+            // Si el viaje es nuevo y está vacío, bórralo
             if (currentItem.title.isBlank() &&
                 currentItem.location.isBlank() &&
                 currentItem.description.isBlank() &&
                 currentItem.rating == 0f &&
-                currentItem.fechainicio < LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) &&
-                currentItem.fechafinal < currentItem.fechainicio
+                (currentItem.imagePaths == null || currentItem.imagePaths.isEmpty())
             ) {
                 travelRepo.deleteTravelItem(
                     TravelItem(
@@ -114,7 +114,8 @@ class TravelListViewModel @Inject constructor(
                         fechainicio = currentItem.fechainicio,
                         fechafinal = currentItem.fechafinal,
                         userName = currentItem.userName,
-                        activities = emptyList()
+                        activities = emptyList(),
+                        imagePaths = currentItem.imagePaths ?: emptyList()
                     )
                 )
             }
@@ -122,4 +123,3 @@ class TravelListViewModel @Inject constructor(
         }
     }
 }
-

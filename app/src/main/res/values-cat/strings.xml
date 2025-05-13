@@ -108,6 +108,12 @@
     <string name="error_desconocido">Error desconegut</string>
     <string name="email_vacio">Si us plau, introdueix el teu correu electrònic</string>
     <string name="AgregarActividad">Afegir</string>
-
-
+    <string name="Aceptar">Acceptar</string>
+    <string name="galeria_imagenes">Galeria d\'imatges</string>
+    <string name="anadir_imagenes">Afegir imatges</string>
+    <string name="imagen_viaje">Imatge del viatge</string>
+    <string name="imagen_ampliada">Imatge ampliada</string>
+    <string name="nueva_actividad">Nova Activitat</string>
+    <string name="editar_actividad">Editar Activitat</string>
+    <string name="nombre_actividad">Nom de l\'activitat</string>
 </resources>

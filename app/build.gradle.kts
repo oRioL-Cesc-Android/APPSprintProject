@@ -57,9 +57,8 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     kapt("androidx.room:room-compiler:$room_version")
 
-
-
-
+    // Coil para carga de imágenes en Compose
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
     // Other dependencies
     implementation(libs.androidx.core.splashscreen)
