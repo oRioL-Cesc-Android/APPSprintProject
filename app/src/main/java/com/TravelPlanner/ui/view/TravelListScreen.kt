@@ -2,6 +2,17 @@ package com.TravelPlanner.ui.view
 
 import android.util.Log
 import android.view.ContextThemeWrapper
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.RoundedCornerShape
+import coil.compose.rememberAsyncImagePainter
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -78,7 +90,8 @@ fun TravelListScreen(
                         rating = 0f,
                         fechainicio = (LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) * 1000),
                         fechafinal = (LocalDateTime.now().plusDays(1).toEpochSecond(ZoneOffset.UTC) * 1000),
-                        userName = username
+                        userName = username,
+                        imagePaths = emptyList()
                     )
                     viewModel.addTravelItem(newItem)
                     viewModel.startEditing(newItem.id)
@@ -121,15 +134,13 @@ fun TravelListScreen(
                         viewModel = viewModel,
                         navController = navController,
                         onAddActivity = {
-                            // Bugfix: No asignar manualmente activity_id, dejar que Room lo autogenere
                             val newActivity = ActivityItems(
-                                activity_id = 0, // Room lo autogenerará
+                                activity_id = 0,
                                 nameActivity = "",
                                 ubicacion = "",
                                 duration = 0
                             )
                             viewModel.addActivityToTravel(item.id, newActivity)
-                            // No modificar editingActivityId aquí, se actualizará cuando Room devuelva la nueva lista
                         },
                         onEditActivity = { activityId ->
                             editingActivityId.value = activityId
@@ -178,9 +189,26 @@ fun TravelListItem(
     var fechainicioError by remember { mutableStateOf(false) }
     var fechafinalError by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+    val imagePaths = remember(item.imagePaths) { mutableStateListOf<String>().apply { clear(); addAll(item.imagePaths) } }
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetMultipleContents()
+    ) { uris: List<Uri> ->
+        val newPaths = uris.map { it.toString() }
+        imagePaths.addAll(newPaths)
+    }
+
+    var selectedImage by remember { mutableStateOf<String?>(null) }
+
     if (isEditing) {
         AlertDialog(
-            onDismissRequest = { viewModel.stopEditing(); onCloseActivityEdit() },
+            onDismissRequest = { 
+                if (item.title.isBlank() && item.location.isBlank() && item.description.isBlank() && item.rating == 0f && imagePaths.isEmpty()) {
+                    viewModel.deleteTravelItem(item)
+                }
+                viewModel.stopEditing()
+                onCloseActivityEdit()
+            },
             title = { Text(stringResource(R.string.EditarViajeAct)) },
             text = {
                 Column(
@@ -188,7 +216,6 @@ fun TravelListItem(
                         .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    // --- Datos del viaje ---
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -280,7 +307,53 @@ fun TravelListItem(
                         }
                     }
 
-                    // --- Actividades ---
+                    Text(stringResource(R.string.galeria_imagenes), style = MaterialTheme.typography.titleMedium)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState())
+                            .padding(vertical = 8.dp)
+                    ) {
+                        imagePaths.forEach { path ->
+                            Image(
+                                painter = rememberAsyncImagePainter(path),
+                                contentDescription = stringResource(R.string.imagen_viaje),
+                                modifier = Modifier
+                                    .size(80.dp)
+                                    .padding(end = 8.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .clickable { selectedImage = path },
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                    }
+                    Button(
+                        onClick = { launcher.launch("image/*") },
+                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                    ) {
+                        Text(stringResource(R.string.anadir_imagenes))
+                    }
+
+                    if (selectedImage != null) {
+                        Dialog(onDismissRequest = { selectedImage = null }) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.9f)
+                                    .aspectRatio(1f)
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = rememberAsyncImagePainter(selectedImage),
+                                    contentDescription = stringResource(R.string.imagen_ampliada),
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(RoundedCornerShape(16.dp))
+                                )
+                            }
+                        }
+                    }
+
                     Text(stringResource(R.string.Actividades), style = MaterialTheme.typography.titleMedium)
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -297,7 +370,6 @@ fun TravelListItem(
                             onClose = { onCloseActivityEdit() }
                         )
                     } else {
-                        // Mostrar todas las actividades, solo editables al clickar
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -313,7 +385,7 @@ fun TravelListItem(
                                 ) {
                                     Column(modifier = Modifier.padding(12.dp)) {
                                         Text(
-                                            text = activity.nameActivity.ifBlank { "Nueva Actividad" },
+                                            text = activity.nameActivity.ifBlank { stringResource(R.string.nueva_actividad) },
                                             style = MaterialTheme.typography.titleMedium
                                         )
                                         Spacer(modifier = Modifier.height(2.dp))
@@ -341,6 +413,9 @@ fun TravelListItem(
                 ) {
                     Button(
                         onClick = {
+                            if (item.title.isBlank() && item.location.isBlank() && item.description.isBlank() && item.rating == 0f && imagePaths.isEmpty()) {
+                                viewModel.deleteTravelItem(item)
+                            }
                             viewModel.stopEditing()
                             onCloseActivityEdit()
                         },
@@ -375,7 +450,8 @@ fun TravelListItem(
                                     rating = item.rating,
                                     fechainicio = item.fechainicio,
                                     fechafinal = item.fechafinal,
-                                    activities = item.activities
+                                    activities = item.activities,
+                                    imagePaths = imagePaths.toList()
                                 )
                                 onSaveClick(updatedItem)
                                 viewModel.stopEditing()
@@ -431,6 +507,47 @@ fun TravelListItem(
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))
+            if (item.imagePaths.isNotEmpty()) {
+                Text(stringResource(R.string.galeria_imagenes), style = MaterialTheme.typography.titleMedium)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                        .padding(vertical = 8.dp)
+                ) {
+                    item.imagePaths.forEach { path ->
+                        Image(
+                            painter = rememberAsyncImagePainter(path),
+                            contentDescription = stringResource(R.string.imagen_viaje),
+                            modifier = Modifier
+                                .size(80.dp)
+                                .padding(end = 8.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .clickable { selectedImage = path },
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }
+            }
+            if (selectedImage != null) {
+                Dialog(onDismissRequest = { selectedImage = null }) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f)
+                            .aspectRatio(1f)
+                            .padding(16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = rememberAsyncImagePainter(selectedImage),
+                            contentDescription = stringResource(R.string.imagen_ampliada),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(16.dp))
+                        )
+                    }
+                }
+            }
             Text(text = stringResource(R.string.actividades_label), style = MaterialTheme.typography.titleMedium)
             LazyColumn(
                 modifier = Modifier
@@ -446,7 +563,7 @@ fun TravelListItem(
                     ) {
                         Column(modifier = Modifier.padding(12.dp)) {
                             Text(
-                                text = activity.nameActivity.ifBlank { "Nueva Actividad" },
+                                text = activity.nameActivity.ifBlank { stringResource(R.string.nueva_actividad) },
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Spacer(modifier = Modifier.height(2.dp))
@@ -548,7 +665,7 @@ fun ActivityEditDialog(
         colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF9C4))
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            Text("Editar Actividad", style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.editar_actividad), style = MaterialTheme.typography.titleMedium)
             OutlinedTextField(
                 value = activityName,
                 onValueChange = {
@@ -556,7 +673,7 @@ fun ActivityEditDialog(
                     nameError = it.isBlank()
                     onActivityChange(activity.copy(nameActivity = it))
                 },
-                label = { Text("Nombre de actividad") },
+                label = { Text(stringResource(R.string.nombre_actividad)) },
                 isError = nameError,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -596,7 +713,7 @@ fun ActivityEditDialog(
                 modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
             ) {
                 Button(onClick = { onClose() }) {
-                    Text("Cerrar")
+                    Text(stringResource(R.string.Aceptar))
                 }
                 Spacer(modifier = Modifier.width(8.dp))
                 IconButton(onClick = { onDeleteClick(); onClose() }) {

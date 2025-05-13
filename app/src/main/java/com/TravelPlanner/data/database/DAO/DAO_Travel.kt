@@ -31,5 +31,4 @@ interface DAO_Travel {
     @Transaction
     @Query("SELECT * FROM user_table WHERE username = :username")
     fun getUserWithTravels(username: String): Flow<UserWithTravels>
-
 }

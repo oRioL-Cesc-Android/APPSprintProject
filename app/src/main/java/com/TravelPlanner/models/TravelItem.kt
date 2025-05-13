@@ -1,6 +1,5 @@
 package com.TravelPlanner.models
 
-
 data class TravelItem(
     val id: Int,
     var title: String,
@@ -10,5 +9,6 @@ data class TravelItem(
     var fechainicio: Long,
     var fechafinal: Long,
     var activities: List<ActivityItems> = emptyList(),
-    var userName: String
+    var userName: String,
+    var imagePaths: List<String> = emptyList() // Añadido para galería de imágenes
 )
