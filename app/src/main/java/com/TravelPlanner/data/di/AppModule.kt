@@ -8,12 +8,17 @@ import com.TravelPlanner.data.database.DAO.DAO_Activity
 import com.TravelPlanner.data.database.DAO.DAO_Travel
 import com.TravelPlanner.data.database.DAO.UserDao
 import com.TravelPlanner.data.database.database
+import com.TravelPlanner.data.remote.api.HotelAPiservice
+import com.TravelPlanner.data.repo.HotelRepository
 import com.TravelPlanner.data.repository.User_Repo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -62,5 +67,26 @@ object AppModule {
     @Singleton
     fun provideUserRepository(userDao: UserDao): User_Repo {
         return User_Repo(userDao)
+    }
+    @Provides
+    @Singleton
+    fun provideRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("http://13.39.162.212/") // cambia si usas otro endpoint
+            .client(OkHttpClient.Builder().build())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideHotelApi(retrofit: Retrofit): HotelAPiservice {
+        return retrofit.create(HotelAPiservice::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHotelRepository(api: HotelAPiservice): HotelRepository {
+        return HotelRepository(api)
     }
 }
