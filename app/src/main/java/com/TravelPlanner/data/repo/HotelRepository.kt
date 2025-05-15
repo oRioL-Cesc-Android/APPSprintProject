@@ -1,48 +1,21 @@
 package com.TravelPlanner.data.repo
 
-import com.TravelPlanner.data.remote.api.HotelAPiservice
-import com.TravelPlanner.data.remote.dto.*
+import com.TravelPlanner.data.remote.api.HotelApiService
+import com.TravelPlanner.models.Hotel
+import com.TravelPlanner.models.ReserveRequest
+import retrofit2.Response
 import javax.inject.Inject
 
 class HotelRepository @Inject constructor(
-    private val api: HotelAPiservice
+    private val api: HotelApiService
 ) {
 
-    suspend fun getHotels(groupId: String): List<HotelDto> {
-        return api.listHotels(groupId)
-    }
+    suspend fun getHotels(groupId: String): List<Hotel> =
+        api.getHotels(groupId)
 
-    suspend fun checkAvailability(
-        groupId: String,
-        startDate: String,
-        endDate: String,
-        hotelId: String? = null,
-        city: String? = null
-    ): List<AvailabilityDto> {
-        return api.checkAvailability(groupId, startDate, endDate, hotelId, city)
-    }
+    suspend fun checkAvailability(groupId: String, startDate: String, endDate: String, city: String?): List<Hotel> =
+        api.checkAvailability(groupId, startDate, endDate, city)
 
-    suspend fun reserveRoom(groupId: String, reservation: ReservationAvailabilityDto): ResponseBodyDto {
-        return api.reserveRoom(groupId, reservation)
-    }
-
-    suspend fun cancelReservation(groupId: String, cancelRequest: CancelRequestDto): ResponseBodyDto {
-        return api.cancelReservation(groupId, cancelRequest)
-    }
-
-    suspend fun getGroupReservations(groupId: String): List<ReservationDto> {
-        return api.listGroupReservations(groupId)
-    }
-
-    suspend fun getAllReservations(): List<ReservationDto> {
-        return api.listAllReservations()
-    }
-
-    suspend fun getReservationById(resId: Int): ReservationDto {
-        return api.getReservationById(resId)
-    }
-
-    suspend fun cancelReservationById(resId: Int): ResponseBodyDto {
-        return api.cancelReservationById(resId)
-    }
+    suspend fun reserveRoom(groupId: String, request: ReserveRequest): Response<Unit> =
+        api.reserveRoom(groupId, request)
 }

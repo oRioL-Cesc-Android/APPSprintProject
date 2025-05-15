@@ -51,15 +51,11 @@ dependencies {
 
     implementation(libs.firebase.auth)
     implementation(libs.androidx.benchmark.macro)
-    implementation(libs.androidx.room.runtime.android)
     // Room dependencies
     val room_version = "2.6.1"
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     kapt("androidx.room:room-compiler:$room_version")
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation ("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
 
     // Coil para carga de imágenes en Compose
     implementation("io.coil-kt:coil-compose:2.4.0")
@@ -75,6 +71,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.compiler)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.11")
 
     // Hilt
     implementation(libs.hilt.android)
