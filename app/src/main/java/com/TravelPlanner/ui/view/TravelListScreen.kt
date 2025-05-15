@@ -485,7 +485,7 @@ fun TravelListItem(
         ) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF45141D), contentColor = Color.White)
             ) {
                 Column(modifier = Modifier.padding(12.dp)) {
                     Text(text = stringResource(R.string.titulo_label, item.title), style = MaterialTheme.typography.titleMedium)
@@ -559,20 +559,23 @@ fun TravelListItem(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 6.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFEFA8B3))
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFF45141D))
                     ) {
                         Column(modifier = Modifier.padding(12.dp)) {
                             Text(
                                 text = activity.nameActivity.ifBlank { stringResource(R.string.nueva_actividad) },
+                                color = Color.White,
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
                                 text = stringResource(R.string.Ubicacion) + ": " + activity.ubicacion,
+                                color = Color.White,
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Text(
                                 text = stringResource(R.string.Duración) + ": " + activity.duration.toString(),
+                                color = Color.White,
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         }
