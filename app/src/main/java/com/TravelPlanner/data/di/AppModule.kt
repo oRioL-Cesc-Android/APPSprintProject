@@ -8,7 +8,7 @@ import com.TravelPlanner.data.database.DAO.DAO_Activity
 import com.TravelPlanner.data.database.DAO.DAO_Travel
 import com.TravelPlanner.data.database.DAO.UserDao
 import com.TravelPlanner.data.database.database
-import com.TravelPlanner.data.remote.api.HotelAPiservice
+import com.TravelPlanner.data.remote.api.HotelApiService
 import com.TravelPlanner.data.repo.HotelRepository
 import com.TravelPlanner.data.repository.User_Repo
 import dagger.Module
@@ -17,6 +17,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -68,6 +69,7 @@ object AppModule {
     fun provideUserRepository(userDao: UserDao): User_Repo {
         return User_Repo(userDao)
     }
+    /*
     @Provides
     @Singleton
     fun provideRetrofit(): Retrofit {
@@ -80,13 +82,28 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideHotelApi(retrofit: Retrofit): HotelAPiservice {
-        return retrofit.create(HotelAPiservice::class.java)
+    fun provideRetrofit(): Retrofit =
+        Retrofit.Builder()
+            .baseUrl("http://13.39.162.212:8080/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(
+                OkHttpClient.Builder()
+                    .addInterceptor(HttpLoggingInterceptor().apply {
+                        level = HttpLoggingInterceptor.Level.BODY
+                    })
+                    .build()
+            )
+            .build()*/
+
+    @Provides
+    @Singleton
+    fun provideHotelApiService(retrofit: Retrofit): HotelApiService {
+        return retrofit.create(HotelApiService::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideHotelRepository(api: HotelAPiservice): HotelRepository {
+    fun provideHotelRepository(api: HotelApiService): HotelRepository {
         return HotelRepository(api)
     }
 }

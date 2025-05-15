@@ -1,75 +1,73 @@
 package com.TravelPlanner.ui.view
 
-
-
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.TravelPlanner.R
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.TravelPlanner.ui.viewmodel.HotelViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExploreScreen(navController: NavHostController) {
-    // Datos de ejemplo para el viaje
-    val explorer = "Aqui irá el Explorador, con lupa de búsqueda y demás"
+fun ExploreScreen(
+    navController: NavController,
+    viewModel: HotelViewModel = hiltViewModel()
+) {
+    var city by remember { mutableStateOf("London") }
+    var startDate by remember { mutableStateOf("2025-06-01") }
+    var endDate by remember { mutableStateOf("2025-06-05") }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.ExploreScreen)) }, // Título de la barra superior
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back Icon"
-                        )
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
+    val hotels = viewModel.hotels.collectAsState()
 
-    Box(
+    Column(
         modifier = Modifier
+            .padding(16.dp)
             .fillMaxSize()
-            .padding(innerPadding)
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Título del viaje
-            Text(
-                text = explorer,
-                style = MaterialTheme.typography.headlineLarge,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+        OutlinedTextField(
+            value = city,
+            onValueChange = { city = it },
+            label = { Text("City (London/Paris/Barcelona)") },
+            modifier = Modifier.fillMaxWidth()
+        )
 
+        Spacer(modifier = Modifier.height(8.dp))
 
-            // Botón para regresar a la pantalla anterior
-            Button(onClick = { navController.popBackStack() }) {
-                Text(stringResource(R.string.Volver))
-            }
+        OutlinedTextField(
+            value = startDate,
+            onValueChange = { startDate = it },
+            label = { Text("Start Date (YYYY-MM-DD)") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = endDate,
+            onValueChange = { endDate = it },
+            label = { Text("End Date (YYYY-MM-DD)") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(onClick = {
+            viewModel.searchHotels("G01", startDate, endDate, city)
+        }) {
+            Text("Search Hotels")
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text("Results:", style = MaterialTheme.typography.titleMedium)
+
+        hotels.value.forEach { hotel ->
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("🏨 ${hotel.name} (${hotel.rating}⭐)")
+            Text("📍 ${hotel.address}")
+            Divider(modifier = Modifier.padding(vertical = 8.dp))
         }
     }
 }
-}
+
