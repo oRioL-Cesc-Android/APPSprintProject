@@ -106,7 +106,13 @@
     <string name="ok">OK</string>
     <string name="error_desconocido">Error desconocido</string>
     <string name="email_vacio">Por favor, introduce tu correo electrónico</string>
-
-
-
+    <string name="AgregarActividad">Agregar</string>
+    <string name="Aceptar">Aceptar</string>
+    <string name="galeria_imagenes">Galería de imágenes</string>
+    <string name="anadir_imagenes">Añadir imágenes</string>
+    <string name="imagen_viaje">Imagen del viaje</string>
+    <string name="imagen_ampliada">Imagen ampliada</string>
+    <string name="nueva_actividad">Nueva Actividad</string>
+    <string name="editar_actividad">Editar Actividad</string>
+    <string name="nombre_actividad">Nombre de actividad</string>
 </resources>
