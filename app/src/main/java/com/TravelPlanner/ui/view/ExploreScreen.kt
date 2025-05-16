@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.TravelPlanner.models.ReserveRequest
 import com.TravelPlanner.ui.viewmodel.HotelViewModel
 
 @Composable
@@ -18,7 +19,9 @@ fun ExploreScreen(
     var startDate by remember { mutableStateOf("2025-06-01") }
     var endDate by remember { mutableStateOf("2025-06-05") }
 
-    val hotels = viewModel.hotels.collectAsState()
+    val hotels by viewModel.hotels.collectAsState()
+    val allHotels by viewModel.allHotels.collectAsState()
+    val reservationResult = viewModel.reservationResult
 
     Column(
         modifier = Modifier
@@ -52,22 +55,79 @@ fun ExploreScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = {
-            viewModel.searchHotels("G01", startDate, endDate, city)
-        }) {
-            Text("Search Hotels")
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = {
+                viewModel.searchHotels(startDate, endDate, city)
+            }) {
+                Text("Search Hotels")
+            }
+
+            Button(onClick = {
+                viewModel.fetchAllHotels()
+            }) {
+                Text("All Hotels")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        reservationResult?.let { success ->
+            Text(
+                text = if (success) "✅ Reservation successful!" else "❌ Reservation failed.",
+                color = if (success) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+            )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text("Results:", style = MaterialTheme.typography.titleMedium)
+        Text("Search Results:", style = MaterialTheme.typography.titleMedium)
 
-        hotels.value.forEach { hotel ->
-            Spacer(modifier = Modifier.height(8.dp))
-            Text("🏨 ${hotel.name} (${hotel.rating}⭐)")
-            Text("📍 ${hotel.address}")
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
+        hotels.forEach { hotel ->
+            HotelItem(hotel.name, hotel.rating, hotel.address) {
+                val reserveRequest = ReserveRequest(
+                    hotel_id = hotel.id,
+                    room_id = "room01", // Simulado
+                    start_date = startDate,
+                    end_date = endDate,
+                    guest_name = "John Doe",
+                    guest_email = "john@example.com"
+                )
+                viewModel.reserveRoom(reserveRequest)
+            }
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Forzamos mostrar All Hotels aunque esté vacío (debugging)
+        Text("All Hotels:", style = MaterialTheme.typography.titleMedium)
+
+        allHotels.forEach { hotel ->
+            HotelItem(hotel.name, hotel.rating, hotel.address) {
+                val reserveRequest = ReserveRequest(
+                    hotel_id = hotel.id,
+                    room_id = "room01", // Simulado
+                    start_date = startDate,
+                    end_date = endDate,
+                    guest_name = "John Doe",
+                    guest_email = "john@example.com"
+                )
+                viewModel.reserveRoom(reserveRequest)
+            }
         }
     }
 }
 
+@Composable
+fun HotelItem(hotelName: String, rating: Int, address: String, onReserveClick: () -> Unit) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = 8.dp)) {
+        Text("🏨 $hotelName ($rating⭐)")
+        Text("📍 $address")
+        Spacer(modifier = Modifier.height(4.dp))
+        Button(onClick = onReserveClick) {
+            Text("Reserve")
+        }
+        Divider(modifier = Modifier.padding(vertical = 8.dp))
+    }
+}
