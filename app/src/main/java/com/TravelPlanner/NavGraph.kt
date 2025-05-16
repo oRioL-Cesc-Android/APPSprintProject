@@ -8,7 +8,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.TravelPlanner.ui.view.AboutScreen
-import com.TravelPlanner.ui.view.ExploreScreen
 import com.TravelPlanner.ui.view.ForgotPasswordScreen
 import com.TravelPlanner.ui.view.HomeScreen
 import com.TravelPlanner.ui.view.LoginScreen
@@ -19,6 +18,7 @@ import com.TravelPlanner.ui.view.TermsCondScreen
 import com.TravelPlanner.ui.view.TravelListScreen
 import com.TravelPlanner.ui.view.VersionScreen
 import com.google.firebase.auth.FirebaseAuth
+import com.TravelPlanner.ui.view.ExploreScreen
 
 
 @Composable

@@ -1,11 +1,19 @@
 package com.TravelPlanner.data.remote.dto
 
+
+
+import com.TravelPlanner.models.Hotel
+import com.TravelPlanner.models.Room
+import com.google.gson.annotations.SerializedName
+
 data class ReservationDto(
-    val id: Int? = null,
-    val hotelId: Int,
-    val userId: Int,
-    val roomType: String,
-    val checkInDate: String,   // formato: "YYYY-MM-DD"
-    val checkOutDate: String,  // formato: "YYYY-MM-DD"
-    val guests: Int
+    val id: String,
+    val hotelId: String,
+    val roomId: String,
+    val startDate: String,
+    val endDate: String,
+    val guestName: String,
+    val guestEmail: String,
+    val hotel: Hotel,
+    val room: Room
 )

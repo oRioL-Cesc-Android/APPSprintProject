@@ -1,21 +1,43 @@
 package com.TravelPlanner.data.repo
 
-import com.TravelPlanner.data.remote.api.HotelApiService
+import com.TravelPlanner.data.remote.dto.AvailabilityDto
+import com.TravelPlanner.data.remote.dto.HotelDto
+import com.TravelPlanner.data.remote.dto.ReservationDto
+import com.TravelPlanner.data.remote.dto.ReservationResponseBody
+import com.TravelPlanner.data.remote.dto.ResponseBody
 import com.TravelPlanner.models.Hotel
 import com.TravelPlanner.models.ReserveRequest
-import retrofit2.Response
+import com.zeni.core.data.remote.api.HotelApiService
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class HotelRepository @Inject constructor(
-    private val api: HotelApiService
-) {
 
-    suspend fun getHotels(groupId: String): List<Hotel> =
-        api.getHotels(groupId)
 
-    suspend fun checkAvailability(groupId: String, startDate: String, endDate: String, city: String?): List<Hotel> =
-        api.checkAvailability(groupId, startDate, endDate, city)
+interface HotelRepository {
 
-    suspend fun reserveRoom(groupId: String, request: ReserveRequest): Response<Unit> =
-        api.reserveRoom(groupId, request)
+    /* ---------- Hotels & Availability ---------- */
+    suspend fun getHotels(): List<Hotel>
+    suspend fun getAvailability(
+        groupId: String,
+        start: String,
+        end: String,
+        hotelId: String? = null,
+        city: String? = null
+    ): List<Hotel>
+
+    /* ---------- Make & cancel reservation (by group) ---------- */
+    suspend fun reserve(groupId: String, request: ReserveRequest): ReservationDto
+    suspend fun cancel(groupId: String, request: ReserveRequest): String   // returns message
+
+    /* ---------- Reservations queries ---------- */
+    suspend fun getGroupReservations(
+        groupId: String,
+        guestEmail: String? = null
+    ): List<ReservationDto>
+
+    suspend fun getAllReservations(): Map<String, List<ReservationDto>>
+
+    /* ---------- Operations by reservation-id ---------- */
+    suspend fun getReservationById(resId: String): ReservationDto
+    suspend fun cancelById(resId: String): ReservationDto
 }

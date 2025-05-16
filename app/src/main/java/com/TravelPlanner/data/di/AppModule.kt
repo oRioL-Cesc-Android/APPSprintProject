@@ -8,9 +8,9 @@ import com.TravelPlanner.data.database.DAO.DAO_Activity
 import com.TravelPlanner.data.database.DAO.DAO_Travel
 import com.TravelPlanner.data.database.DAO.UserDao
 import com.TravelPlanner.data.database.database
-import com.TravelPlanner.data.remote.api.HotelApiService
 import com.TravelPlanner.data.repo.HotelRepository
 import com.TravelPlanner.data.repository.User_Repo
+import com.zeni.core.data.remote.api.HotelApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

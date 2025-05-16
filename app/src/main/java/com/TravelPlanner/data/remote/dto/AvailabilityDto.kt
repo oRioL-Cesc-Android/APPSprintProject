@@ -1,8 +1,9 @@
 package com.TravelPlanner.data.remote.dto
 
+
+import com.google.gson.annotations.SerializedName
+
 data class AvailabilityDto(
-    val hotelId: Int,
-    val roomType: String,
-    val available: Boolean,
-    val availableRooms: Int
+    @SerializedName("available_hotels")
+    val availableHotels: List<HotelDto>
 )
