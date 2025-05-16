@@ -1,12 +1,11 @@
 package com.TravelPlanner.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.TravelPlanner.data.remote.dto.*
 import com.TravelPlanner.data.repo.HotelRepository
 import com.TravelPlanner.models.Hotel
+import com.TravelPlanner.models.ReserveRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,12 +20,38 @@ class HotelViewModel @Inject constructor(
     private val _hotels = MutableStateFlow<List<Hotel>>(emptyList())
     val hotels: StateFlow<List<Hotel>> = _hotels
 
-    fun searchHotels(groupId: String, startDate: String, endDate: String, city: String?) {
+    private val _allHotels = MutableStateFlow<List<Hotel>>(emptyList())
+    val allHotels: StateFlow<List<Hotel>> = _allHotels
+
+    var reservationResult by mutableStateOf<Boolean?>(null)
+        private set
+
+    fun fetchAllHotels() {
         viewModelScope.launch {
             try {
-                _hotels.value = repository.checkAvailability(groupId, startDate, endDate, city)
+                _allHotels.value = repository.getHotels()
             } catch (e: Exception) {
-                _hotels.value = emptyList() // o mostrar error
+                _allHotels.value = emptyList()
+            }
+        }
+    }
+
+    fun searchHotels(startDate: String, endDate: String, city: String?) {
+        viewModelScope.launch {
+            try {
+                _hotels.value = repository.checkAvailability(startDate, endDate, city)
+            } catch (e: Exception) {
+                _hotels.value = emptyList()
+            }
+        }
+    }
+
+    fun reserveRoom(request: ReserveRequest) {
+        viewModelScope.launch {
+            reservationResult = try {
+                repository.reserveRoom(request).isSuccessful
+            } catch (e: Exception) {
+                false
             }
         }
     }

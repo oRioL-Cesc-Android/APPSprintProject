@@ -9,13 +9,13 @@ import javax.inject.Inject
 class HotelRepository @Inject constructor(
     private val api: HotelApiService
 ) {
-
-    suspend fun getHotels(groupId: String): List<Hotel> =
+    val groupId = "G06"
+    suspend fun getHotels(): List<Hotel> =
         api.getHotels(groupId)
 
-    suspend fun checkAvailability(groupId: String, startDate: String, endDate: String, city: String?): List<Hotel> =
+    suspend fun checkAvailability( startDate: String, endDate: String, city: String?): List<Hotel> =
         api.checkAvailability(groupId, startDate, endDate, city)
 
-    suspend fun reserveRoom(groupId: String, request: ReserveRequest): Response<Unit> =
+    suspend fun reserveRoom(request: ReserveRequest): Response<Unit> =
         api.reserveRoom(groupId, request)
 }
