@@ -27,12 +27,12 @@ import com.TravelPlanner.R
 @Composable
 fun MapScreen(navController: NavHostController) {
     // Datos de ejemplo para el viaje
-    val map = "Aquí irá el MAPA"
+
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.Mapa)) }, // Título de la barra superior
+                title = { Text(stringResource(R.string.Reservas)) }, // Título de la barra superior
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -56,9 +56,7 @@ fun MapScreen(navController: NavHostController) {
             ) {
                 // Título del viaje
                 Text(
-                    text = map,
-                    style = MaterialTheme.typography.headlineLarge,
-                    modifier = Modifier.padding(bottom = 8.dp)
+                    text = "Nombre del viaje",
                 )
 
                 // Botón para regresar a la pantalla anterior
