@@ -6,7 +6,7 @@ class StringListConverter {
 
     @TypeConverter
     fun fromList(list: List<String>): String {
-        return list.joinToString(separator = ";;") // puedes usar otro separador seguro
+        return list.joinToString(separator = ";;")
     }
 
     @TypeConverter
