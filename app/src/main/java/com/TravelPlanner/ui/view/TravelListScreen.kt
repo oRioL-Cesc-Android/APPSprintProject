@@ -49,6 +49,9 @@ import java.time.ZoneOffset
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -191,11 +194,34 @@ fun TravelListItem(
 
     val context = LocalContext.current
     val imagePaths = remember(item.imagePaths) { mutableStateListOf<String>().apply { clear(); addAll(item.imagePaths) } }
+
+    // Nueva función para copiar la imagen seleccionada al almacenamiento interno
+    fun saveImageToInternalStorage(context: android.content.Context, uri: Uri, fileName: String): String? {
+        return try {
+            val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+            val file = File(context.filesDir, fileName)
+            val outputStream = FileOutputStream(file)
+            inputStream?.copyTo(outputStream)
+            inputStream?.close()
+            outputStream.close()
+            file.toURI().toString()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetMultipleContents()
     ) { uris: List<Uri> ->
-        val newPaths = uris.map { it.toString() }
-        imagePaths.addAll(newPaths)
+        // Guardar cada imagen seleccionada en almacenamiento interno y guardar la ruta
+        uris.forEachIndexed { index, uri ->
+            val fileName = "travel_${item.id}_${System.currentTimeMillis()}_$index.jpg"
+            val savedPath = saveImageToInternalStorage(context, uri, fileName)
+            if (savedPath != null) {
+                imagePaths.add(savedPath)
+            }
+        }
     }
 
     var selectedImage by remember { mutableStateOf<String?>(null) }
@@ -733,3 +759,4 @@ fun PreviewTravelListScreen() {
     val navController = rememberNavController()
     TravelListScreen(navController)
 }
+

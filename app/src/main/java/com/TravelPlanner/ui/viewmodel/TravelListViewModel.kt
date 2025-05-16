@@ -1,6 +1,8 @@
 package com.TravelPlanner.ui.viewmodel
 
+import android.content.Context
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.TravelPlanner.data.repo.Travel_Repo
@@ -14,9 +16,13 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 import javax.inject.Inject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import java.io.File
+import java.io.FileOutputStream
 
 @HiltViewModel
 class TravelListViewModel @Inject constructor(
+    @ApplicationContext val context: Context,
     private val travelRepo: Travel_Repo,
     private val activityRepo: Activity_Repo
 ) : ViewModel() {
@@ -97,6 +103,7 @@ class TravelListViewModel @Inject constructor(
         viewModelScope.launch {
             val id = _editingItemId.value ?: return@launch
             val currentItem = travelRepo.getTravelById(id) ?: return@launch
+
             // Si el viaje es nuevo y está vacío, bórralo
             if (currentItem.title.isBlank() &&
                 currentItem.location.isBlank() &&
