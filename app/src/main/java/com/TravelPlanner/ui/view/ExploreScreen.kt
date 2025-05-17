@@ -6,13 +6,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.TravelPlanner.models.ReserveRequest
 import com.TravelPlanner.models.Reservation
+import com.TravelPlanner.models.Room
 import com.TravelPlanner.ui.viewmodel.HotelViewModel
 
 @Composable
@@ -20,10 +23,8 @@ fun ExploreScreen(
     navController: NavController,
     viewModel: HotelViewModel = hiltViewModel()
 ) {
-    var city by remember { mutableStateOf("London") }
     var startDate by remember { mutableStateOf("2025-06-01") }
     var endDate by remember { mutableStateOf("2025-06-05") }
-    var roomId by remember { mutableStateOf("R1") }
     var guestName by remember { mutableStateOf("John Doe") }
     var guestEmail by remember { mutableStateOf("john@example.com") }
     var showAllHotels by remember { mutableStateOf(false) }
@@ -40,31 +41,71 @@ fun ExploreScreen(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        BackButton { navController.popBackStack() }
+        Spacer(modifier = Modifier.height(16.dp))
 
-        SearchInputs(
-            city = city, onCityChange = { city = it },
-            startDate = startDate, onStartDateChange = { startDate = it },
-            endDate = endDate, onEndDateChange = { endDate = it },
-            roomId = roomId, onRoomIdChange = { roomId = it },
-            guestName = guestName, onGuestNameChange = { guestName = it },
-            guestEmail = guestEmail, onGuestEmailChange = { guestEmail = it }
+        Button(onClick = { navController.popBackStack() }) {
+            Text("← Back")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = startDate,
+            onValueChange = { startDate = it },
+            label = { Text("Start Date (YYYY-MM-DD)") },
+            modifier = Modifier.fillMaxWidth()
         )
 
-        ActionButtons(
-            onFetchAll = {
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = endDate,
+            onValueChange = { endDate = it },
+            label = { Text("End Date (YYYY-MM-DD)") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = guestName,
+            onValueChange = { guestName = it },
+            label = { Text("Guest Name") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = guestEmail,
+            onValueChange = { guestEmail = it },
+            label = { Text("Guest Email") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = {
                 viewModel.fetchAllHotels()
                 showAllHotels = true
-            },
-            onShowReservations = {
+            }) {
+                Text("Ver Hoteles")
+            }
+
+            Button(onClick = {
                 viewModel.listReservation(guestEmail)
                 showAllHotels = false
+            }) {
+                Text("Mis Reservas")
             }
-        )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         reservationResult?.let { success ->
             Text(
-                text = if (success) "✅ Reserva exitosa" else "❌ Error al reservar",
+                text = if (success) "✅ Reservation successful!" else "❌ Reservation failed.",
                 color = if (success) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
             )
         }
@@ -76,111 +117,89 @@ fun ExploreScreen(
             )
         }
 
-        if (hotels.isNotEmpty()) {
-            SectionTitle("Resultados de búsqueda")
-            hotels.forEach { hotel ->
-                HotelItem(
-                    hotelName = hotel.name,
-                    rating = hotel.rating,
-                    address = hotel.address,
-                    imageUrl = hotel.image_url
-                ) {
-                    viewModel.reserveRoom(
-                        ReserveRequest(hotel.id, roomId, startDate, endDate, guestName, guestEmail)
-                    )
-                }
-            }
-        }
+        Spacer(modifier = Modifier.height(24.dp))
 
-        if (showAllHotels && allHotels.isNotEmpty()) {
-            SectionTitle("Todos los hoteles")
-            allHotels.forEach { hotel ->
-                HotelItem(
-                    hotelName = hotel.name,
-                    rating = hotel.rating,
-                    address = hotel.address,
-                    imageUrl = hotel.image_url
-                ) {
-                    viewModel.reserveRoom(
-                        ReserveRequest(hotel.id, roomId, startDate, endDate, guestName, guestEmail)
+        if (showAllHotels) {
+            Text("Todos los Hoteles:", style = MaterialTheme.typography.titleMedium)
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 600.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                allHotels.forEach { hotel ->
+                    HotelItemWithRooms(
+                        hotelName = hotel.name,
+                        rating = hotel.rating,
+                        address = hotel.address,
+                        hotelImageUrl = hotel.image_url,
+                        rooms = hotel.rooms,
+                        startDate = startDate,
+                        endDate = endDate,
+                        guestName = guestName,
+                        guestEmail = guestEmail,
+                        onReserveClick = { roomId ->
+                            val reserveRequest = ReserveRequest(
+                                hotel_id = hotel.id,
+                                room_id = roomId,
+                                start_date = startDate,
+                                end_date = endDate,
+                                guest_name = guestName,
+                                guest_email = guestEmail
+                            )
+                            viewModel.reserveRoom(reserveRequest)
+                        }
                     )
                 }
             }
         }
 
         if (reservations.isNotEmpty()) {
-            SectionTitle("Tus reservas")
-            reservations.forEach { reservation ->
-                ReservationItem(reservation)
+            Spacer(modifier = Modifier.height(24.dp))
+            Text("Tus Reservas:", style = MaterialTheme.typography.titleMedium)
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 600.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                reservations.forEach { reservation ->
+                    ReservationItem(reservation = reservation)
+                }
             }
         }
     }
 }
 
 @Composable
-fun BackButton(onBack: () -> Unit) {
-    Button(onClick = onBack) {
-        Text("← Volver")
-    }
-    Spacer(modifier = Modifier.height(16.dp))
-}
-
-@Composable
-fun SearchInputs(
-    city: String, onCityChange: (String) -> Unit,
-    startDate: String, onStartDateChange: (String) -> Unit,
-    endDate: String, onEndDateChange: (String) -> Unit,
-    roomId: String, onRoomIdChange: (String) -> Unit,
-    guestName: String, onGuestNameChange: (String) -> Unit,
-    guestEmail: String, onGuestEmailChange: (String) -> Unit
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        OutlinedTextField(value = startDate, onValueChange = onStartDateChange, label = { Text("Inicio (YYYY-MM-DD)") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = endDate, onValueChange = onEndDateChange, label = { Text("Fin (YYYY-MM-DD)") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = roomId, onValueChange = onRoomIdChange, label = { Text("ID de Habitación(R1, R2, R3)") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = guestName, onValueChange = onGuestNameChange, label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = guestEmail, onValueChange = onGuestEmailChange, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
-    }
-    Spacer(modifier = Modifier.height(16.dp))
-}
-
-@Composable
-fun ActionButtons(
-    onFetchAll: () -> Unit,
-    onShowReservations: () -> Unit
-) {
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Button(onClick = onFetchAll) { Text("Ver hoteles") }
-        OutlinedButton(onClick = onShowReservations) { Text("Mis reservas") }
-    }
-    Spacer(modifier = Modifier.height(16.dp))
-}
-
-@Composable
-fun SectionTitle(title: String) {
-    Spacer(modifier = Modifier.height(16.dp))
-    Text(text = title, style = MaterialTheme.typography.titleMedium)
-    Spacer(modifier = Modifier.height(8.dp))
-}
-
-@Composable
-fun HotelItem(
+fun HotelItemWithRooms(
     hotelName: String,
     rating: Int,
     address: String,
-    imageUrl: String?,
-    onReserveClick: () -> Unit
+    hotelImageUrl: String?,
+    rooms: List<Room>,
+    startDate: String,
+    endDate: String,
+    guestName: String,
+    guestEmail: String,
+    onReserveClick: (roomId: String) -> Unit
 ) {
     val baseUrl = "http://13.39.162.212"
-    val finalImageUrl = imageUrl?.removePrefix("/")?.let { "$baseUrl/$it" }
+
+    val finalHotelImageUrl = hotelImageUrl?.removePrefix("/")?.let { "$baseUrl/$it" }
 
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(vertical = 8.dp)) {
 
-        finalImageUrl?.let {
+        finalHotelImageUrl?.let {
             AsyncImage(
-                model = it,
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(it)
+                    .crossfade(true)
+                    .build(),
                 contentDescription = "Hotel Image",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -193,10 +212,35 @@ fun HotelItem(
 
         Text("🏨 $hotelName ($rating⭐)")
         Text("📍 $address")
-        Spacer(modifier = Modifier.height(4.dp))
-        Button(onClick = onReserveClick) {
-            Text("Reservar")
+
+        rooms.forEach { room ->
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("🛏 ${room.room_type} - ${room.price}€")
+
+            // Construir la URL completa para la imagen de la habitación
+            val roomImageUrl = room.image_url?.let { "$baseUrl/images/$it" }
+
+            roomImageUrl?.let { imageUrl ->
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(imageUrl)
+                        .crossfade(true)
+                        .build(),
+                    contentDescription = "Room Image",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
+                        .padding(bottom = 8.dp),
+                    placeholder = painterResource(android.R.drawable.ic_menu_report_image),
+                    error = painterResource(android.R.drawable.ic_delete)
+                )
+            }
+
+            Button(onClick = { onReserveClick(room.id) }) {
+                Text("Reservar esta habitación")
+            }
         }
+
         Divider(modifier = Modifier.padding(vertical = 8.dp))
     }
 }

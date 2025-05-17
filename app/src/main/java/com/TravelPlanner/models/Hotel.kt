@@ -1,6 +1,5 @@
 package com.TravelPlanner.models
 
-import androidx.room.Room
 
 data class Hotel(
     val id: String,
