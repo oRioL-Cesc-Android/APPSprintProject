@@ -5,6 +5,7 @@ import com.TravelPlanner.models.Hotel
 import com.TravelPlanner.models.ReserveRequest
 import retrofit2.Response
 import javax.inject.Inject
+import com.TravelPlanner.models.Reservation
 
 class HotelRepository @Inject constructor(
     private val api: HotelApiService
@@ -18,4 +19,8 @@ class HotelRepository @Inject constructor(
 
     suspend fun reserveRoom(request: ReserveRequest): Response<Unit> =
         api.reserveRoom(groupId, request)
+    suspend fun listReservation(guestEmail: String): List<Reservation> {
+        return api.getReservations(groupId, guestEmail).reservations
+    }
+
 }
