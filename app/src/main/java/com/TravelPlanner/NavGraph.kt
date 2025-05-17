@@ -8,11 +8,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.TravelPlanner.ui.view.AboutScreen
-import com.TravelPlanner.ui.view.ExploreScreen
+import com.TravelPlanner.ui.view.HotelesScreen
 import com.TravelPlanner.ui.view.ForgotPasswordScreen
 import com.TravelPlanner.ui.view.HomeScreen
 import com.TravelPlanner.ui.view.LoginScreen
-import com.TravelPlanner.ui.view.MapScreen
+import com.TravelPlanner.ui.view.ReservasScreen
 import com.TravelPlanner.ui.view.RegisterScreen
 import com.TravelPlanner.ui.view.SettingsScreen
 import com.TravelPlanner.ui.view.TermsCondScreen
@@ -31,8 +31,8 @@ fun NavGraph(navController: NavHostController) {
         composable("home") {  HomeScreen(navController) }
         composable("Travel List") {  TravelListScreen(navController, hiltViewModel()) }
         composable("Trip Details Screen") {  TripDetailsScreen(navController) }
-        composable("Map Screen") {  MapScreen(navController) }
-        composable("ExploreScreen") {  ExploreScreen(navController) }
+        composable("ReservasScreen") {  ReservasScreen(navController) }
+        composable("HotelesScreen") {  HotelesScreen(navController) }
         composable("TermsCondScreen") {  TermsCondScreen(navController) }
         composable("SettingsScreen") { SettingsScreen(navController) }
         composable("register") { RegisterScreen(navController) }

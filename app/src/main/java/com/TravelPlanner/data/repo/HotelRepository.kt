@@ -22,5 +22,12 @@ class HotelRepository @Inject constructor(
     suspend fun listReservation(guestEmail: String): List<Reservation> {
         return api.getReservations(groupId, guestEmail).reservations
     }
-
+    suspend fun deleteReservation(reservationId: String): Boolean {
+        return try {
+            val response = api.deleteReservation(reservationId)
+            response.isSuccessful
+        } catch (e: Exception) {
+            false
+        }
+    }
 }

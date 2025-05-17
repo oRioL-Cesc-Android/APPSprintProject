@@ -91,18 +91,18 @@ fun HomeScreen(navController: NavHostController) {
                     ) { Text(stringResource(R.string.DetallesViaje)) }
 
                     Button(
-                        onClick = { navController.navigate("Map Screen") },
+                        onClick = { navController.navigate("ReservasScreen") },
                         colors = buttonColors,
                         shape = RoundedCornerShape(16.dp),
                         modifier = Modifier.fillMaxWidth(0.7f)
-                    ) { Text(stringResource(R.string.Mapa)) }
+                    ) { Text(stringResource(R.string.Reservas)) }
 
                     Button(
-                        onClick = { navController.navigate("ExploreScreen") },
+                        onClick = { navController.navigate("HotelesScreen") },
                         colors = buttonColors,
                         shape = RoundedCornerShape(16.dp),
                         modifier = Modifier.fillMaxWidth(0.7f)
-                    ) { Text(stringResource(R.string.ExploreScreen)) }
+                    ) { Text(stringResource(R.string.HotelesScreen)) }
                 }
             }
         }

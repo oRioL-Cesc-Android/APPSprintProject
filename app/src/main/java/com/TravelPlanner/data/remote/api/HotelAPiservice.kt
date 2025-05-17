@@ -33,5 +33,8 @@ interface HotelApiService {
         @Query("guest_email") guestEmail: String
     ): ListReservation
 
-
+    @DELETE("/reservations/{res_id}")
+    suspend fun deleteReservation(
+        @Path("res_id") reservationId: String
+    ): Response<Unit>
 }
