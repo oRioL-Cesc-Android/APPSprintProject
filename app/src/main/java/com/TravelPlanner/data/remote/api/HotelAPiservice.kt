@@ -4,6 +4,7 @@ import retrofit2.Response
 import retrofit2.http.*
 import com.TravelPlanner.data.remote.dto.*
 import com.TravelPlanner.models.Hotel
+import com.TravelPlanner.models.ListReservation
 import com.TravelPlanner.models.ReserveRequest
 
 interface HotelApiService {
@@ -26,4 +27,11 @@ interface HotelApiService {
         @Path("group_id") groupId: String,
         @Body request: ReserveRequest
     ): Response<Unit>
+    @GET("/hotels/{group_id}/reservations")
+    suspend fun getReservations(
+        @Path("group_id") groupId: String,
+        @Query("guest_email") guestEmail: String
+    ): ListReservation
+
+
 }
