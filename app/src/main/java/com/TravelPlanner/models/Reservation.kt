@@ -9,5 +9,6 @@ data class Reservation(
     val guest_name: String,
     val guest_email: String,
     val hotel: Hotel,
-    val room: Room
+    val room: Room,
+    val roomImageUrl: String?
 )

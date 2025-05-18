@@ -1,6 +1,5 @@
 package com.TravelPlanner.ui.view
 
-import android.view.ContextThemeWrapper
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -23,7 +22,6 @@ import com.TravelPlanner.models.Reservation
 import com.TravelPlanner.models.Room
 import com.TravelPlanner.ui.viewmodel.HotelViewModel
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import com.TravelPlanner.ui.view.DatePickerButton as DatePickerButton1
@@ -42,9 +40,7 @@ fun HotelesScreen(
     var showAllHotels by remember { mutableStateOf(false) }
     var selectedCity by remember { mutableStateOf("Barcelona") }
     var expanded by remember { mutableStateOf(false) }
-    val cities = listOf(
-        "Barcelona","Paris","Londres"
-    )
+    val cities = listOf("Barcelona", "Paris", "Londres")
 
     val hotels by viewModel.hotels.collectAsState()
     val allHotels by viewModel.allHotels.collectAsState()
@@ -75,10 +71,10 @@ fun HotelesScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // DatePicker para fecha de inicio
             DatePickerButton1(
                 label = stringResource(R.string.start_date),
-                timestamp = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(startDate)?.time ?: System.currentTimeMillis(),
+                timestamp = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(startDate)?.time
+                    ?: System.currentTimeMillis(),
                 onDateSelected = { newTimestamp ->
                     startDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date(newTimestamp))
                 }
@@ -86,10 +82,10 @@ fun HotelesScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // DatePicker para fecha final
             DatePickerButton1(
                 label = stringResource(R.string.end_date),
-                timestamp = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(endDate)?.time ?: System.currentTimeMillis(),
+                timestamp = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(endDate)?.time
+                    ?: System.currentTimeMillis(),
                 onDateSelected = { newTimestamp ->
                     endDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date(newTimestamp))
                 }
@@ -160,10 +156,7 @@ fun HotelesScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             reservationError?.let {
-                Text(
-                    text = it,
-                    color = MaterialTheme.colorScheme.error
-                )
+                Text(text = it, color = MaterialTheme.colorScheme.error)
             }
 
             reservationResult?.let { success ->
@@ -242,8 +235,6 @@ fun HotelesScreen(
     }
 }
 
-
-
 @Composable
 fun HotelItemWithRooms(
     hotelName: String,
@@ -258,12 +249,9 @@ fun HotelItemWithRooms(
     onReserveClick: (roomId: String) -> Unit
 ) {
     val baseUrl = "http://13.39.162.212"
-
     val finalHotelImageUrl = hotelImageUrl?.removePrefix("/")?.let { "$baseUrl/$it" }
 
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = 8.dp)) {
+    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
 
         finalHotelImageUrl?.let {
             AsyncImage(
@@ -288,13 +276,11 @@ fun HotelItemWithRooms(
             Spacer(modifier = Modifier.height(8.dp))
             Text("🛏 ${room.room_type} - ${room.price}€")
 
-            // Construir la URL completa para la imagen de la habitación
-            val roomImageUrl = room.image_url?.let { "$baseUrl/images/$it" }
-
-            roomImageUrl?.let { imageUrl ->
+            room.images.forEach { imagePath ->
+                val roomImageUrl = imagePath.removePrefix("/").let { "$baseUrl/$it" }
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(imageUrl)
+                        .data(roomImageUrl)
                         .crossfade(true)
                         .build(),
                     contentDescription = "Room Image",
@@ -311,6 +297,7 @@ fun HotelItemWithRooms(
                 Text("Reservar esta habitación")
             }
         }
+
 
         Divider(modifier = Modifier.padding(vertical = 8.dp))
     }
