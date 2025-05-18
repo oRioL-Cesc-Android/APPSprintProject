@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.TravelPlanner.ui.viewmodel.HotelViewModel
+import com.google.firebase.auth.FirebaseAuth
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,23 +42,30 @@ fun ReservasScreen(
     navController: NavHostController,
     viewModel: HotelViewModel = hiltViewModel()
 ) {
-    var guestEmail by remember { mutableStateOf("john@example.com") } // Email del usuario
+    val firebaseAuth = FirebaseAuth.getInstance()
+    val currentUser = firebaseAuth.currentUser
+    val userEmail = currentUser?.email
+
+    var guestEmail by remember { mutableStateOf("") }
     val reservations = viewModel.userReservations
     val reservationListStatus = viewModel.listReservationResult
     val deleteReservationResult = viewModel.deleteReservationResult
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
-    // Llamar a listReservation al cargar la pantalla
-    LaunchedEffect(Unit) {
-        viewModel.listReservation(guestEmail, context)
+    // Solo llamamos a listReservation si el usuario está autenticado
+    LaunchedEffect(userEmail) {
+        userEmail?.let {
+            guestEmail = it
+            viewModel.listReservation(it, context)
+        }
     }
 
     // Mostrar el mensaje de eliminación como un Snackbar
     LaunchedEffect(deleteReservationResult) {
         deleteReservationResult?.let { result ->
             snackbarHostState.showSnackbar(result)
-            viewModel.clearDeleteReservationResult() // Limpiar el estado después de mostrar el mensaje
+            viewModel.clearDeleteReservationResult()
         }
     }
 
@@ -81,7 +90,14 @@ fun ReservasScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            if (reservations.isNotEmpty()) {
+            if (userEmail == null) {
+                Text(
+                    text = "Por favor, inicia sesión para ver tus reservas.",
+                    modifier = Modifier.align(Alignment.Center),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.error
+                )
+            } else if (reservations.isNotEmpty()) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
